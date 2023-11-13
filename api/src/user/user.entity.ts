@@ -1,19 +1,43 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsEnum } from 'class-validator';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Index,
+} from 'typeorm';
 
-@Entity()
-export class User {
+import { UserRole } from './user.constants';
+
+@Entity('user')
+export class UserEntity {
+  @ApiProperty()
+  @Index({ unique: true })
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @ApiProperty()
+  @Column({ unique: true })
+  @IsEmail()
   email: string;
 
+  @ApiProperty()
   @Column()
   password: string;
 
+  @ApiProperty()
   @Column()
   username: string;
 
+  @ApiProperty()
   @Column({ default: 'EUR' })
   baseCurrency: string;
 
@@ -21,6 +45,12 @@ export class User {
   // @Column({ default: [] })
   // coin: Array<string>;
 
-  @Column({ default: [] })
-  keywords: Array<string>;
+  @ApiProperty()
+  @Column('text', { array: true, default: '{}' })
+  keywords: string[];
+
+  @ApiProperty({ enum: UserRole })
+  @IsEnum(UserRole)
+  @Column({ type: 'enum', enum: UserRole })
+  role: UserRole;
 }
