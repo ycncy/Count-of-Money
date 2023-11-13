@@ -20,9 +20,7 @@ export class CoinService {
     }
 
     create(createCoinDto: CreateCoinDto): Promise<CoinEntity> {
-        // @ts-ignore
-        const coin = this.coinEntityRepository.create(createCoinDto);
-        // @ts-ignore
+        const coin = this.coinEntityRepository.create(createCoinDto as CoinEntity);
         return this.coinEntityRepository.save(coin);
     }
 }
