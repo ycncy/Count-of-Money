@@ -1,13 +1,15 @@
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-// import { UserEntity } from '../../user/user.entity';
+import { UserEntity } from '../../user/user.entity';
 
 export class CreateCoinDto {
   @ApiProperty()
   @IsNotEmpty()
   readonly coin_api_id: number;
 
-  // @ApiProperty()
-  // @IsOptional()
-  // readonly user: UserEntity[];
+  @ApiProperty({
+    type: Array<UserEntity>,
+  })
+  @IsOptional()
+  readonly user: UserEntity[];
 }
