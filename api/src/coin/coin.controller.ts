@@ -6,9 +6,9 @@ import {
     HttpCode,
     HttpException,
     HttpStatus,
+    NotFoundException,
     Param,
-    Post,
-    Req
+    Post
 } from '@nestjs/common';
 import {ApiTags} from "@nestjs/swagger";
 import {CoinEntity} from "./coin.entity";
@@ -24,6 +24,21 @@ export class CoinController {
     ) {
     }
 
+    @Get(':coinID/history/:period')
+    async getByCoinId(@Param() params: any) {
+        const { coinID, period } = params;
+
+        try {
+            const coin: CoinEntity = await this.coinService.getById(coinID);
+            return await this.coinService.getCoinHistory(coin, period);
+        } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+            } else {
+                throw new HttpException("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
     @HttpCode(200)
     @Get(':coinID')
     async getById(@Param() params: any): Promise<CoinEntity> {

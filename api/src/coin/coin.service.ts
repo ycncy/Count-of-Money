@@ -1,9 +1,8 @@
-import {ConflictException, Injectable, InternalServerErrorException} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateCoinDto } from './dto/create-coin.dto';
-import { CoinEntity } from './coin.entity';
-import * as util from "util";
+import {ConflictException, Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
+import {InjectRepository} from '@nestjs/typeorm';
+import {Repository} from 'typeorm';
+import {CreateCoinDto} from './dto/create-coin.dto';
+import {CoinEntity} from './coin.entity';
 import utils from "./utils";
 
 @Injectable()
@@ -11,7 +10,8 @@ export class CoinService {
     constructor(
         @InjectRepository(CoinEntity)
         private coinEntityRepository: Repository<CoinEntity>,
-    ) {}
+    ) {
+    }
 
     getById(coinId: number): Promise<CoinEntity | null> {
         return this.coinEntityRepository.findOne({
@@ -33,4 +33,61 @@ export class CoinService {
                 throw new InternalServerErrorException('Internal Server Error');
             }
         }
-    }}
+    }
+
+    async getCoinHistory(coinEntity: CoinEntity, granularity: string) {
+        let history = undefined;
+        switch (granularity) {
+            case 'month':
+                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "1mo");
+
+                if (history.error) {
+                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
+                }
+
+                return history;
+            case 'week':
+                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "1wk");
+
+                if (history.error) {
+                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
+                }
+
+                return history;
+            case '5days':
+                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "5d");
+
+                if (history.error) {
+                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
+                }
+
+                return history;
+            case 'day':
+                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "1d");
+
+                if (history.error) {
+                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
+                }
+
+                return history;
+            case 'hour':
+                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "1h");
+
+                if (history.error) {
+                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
+                }
+
+                return history;
+            case 'minute':
+                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", granularity);
+
+                if (history.error) {
+                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
+                }
+
+                return history;
+            default:
+                throw new NotFoundException("Invalid granularity, must be in [month, week, 5days, day, hour, minute]")
+        }
+    }
+}
