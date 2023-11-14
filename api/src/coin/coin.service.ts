@@ -1,6 +1,6 @@
 import {ConflictException, Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {Repository} from 'typeorm';
+import {DeleteResult, Repository} from 'typeorm';
 import {CreateCoinDto} from './dto/create-coin.dto';
 import {CoinEntity} from './coin.entity';
 import utils from "./utils";
@@ -89,5 +89,15 @@ export class CoinService {
             default:
                 throw new NotFoundException("Invalid granularity, must be in [month, week, 5days, day, hour, minute]")
         }
+    }
+
+    async deleteCoin(coinID: string): Promise<DeleteResult> {
+        const coin: CoinEntity = await this.getById(Number(coinID));
+
+        if (!coin) {
+            throw new NotFoundException(`Coin with ID ${coinID} not found`);
+        }
+
+        return this.coinEntityRepository.delete({ id: coin.id });
     }
 }

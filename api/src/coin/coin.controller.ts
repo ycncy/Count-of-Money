@@ -1,7 +1,7 @@
 import {
     Body,
     ConflictException,
-    Controller,
+    Controller, Delete,
     Get,
     HttpCode,
     HttpException,
@@ -14,6 +14,7 @@ import {ApiTags} from "@nestjs/swagger";
 import {CoinEntity} from "./coin.entity";
 import {CoinService} from "./coin.service";
 import {CreateCoinDto} from "./dto/create-coin.dto";
+import {DeleteResult} from "typeorm";
 
 @ApiTags("Crypto-currencies")
 @Controller('/api/cryptos')
@@ -41,10 +42,8 @@ export class CoinController {
     }
     @HttpCode(200)
     @Get(':coinID')
-    async getById(@Param() params: any): Promise<CoinEntity> {
-        const { coinID } = params;
-
-        const coin: CoinEntity = await this.coinService.getById(coinID);
+    async getById(@Param('coinID') coinID: string): Promise<CoinEntity> {
+        const coin: CoinEntity = await this.coinService.getById(Number(coinID));
 
         if (coin) return coin;
 
@@ -59,6 +58,20 @@ export class CoinController {
         } catch (error) {
             if (error instanceof ConflictException) {
                 throw new HttpException(error.message, HttpStatus.CONFLICT);
+            }
+        }
+    }
+
+    @HttpCode(204)
+    @Delete(':coinID')
+    async deleteCoin(@Param('coinID') coinID: string): Promise<DeleteResult> {
+        try {
+            return this.coinService.deleteCoin(coinID);
+        } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+            } else {
+                throw new HttpException("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
     }
