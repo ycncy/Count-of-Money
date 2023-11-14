@@ -1,27 +1,27 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ListCoinInfoModel {
-    @ApiProperty()
-    coinId: number;
+  @ApiProperty()
+  coinId: number;
 
-    @ApiProperty()
-    symbol: string;
+  @ApiProperty()
+  symbol: string;
 
-    @ApiProperty()
-    last_datetime: Date;
+  @ApiProperty()
+  last_datetime: Date;
 
-    @ApiProperty()
-    high: number;
+  @ApiProperty()
+  high: number;
 
-    @ApiProperty()
-    low: number;
+  @ApiProperty()
+  low: number;
 
-    @ApiProperty()
-    open: number;
+  @ApiProperty()
+  open: number;
 
-    @ApiProperty()
-    close: number;
+  @ApiProperty()
+  close: number;
 
-    @ApiProperty()
-    volume: number;
+  @ApiProperty()
+  volume: number;
 }

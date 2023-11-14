@@ -7,7 +7,7 @@ export class CoinEntity {
 
   @Column({
     nullable: false,
-    unique: true
+    unique: true,
   })
   fullName: string;
 
@@ -18,7 +18,7 @@ export class CoinEntity {
 
   @Column({
     nullable: true,
-    type: "text"
+    type: 'text',
   })
   description: string;
 
@@ -27,7 +27,7 @@ export class CoinEntity {
   })
   symbol: string;
 
-  @Column('text',{
+  @Column('text', {
     nullable: true,
     array: true,
   })
@@ -35,7 +35,7 @@ export class CoinEntity {
 
   @Column({
     nullable: true,
-    type: "date"
+    type: 'date',
   })
   creationDate: string;
 }

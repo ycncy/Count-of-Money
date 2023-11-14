@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {CoinModule} from "./coin/coin.module";
+import { CoinModule } from './coin/coin.module';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
@@ -22,8 +22,8 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
     }),
     UserModule,
-      AuthModule,
-    CoinModule
+    AuthModule,
+    CoinModule,
   ],
   controllers: [],
 })
