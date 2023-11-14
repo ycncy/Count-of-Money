@@ -1,14 +1,16 @@
 import {
     Body,
     ConflictException,
-    Controller, Delete,
+    Controller,
+    Delete,
     Get,
     HttpCode,
     HttpException,
     HttpStatus,
     NotFoundException,
     Param,
-    Post
+    Post,
+    Query
 } from '@nestjs/common';
 import {ApiTags} from "@nestjs/swagger";
 import {CoinEntity} from "./coin.entity";
@@ -25,6 +27,23 @@ export class CoinController {
     ) {
     }
 
+    @HttpCode(200)
+    @Get()
+    async getCryptos(@Query('cmids') cmids: string) {
+        try {
+            const coinIds: string[] = cmids ? cmids.split(',') : null;
+
+            return await this.coinService.getCoinsInfo(coinIds);
+        }catch (error) {
+            if (error instanceof NotFoundException) {
+                throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+            } else {
+                throw new HttpException("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
+    @HttpCode(200)
     @Get(':coinID/history/:period')
     async getByCoinId(@Param() params: any) {
         const { coinID, period } = params;
@@ -40,6 +59,7 @@ export class CoinController {
             }
         }
     }
+
     @HttpCode(200)
     @Get(':coinID')
     async getById(@Param('coinID') coinID: string): Promise<CoinEntity> {

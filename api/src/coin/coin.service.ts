@@ -21,6 +21,93 @@ export class CoinService {
         })
     }
 
+    async getCoinsInfo(coinIds: string[]) {
+        const histories: Object[] = [];
+
+        for (const coinId of coinIds) {
+            const coin = await this.getById(Number(coinId));
+
+            if (!coin) {
+                throw new NotFoundException(`Coin ${coinId} not found`);
+            }
+
+            const history = await utils.fetchCoinHistory(coin.symbol, "USD", "1d", "1d");
+
+            if (history.error) {
+                if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
+            }
+
+            histories.push({
+                coinId: Number(coinId),
+                symbol: history.symbol,
+                last_datetime: history.datetimes[0],
+                high: history.high[0],
+                low: history.low[0],
+                open: history.open[0],
+                close: history.close[0],
+                volume: history.volume[0],
+            })
+        }
+
+        return histories
+    }
+
+    async getCoinHistory(coinEntity: CoinEntity, granularity: string) {
+        let history = undefined;
+        switch (granularity) {
+            case 'month':
+                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "7y", "1mo");
+
+                if (history.error) {
+                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
+                }
+
+                return history;
+            case 'week':
+                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "7y", "1wk");
+
+                if (history.error) {
+                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
+                }
+
+                return history;
+            case '5days':
+                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "7y", "5d");
+
+                if (history.error) {
+                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
+                }
+
+                return history;
+            case 'day':
+                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "7y", "1d");
+
+                if (history.error) {
+                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
+                }
+
+                return history;
+            case 'hour':
+                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "730d", "1h");
+
+                if (history.error) {
+                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
+                }
+
+                return history;
+            case 'minute':
+                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "7d", granularity);
+
+                if (history.error) {
+                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
+                }
+
+                return history;
+            default:
+                throw new NotFoundException("Invalid granularity, must be in [month, week, 5days, day, hour, minute]")
+        }
+    }
+
     async create(createCoinDto: CreateCoinDto): Promise<CoinEntity> {
         try {
             const coinEntityFromApi: CoinEntity = await utils.fetchCoinInfo(createCoinDto.coin_api_id);
@@ -32,62 +119,6 @@ export class CoinService {
             } else {
                 throw new InternalServerErrorException('Internal Server Error');
             }
-        }
-    }
-
-    async getCoinHistory(coinEntity: CoinEntity, granularity: string) {
-        let history = undefined;
-        switch (granularity) {
-            case 'month':
-                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "1mo");
-
-                if (history.error) {
-                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
-                }
-
-                return history;
-            case 'week':
-                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "1wk");
-
-                if (history.error) {
-                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
-                }
-
-                return history;
-            case '5days':
-                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "5d");
-
-                if (history.error) {
-                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
-                }
-
-                return history;
-            case 'day':
-                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "1d");
-
-                if (history.error) {
-                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
-                }
-
-                return history;
-            case 'hour':
-                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "1h");
-
-                if (history.error) {
-                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
-                }
-
-                return history;
-            case 'minute':
-                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", granularity);
-
-                if (history.error) {
-                    if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
-                }
-
-                return history;
-            default:
-                throw new NotFoundException("Invalid granularity, must be in [month, week, 5days, day, hour, minute]")
         }
     }
 

@@ -26,11 +26,9 @@ const fetchCoinInfo = async (coinId: number) => {
     }
 }
 
-const fetchCoinHistory = async (coinSymbol, currency, granularity) => {
+const fetchCoinHistory = async (coinSymbol: string, currency: string, range: string, granularity: string) => {
     try {
-        let query_url = "";
-        if (granularity === "minute") query_url = `https://query2.finance.yahoo.com/v8/finance/chart/${coinSymbol}-${currency}?range=7d&interval=1m`
-        else query_url = `https://query2.finance.yahoo.com/v8/finance/chart/${coinSymbol}-${currency}?range=7d&interval=1m`
+        const query_url = `https://query2.finance.yahoo.com/v8/finance/chart/${coinSymbol}-${currency}?range=${range}&interval=${granularity}`
 
         const response = await fetch(
             query_url,
@@ -53,6 +51,7 @@ const fetchCoinHistory = async (coinSymbol, currency, granularity) => {
         const dateTimestamps = jsonResponse.chart.result[0].timestamp.map(dateProcessUtil.timestampToDateTime);
 
         return {
+            symbol: coinSymbol,
             datetimes: dateTimestamps,
             high: jsonResponse.chart.result[0].indicators.quote[0].high,
             low: jsonResponse.chart.result[0].indicators.quote[0].low,
