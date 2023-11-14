@@ -4,6 +4,9 @@ import {DeleteResult, Repository} from 'typeorm';
 import {CreateCoinDto} from './dto/create-coin.dto';
 import {CoinEntity} from './coin.entity';
 import utils from "./utils";
+import {CoinInfoModel} from "./model/coin-info.model";
+import {ListCoinInfoModel} from "./model/list-coin-info.model";
+import {ErrorModel} from "./model/error.model";
 
 @Injectable()
 export class CoinService {
@@ -22,31 +25,34 @@ export class CoinService {
     }
 
     async getCoinsInfo(coinIds: string[]) {
-        const histories: Object[] = [];
+        const histories: ListCoinInfoModel[] = [];
 
         for (const coinId of coinIds) {
-            const coin = await this.getById(Number(coinId));
+            console.log(coinId)
+            const coin: CoinEntity = await this.getById(Number(coinId));
 
             if (!coin) {
                 throw new NotFoundException(`Coin ${coinId} not found`);
             }
 
-            const history = await utils.fetchCoinHistory(coin.symbol, "USD", "1d", "1d");
+            const history: CoinInfoModel | ErrorModel = await utils.fetchCoinHistory(coin.id, coin.symbol, "USD", "1d", "1d");
 
-            if (history.error) {
-                if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
+            if (history instanceof ErrorModel) {
+                if (history.error.code === 'Not Found') throw new NotFoundException(history.error.message);
+            } else {
+                const coinInfo: ListCoinInfoModel = {
+                    coinId: Number(coinId),
+                    symbol: history.symbol,
+                    last_datetime: history.datetimes[0],
+                    high: history.high[0],
+                    low: history.low[0],
+                    open: history.open[0],
+                    close: history.close[0],
+                    volume: history.volume[0],
+                };
+
+                histories.push(coinInfo);
             }
-
-            histories.push({
-                coinId: Number(coinId),
-                symbol: history.symbol,
-                last_datetime: history.datetimes[0],
-                high: history.high[0],
-                low: history.low[0],
-                open: history.open[0],
-                close: history.close[0],
-                volume: history.volume[0],
-            })
         }
 
         return histories
@@ -56,7 +62,7 @@ export class CoinService {
         let history = undefined;
         switch (granularity) {
             case 'month':
-                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "7y", "1mo");
+                history = await utils.fetchCoinHistory(coinEntity.id, coinEntity.symbol, "USD", "1y", "1mo");
 
                 if (history.error) {
                     if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
@@ -64,7 +70,7 @@ export class CoinService {
 
                 return history;
             case 'week':
-                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "7y", "1wk");
+                history = await utils.fetchCoinHistory(coinEntity.id, coinEntity.symbol, "USD", "1y", "1wk");
 
                 if (history.error) {
                     if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
@@ -72,7 +78,7 @@ export class CoinService {
 
                 return history;
             case '5days':
-                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "7y", "5d");
+                history = await utils.fetchCoinHistory(coinEntity.id, coinEntity.symbol, "USD", "1y", "5d");
 
                 if (history.error) {
                     if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
@@ -80,7 +86,7 @@ export class CoinService {
 
                 return history;
             case 'day':
-                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "7y", "1d");
+                history = await utils.fetchCoinHistory(coinEntity.id, coinEntity.symbol, "USD", "1y", "1d");
 
                 if (history.error) {
                     if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
@@ -88,7 +94,7 @@ export class CoinService {
 
                 return history;
             case 'hour':
-                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "730d", "1h");
+                history = await utils.fetchCoinHistory(coinEntity.id, coinEntity.symbol, "USD", "30d", "1h");
 
                 if (history.error) {
                     if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);
@@ -96,7 +102,7 @@ export class CoinService {
 
                 return history;
             case 'minute':
-                history = await utils.fetchCoinHistory(coinEntity.symbol, "USD", "7d", granularity);
+                history = await utils.fetchCoinHistory(coinEntity.id, coinEntity.symbol, "USD", "1d", "1m");
 
                 if (history.error) {
                     if (history.error.code === "Not Found") throw new NotFoundException(history.error.message);

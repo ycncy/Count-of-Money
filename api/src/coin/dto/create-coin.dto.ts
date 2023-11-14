@@ -9,6 +9,7 @@ export class CreateCoinDto {
 
   @ApiProperty({
     type: Array<UserEntity>,
+    required: false
   })
   @IsOptional()
   readonly user: UserEntity[];

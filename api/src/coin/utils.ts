@@ -1,6 +1,8 @@
 import {format, parseISO} from 'date-fns';
 import {CoinEntity} from "./coin.entity";
 import dateProcessUtil from "../date.process.util";
+import {ErrorModel} from "./model/error.model";
+import {CoinInfoModel} from "./model/coin-info.model";
 
 const fetchCoinInfo = async (coinId: number) => {
     try {
@@ -26,7 +28,7 @@ const fetchCoinInfo = async (coinId: number) => {
     }
 }
 
-const fetchCoinHistory = async (coinSymbol: string, currency: string, range: string, granularity: string) => {
+const fetchCoinHistory = async (coinId: number, coinSymbol: string, currency: string, range: string, granularity: string) => {
     try {
         const query_url = `https://query2.finance.yahoo.com/v8/finance/chart/${coinSymbol}-${currency}?range=${range}&interval=${granularity}`
 
@@ -39,18 +41,22 @@ const fetchCoinHistory = async (coinSymbol: string, currency: string, range: str
 
         if (jsonResponse.chart.error) {
             if (jsonResponse.chart.error.code === "Not Found") {
-                return {
-                    error: {
-                        code: jsonResponse.chart.error.code,
-                        message: jsonResponse.chart.error.description
-                    }
+                const errorDetails = {
+                    code: jsonResponse.chart.error.code,
+                    message: jsonResponse.chart.error.description,
                 }
+
+                const errorResponse = new ErrorModel();
+                errorResponse.error = errorDetails;
+
+                return errorResponse;
             }
         }
 
         const dateTimestamps = jsonResponse.chart.result[0].timestamp.map(dateProcessUtil.timestampToDateTime);
 
-        return {
+        const coinInfo: CoinInfoModel = {
+            coinId: coinId,
             symbol: coinSymbol,
             datetimes: dateTimestamps,
             high: jsonResponse.chart.result[0].indicators.quote[0].high,
@@ -58,7 +64,9 @@ const fetchCoinHistory = async (coinSymbol: string, currency: string, range: str
             open: jsonResponse.chart.result[0].indicators.quote[0].open,
             close: jsonResponse.chart.result[0].indicators.quote[0].close,
             volume: jsonResponse.chart.result[0].indicators.quote[0].volume,
-        }
+        };
+
+        return coinInfo;
     } catch (error) {
         console.log(error)
     }
