@@ -32,7 +32,11 @@ export class CoinController {
   })
   @ApiQuery({
     name: 'cmids',
-    description: 'List of cryptocurrencies IDs to get information',
+    description: 'List of cryptocurrencies IDs',
+    schema: {
+        type: 'string',
+        example: '1,2,3,4,5',
+    }
   })
   @ApiResponse({
     status: 200,
@@ -68,6 +72,9 @@ export class CoinController {
   @ApiParam({
     name: 'coinID',
     description: 'ID of the cryptocurrency to get history',
+    schema: {
+      example: 1,
+    }
   })
   @ApiParam({
     name: 'period',
@@ -102,7 +109,10 @@ export class CoinController {
   })
   @ApiParam({
     name: 'coinID',
-    description: 'ID of the cryptocurrency',
+    description: "ID of the cryptocurrency to get it's information",
+    schema: {
+      example: 1,
+    }
   })
   @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
   @HttpCode(200)
@@ -142,6 +152,13 @@ export class CoinController {
   }
 
   @ApiOperation({ summary: 'Edit cryptocurrency by ID' })
+  @ApiParam({
+    name: 'coinID',
+    description: 'ID of the cryptocurrency',
+    schema: {
+      example: 1,
+    }
+  })
   @ApiResponse({
     status: 200,
     description: 'Successfully edited cryptocurrency.',
@@ -169,6 +186,13 @@ export class CoinController {
   }
 
   @ApiOperation({ summary: 'Delete cryptocurrency by ID' })
+  @ApiParam({
+    name: 'coinID',
+    description: 'ID of the cryptocurrency',
+    schema: {
+      example: 1,
+    }
+  })
   @ApiResponse({
     status: 204,
     description: 'Successfully deleted cryptocurrency.',
