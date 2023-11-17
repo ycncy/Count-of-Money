@@ -3,7 +3,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { UserEntity } from '../../user/user.entity';
 
 export class CreateCoinDto {
-  @ApiProperty()
+  @ApiProperty({
+    type: Number,
+    required: true,
+    name: 'coin_api_id',
+    description: 'Cryptocurrency ID from yahoo finance API'
+  })
   @IsNotEmpty()
   readonly coin_api_id: number;
 

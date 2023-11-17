@@ -77,7 +77,7 @@ export class CoinService {
           coinEntity.id,
           coinEntity.symbol,
           'USD',
-          '1y',
+          '7y',
           '1mo',
         );
 
@@ -92,7 +92,7 @@ export class CoinService {
           coinEntity.id,
           coinEntity.symbol,
           'USD',
-          '1y',
+          '7y',
           '1wk',
         );
 
@@ -107,7 +107,7 @@ export class CoinService {
           coinEntity.id,
           coinEntity.symbol,
           'USD',
-          '1y',
+          '7y',
           '5d',
         );
 
@@ -122,7 +122,7 @@ export class CoinService {
           coinEntity.id,
           coinEntity.symbol,
           'USD',
-          '1y',
+          '3y',
           '1d',
         );
 
@@ -137,7 +137,7 @@ export class CoinService {
           coinEntity.id,
           coinEntity.symbol,
           'USD',
-          '30d',
+          '90d',
           '1h',
         );
 

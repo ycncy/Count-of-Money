@@ -12,7 +12,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags} from '@nestjs/swagger';
 import { CoinEntity } from './coin.entity';
 import { CoinService } from './coin.service';
 import { CreateCoinDto } from './dto/create-coin.dto';
@@ -27,6 +27,10 @@ export class CoinController {
 
   @ApiOperation({
     summary: 'Get daily information about one or multiple cryptocurrencies',
+  })
+  @ApiQuery({
+    name: 'cmids',
+    description: 'List of cryptocurrencies IDs to get information',
   })
   @ApiResponse({
     status: 200,
@@ -59,6 +63,15 @@ export class CoinController {
     type: CoinInfoModel,
     description: 'Successfully retrieved cryptocurrency history.',
   })
+  @ApiParam({
+    name: 'coinID',
+    description: 'ID of the cryptocurrency to get history',
+  })
+  @ApiParam({
+    name: 'period',
+    enum: ['month', 'week', '5days', 'day', 'hour', 'minute'],
+    description: 'Period of time to get history',
+  })
   @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
   @HttpCode(200)
   @Get(':coinID/history/:period')
@@ -86,6 +99,10 @@ export class CoinController {
     status: 200,
     description: 'Successfully retrieved cryptocurrency.',
   })
+  @ApiParam({
+    name: 'coinID',
+    description: 'ID of the cryptocurrency',
+  })
   @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
   @HttpCode(200)
   @Get(':coinID')
@@ -100,7 +117,7 @@ export class CoinController {
     );
   }
 
-  @ApiOperation({ summary: 'Create a new cryptocurrency' })
+  @ApiOperation({ summary: 'Create a new cryptocurrency from yahoo finance API data' })
   @ApiResponse({
     status: 201,
     description: 'Successfully created a new cryptocurrency.',
