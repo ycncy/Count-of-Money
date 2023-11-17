@@ -8,17 +8,19 @@ import {
   HttpException,
   HttpStatus,
   NotFoundException,
-  Param,
+  Param, ParseIntPipe,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
-import {ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags} from '@nestjs/swagger';
-import { CoinEntity } from './coin.entity';
-import { CoinService } from './coin.service';
-import { CreateCoinDto } from './dto/create-coin.dto';
-import { DeleteResult } from 'typeorm';
-import { ListCoinInfoModel } from './model/list-coin-info.model';
-import { CoinInfoModel } from './model/coin-info.model';
+import {ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags} from '@nestjs/swagger';
+import {CoinEntity} from './coin.entity';
+import {CoinService} from './coin.service';
+import {CreateCoinDto} from './dto/create-coin.dto';
+import {DeleteResult, UpdateResult} from 'typeorm';
+import {ListCoinInfoModel} from './model/list-coin-info.model';
+import {CoinInfoModel} from './model/coin-info.model';
+import {EditCoinDto} from "./dto/edit-coin.dto";
 
 @ApiTags('Crypto-currencies')
 @Controller('/cryptos')
@@ -42,7 +44,7 @@ export class CoinController {
   @Get()
   async getCryptos(@Query('cmids') cmids: string) {
     try {
-      const coinIds: string[] = cmids ? cmids.split(',') : null;
+      const coinIds: number[] = cmids ? cmids.split(',').map(id => parseInt(id, 10)) : [];
 
       return await this.coinService.getCoinsInfo(coinIds);
     } catch (error) {
@@ -76,7 +78,7 @@ export class CoinController {
   @HttpCode(200)
   @Get(':coinID/history/:period')
   async getHistoryByCoinId(
-    @Param('coinID') coinID: number,
+    @Param('coinID', ParseIntPipe) coinID: number,
     @Param('period') period: string,
   ) {
     try {
@@ -106,7 +108,9 @@ export class CoinController {
   @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
   @HttpCode(200)
   @Get(':coinID')
-  async getById(@Param('coinID') coinID: string): Promise<CoinEntity> {
+  async getById(
+      @Param('coinID', ParseIntPipe) coinID: number,
+  ): Promise<CoinEntity> {
     const coin: CoinEntity = await this.coinService.getById(Number(coinID));
 
     if (coin) return coin;
@@ -138,6 +142,33 @@ export class CoinController {
     }
   }
 
+  @ApiOperation({ summary: 'Edit cryptocurrency by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully edited cryptocurrency.',
+  })
+  @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
+  @HttpCode(200)
+  @ApiBody({ type: EditCoinDto })
+  @Put(':coinID')
+  async editCoin(
+      @Param('coinID', ParseIntPipe) coinID: number,
+      @Body() editCoinDto: EditCoinDto,
+  ): Promise<UpdateResult> {
+    try {
+      return await this.coinService.editCoin(coinID, editCoinDto);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      } else {
+        throw new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
+
   @ApiOperation({ summary: 'Delete cryptocurrency by ID' })
   @ApiResponse({
     status: 204,
@@ -146,7 +177,9 @@ export class CoinController {
   @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
   @HttpCode(204)
   @Delete(':coinID')
-  async deleteCoin(@Param('coinID') coinID: string): Promise<DeleteResult> {
+  async deleteCoin(
+      @Param('coinID', ParseIntPipe) coinID: number,
+  ): Promise<DeleteResult> {
     try {
       return this.coinService.deleteCoin(coinID);
     } catch (error) {

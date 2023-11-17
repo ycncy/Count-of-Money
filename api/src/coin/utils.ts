@@ -10,7 +10,7 @@ const fetchCoinInfo = async (coinId: number) => {
       `https://pro-api.coinmarketcap.com/v2/cryptocurrency/info?id=${coinId}`,
       {
         headers: {
-          'X-CMC_PRO_API_KEY': '885001da-e129-4a2c-8a82-d6a01e2a7ff8',
+          'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY,
         },
       },
     );

@@ -5,13 +5,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import {DeleteResult, Repository, UpdateResult} from 'typeorm';
 import { CreateCoinDto } from './dto/create-coin.dto';
 import { CoinEntity } from './coin.entity';
 import utils from './utils';
 import { CoinInfoModel } from './model/coin-info.model';
 import { ListCoinInfoModel } from './model/list-coin-info.model';
 import { ErrorModel } from './model/error.model';
+import {EditCoinDto} from "./dto/edit-coin.dto";
 
 @Injectable()
 export class CoinService {
@@ -28,12 +29,11 @@ export class CoinService {
     });
   }
 
-  async getCoinsInfo(coinIds: string[]) {
+  async getCoinsInfo(coinIds: number[]) {
     const histories: ListCoinInfoModel[] = [];
 
     for (const coinId of coinIds) {
-      console.log(coinId);
-      const coin: CoinEntity = await this.getById(Number(coinId));
+      const coin: CoinEntity = await this.getById(coinId);
 
       if (!coin) {
         throw new NotFoundException(`Coin ${coinId} not found`);
@@ -52,7 +52,7 @@ export class CoinService {
           throw new NotFoundException(history.error.message);
       } else {
         const coinInfo: ListCoinInfoModel = {
-          coinId: Number(coinId),
+          coinId: coinId,
           symbol: history.symbol,
           last_datetime: history.datetimes[0],
           high: history.high[0],
@@ -185,8 +185,18 @@ export class CoinService {
     }
   }
 
-  async deleteCoin(coinID: string): Promise<DeleteResult> {
-    const coin: CoinEntity = await this.getById(Number(coinID));
+  async editCoin(coinID: number, editCoinDto: EditCoinDto): Promise<UpdateResult> {
+    const coin: CoinEntity = await this.getById(coinID);
+
+    if (!coin) {
+      throw new NotFoundException(`Coin with ID ${coinID} not found`);
+    }
+
+    return this.coinEntityRepository.update({ id: +coinID }, editCoinDto);
+  }
+
+  async deleteCoin(coinID: number): Promise<DeleteResult> {
+    const coin: CoinEntity = await this.getById(coinID);
 
     if (!coin) {
       throw new NotFoundException(`Coin with ID ${coinID} not found`);
