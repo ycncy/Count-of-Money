@@ -69,7 +69,13 @@ export class CoinService {
     return histories;
   }
 
-  async getCoinHistory(coinEntity: CoinEntity, granularity: string) {
+  async getCoinHistory(coinID: number, granularity: string) {
+    const coinEntity: CoinEntity = await this.getById(coinID);
+
+    if (!coinEntity) {
+        throw new NotFoundException(`Coin ${coinID} not found`);
+    }
+
     let history = undefined;
     switch (granularity) {
       case 'month':

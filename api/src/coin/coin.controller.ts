@@ -82,8 +82,7 @@ export class CoinController {
     @Param('period') period: string,
   ) {
     try {
-      const coin: CoinEntity = await this.coinService.getById(coinID);
-      return await this.coinService.getCoinHistory(coin, period);
+      return await this.coinService.getCoinHistory(coinID, period);
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw new HttpException(error.message, HttpStatus.NOT_FOUND);

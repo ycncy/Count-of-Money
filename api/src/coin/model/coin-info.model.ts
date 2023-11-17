@@ -7,8 +7,8 @@ export class CoinInfoModel {
   @ApiProperty()
   symbol: string;
 
-  @ApiProperty({ type: Date })
-  datetimes: [Date];
+  @ApiProperty({ type: [Date] })
+  datetimes: Date[];
 
   @ApiProperty({ type: [Number] })
   high: number[];
