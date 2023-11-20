@@ -37,7 +37,7 @@ class DataCollector:
     def _process_and_save_data(self, raw_data_from_api: dict):
         processed_data = pd.DataFrame(raw_data_from_api).drop(["Dividends", "Stock Splits"], axis=1)
 
-        directory_path = f"../data/processed_data/{self.coin_symbol}"
+        directory_path = f"../data/processed_data/{self.coin_symbol}/{self.interval.name}"
 
         if not os.path.exists(directory_path):
             os.makedirs(directory_path)
