@@ -17,7 +17,13 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  generateJwt(payload: { sub: number; email: string }) {
+  generateJwt(payload: {
+    sub: number;
+    email: string;
+    role: UserRole;
+    provider: UserProvider;
+    username: string;
+  }) {
     return this.jwtService.sign(payload);
   }
 
@@ -25,22 +31,19 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException('Unauthenticated');
     }
-
     let userEntity: UserEntity;
 
     if (user.provider === UserProvider.GOOGLE) {
-      userEntity = await this.userService.findOneByEmailAndProvider(
-        user.email,
-        UserProvider.GOOGLE,
-      );
+      userEntity = await this.userService.findOneByEmail(user.email);
       if (!userEntity) {
         userEntity = await this.registerOAuthUser(user);
       }
     } else {
-      userEntity = await this.userService.findOne(user.email);
+      userEntity = await this.userService.findOneByEmail(user.email);
+
       if (
         !userEntity ||
-        !bcrypt.compareSync(user.password, userEntity.password)
+        !(await bcrypt.compare(user.password, userEntity.password))
       ) {
         throw new BadRequestException('Invalid credentials');
       }
@@ -49,6 +52,9 @@ export class AuthService {
     return this.generateJwt({
       sub: userEntity.id,
       email: userEntity.email,
+      role: userEntity.role,
+      provider: userEntity.provider,
+      username: userEntity.username,
     });
   }
 
@@ -64,7 +70,7 @@ export class AuthService {
 
   async registerUser(user: CreateUserDto) {
     try {
-      const userExists = await this.userService.findOne(user.email);
+      const userExists = await this.userService.findOneByEmail(user.email);
       if (userExists) {
         return new BadRequestException('User already exists');
       }
@@ -73,7 +79,7 @@ export class AuthService {
         ...user,
         role: UserRole.USER,
         provider: UserProvider.LOCAL,
-        password: await bcrypt.hash(user.password, 10),
+        password: user.password,
       };
 
       const userCreated = await this.userService.create(newUser);
@@ -82,6 +88,9 @@ export class AuthService {
       return this.generateJwt({
         sub: userCreated.id,
         email: userCreated.email,
+        role: userCreated.role,
+        provider: userCreated.provider,
+        username: userCreated.username,
       });
     } catch {
       throw new InternalServerErrorException();
@@ -100,7 +109,7 @@ export class AuthService {
   }
 
   async validateUser(email: string, pass: string) {
-    const user = await this.userService.findOne(email);
+    const user = await this.userService.findOneByEmail(email);
 
     if (user && bcrypt.compareSync(pass, user.password)) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

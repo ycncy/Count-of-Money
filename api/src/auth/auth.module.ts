@@ -5,9 +5,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserModule } from 'src/user/user.module';
-import { LocalStrategy } from './local-auth.strategy';
-import { JwtStrategy } from './jwt-auth.strategy';
-import { GoogleStrategy } from './google-auth.strategy';
+import { LocalStrategy } from './strategy/local-auth.strategy';
+import { JwtStrategy } from './strategy/jwt-auth.strategy';
+import { GoogleStrategy } from './strategy/google-auth.strategy';
 
 @Module({
   imports: [

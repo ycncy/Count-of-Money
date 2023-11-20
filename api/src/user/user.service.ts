@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from './user.entity';
 import { UserProvider, UserRole } from './user.constants';
 import * as bcrypt from 'bcrypt';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -25,18 +26,27 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async findOne(email: string): Promise<UserEntity> {
+  async findOne(id: number): Promise<UserEntity> {
+    return await this.userRepository.findOne({ where: { id } });
+  }
+
+  async findOneByEmail(email: string): Promise<UserEntity> {
     return await this.userRepository.findOne({ where: { email } });
   }
 
-  async findOneByEmailAndProvider(
-    email: string,
-    provider: UserProvider,
-  ): Promise<UserEntity> {
-    return await this.userRepository.findOne({ where: { email, provider } });
+  async getAll(): Promise<UserEntity[]> {
+    return await this.userRepository.find();
   }
 
   async save(user: UserEntity): Promise<UserEntity> {
     return await this.userRepository.save(user);
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    return this.userRepository.save({ id, ...updateUserDto });
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.userRepository.delete(id);
   }
 }
