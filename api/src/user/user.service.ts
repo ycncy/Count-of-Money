@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,23 +20,41 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
-    const user = {
-      ...createUserDto,
-      role: UserRole.USER,
-      provider: UserProvider.LOCAL,
-      password: await bcrypt.hash(createUserDto.password, 10),
-    };
+    try {
+      const user = {
+        ...createUserDto,
+        role: UserRole.USER,
+        provider: UserProvider.LOCAL,
+        password: await bcrypt.hash(createUserDto.password, 10),
+      };
 
-    this.userRepository.create(user);
-    return this.userRepository.save(user);
+      this.userRepository.create(user);
+      return this.userRepository.save(user);
+    } catch (err) {
+      if (err.code === '23505') {
+        throw new ConflictException('Email already exists');
+      } else {
+        throw new InternalServerErrorException('Internal server error');
+      }
+    }
   }
 
   async findOne(id: number): Promise<UserEntity> {
-    return await this.userRepository.findOne({ where: { id } });
+    const user: UserEntity = await this.userRepository.findOne({
+      where: { id },
+    });
+    if (!user) {
+      throw new NotFoundException(`User ${id} not found`);
+    }
+    return user;
   }
 
   async findOneByEmail(email: string): Promise<UserEntity> {
-    return await this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new NotFoundException(`User ${email} not found`);
+    }
+    return user;
   }
 
   async getAll(): Promise<UserEntity[]> {
@@ -43,10 +66,18 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    const user: UserEntity = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`User ${id} not found`);
+    }
     return this.userRepository.save({ id, ...updateUserDto });
   }
 
   async delete(id: number): Promise<void> {
+    const user: UserEntity = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`User ${id} not found`);
+    }
     await this.userRepository.delete(id);
   }
 }
