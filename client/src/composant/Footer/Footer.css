@@ -1,0 +1,50 @@
+/* Style général du footer */
+.footer-background {
+  background-color: #f8f9fa;
+  color: #333;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Liens dans le footer */
+.footer-background a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-background a:hover {
+  color: #0056b3;
+}
+
+/* Titres dans le footer */
+.footer-background h6 {
+  color: #007bff;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+/* Style pour les icônes */
+.footer-background .MDBIcon {
+  margin-right: 5px;
+}
+
+/* Style pour les sections, comme les réseaux sociaux */
+.social-section {
+  background-color: #eaeaea;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* Style pour le texte des réseaux sociaux */
+.social-text {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+/* Style pour les droits d'auteur */
+.copyright-section {
+  background-color: rgba(0, 0, 0, 0.05);
+  text-align: center;
+  padding: 10px;
+  font-size: 0.9em;
+}

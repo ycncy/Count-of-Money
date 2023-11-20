@@ -1,19 +1,22 @@
 // ArticlePage.tsx
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import NavBarConnectedUser from '../composant/Navbar/NavBarConectedUser';
+import CardArticle from '../composant/CardArticle/CardArticle';
+import Footer from '../composant/Footer/Footer';
 
 interface RouteParams {
   id: string;
 }
 
 const Article: React.FC = () => {
-  const { id } = useParams<RouteParams>();
-
   return (
     <div>
+      <NavBarConnectedUser username='Lelbi' />
       <h1>Article Page</h1>
-      <p>Article ID: {id}</p>
-      {/* Contenu de l'article */}
+      <Link to='/'>Homepage</Link>
+      <CardArticle />
+      <Footer />
     </div>
   );
 };
