@@ -31,9 +31,10 @@ const CardArticle: React.FC = () => {
         </div>
         <div className='flex items-center'>
           <img
-            className='w-10 h-10 rounded-full mr-4'
-            src='/img/jonathan.jpg'
-            alt='Avatar of Jonathan Reinink'
+            src='../img/logo.png'
+            alt='Logo'
+            className='h-8 w-auto'
+            style={{ width: '200px', height: '100px', borderRadius: '10%' }}
           />
           <div className='text-sm'>
             <p className='text-gray-900 leading-none'>Jonathan Reinink</p>
