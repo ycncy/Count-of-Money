@@ -1,8 +1,8 @@
-// Profil.tsx
+// Profile.tsx
 
 import React from 'react';
 
-const Profil: React.FC = () => {
+const Profile: React.FC = () => {
   return (
     <div className='bg-gray-100 min-h-screen flex items-center justify-center'>
       <div className='bg-white p-8 rounded shadow-md w-96'>
@@ -35,4 +35,4 @@ const Profil: React.FC = () => {
   );
 };
 
-export default Profil;
+export default Profile;
