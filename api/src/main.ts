@@ -12,8 +12,9 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('doc', app, document);
+  SwaggerModule.setup('api/docs', app, document);
 
+  app.setGlobalPrefix('api');
   await app.listen(5000);
 }
 bootstrap();

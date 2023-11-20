@@ -24,6 +24,10 @@ export class CreateUserDto {
   @IsOptional()
   readonly keywords: string[];
 
+  @ApiProperty()
+  @IsOptional()
+  readonly provider: string;
+
   // @ApiProperty()
   // @IsOptional()
   // readonly coin: CoinEntity[];

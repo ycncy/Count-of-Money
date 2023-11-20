@@ -54,7 +54,6 @@ const CryptoCourses: React.FC = () => {
                   </div>
                 </td>
               </tr>
-              {/* Repeat similar rows for other social media platforms */}
             </tbody>
           </table>
         </div>
