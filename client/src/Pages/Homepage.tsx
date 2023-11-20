@@ -1,5 +1,5 @@
 import NavBar from '../composant/Navbar/NavBar';
-import NavBarConectedUser from '../composant/Navbar/NavBarConectedUser';
+import NavBarConnectedUser from '../composant/Navbar/NavBarConnectedUser';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Card from '../composant/StatiticCard/Card';
