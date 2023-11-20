@@ -1,6 +1,7 @@
 // NavBar.tsx
 
 import React from 'react';
+import {Link} from "react-router-dom";
 
 interface NavBarConnectedUserProps {
   username: string;
@@ -20,7 +21,7 @@ const NavBarConnectedUser: React.FC<NavBarConnectedUserProps> = ({
         />
       </div>
       <span className='text-white text-lg ml-2'>
-        Less reflexion more investimant{' '}
+        Less reflexion more investment{' '}
       </span>
 
       <div className='flex-grow text-center'>
@@ -32,15 +33,12 @@ const NavBarConnectedUser: React.FC<NavBarConnectedUserProps> = ({
       </div>
 
       <div className='flex items-center ml-auto'>
-        <a href='#' className='text-white hover:text-gray-300 mx-4'>
-          Profile
-        </a>
-        <a href='#' className='text-white hover:text-gray-300 mx-4'>
-          Articles
-        </a>
-        <a href='#' className='text-white hover:text-gray-300 mx-4'>
-          Logout
-        </a>
+          <Link to='/Profile'className='text-white hover:text-gray-300 mx-4'>Profile</Link>
+
+          <Link to='/Article'className='text-white hover:text-gray-300 mx-4'>Article</Link>
+
+          <Link to='/'className='text-white hover:text-gray-300 mx-4'>Logout</Link>
+
       </div>
     </nav>
   );

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 const NavBar: React.FC = () => {
   return (
     <nav className='bg-gray-800 p-4'>
@@ -15,18 +16,13 @@ const NavBar: React.FC = () => {
         Less reflexion more investimant
       </span>
 
-      {/* Login/Register Section (Center) */}
       <div className='flex-grow text-center'>
-        <a href='#' className='text-white hover:text-gray-300 mx-4'>
-          Login
-        </a>
+          <Link to='/login'className='text-white hover:text-gray-300 mx-4'>Login</Link>
+
         <span className='text-white'>|</span>
-        <a href='#' className='text-white hover:text-gray-300 mx-4'>
-          Register
-        </a>
+          <Link to='/register'className='text-white hover:text-gray-300 mx-4'>Register</Link>
       </div>
 
-      {/* Search Bar Section (Center) */}
       <div className='flex-grow text-center'>
         <input
           type='text'

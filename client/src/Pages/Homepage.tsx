@@ -1,12 +1,12 @@
 import NavBar from '../composant/Navbar/NavBar';
-import NavBarConectedUser from '../composant/Navbar/NavBarConectedUser';
+import NavBarConnectedUser from '../composant/Navbar/NavBarConnectedUser';
 import React from 'react';
 
 const HomePage: React.FC = () => {
   return (
     <div>
       <NavBar />
-      <NavBarConectedUser username='Lelbi' />
+      <NavBarConnectedUser username='Lelbi' />
       <header>
         <h1>Welcome to My Website</h1>
       </header>
