@@ -63,6 +63,7 @@ export class AuthService {
       ...user,
       password: 'empty',
       provider: UserProvider.GOOGLE,
+      role: UserRole.USER,
     };
 
     return this.userService.create(newUser);

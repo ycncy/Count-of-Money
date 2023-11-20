@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoinModule } from './coin/coin.module';
 import { AuthModule } from './auth/auth.module';
+import { ExcludePasswordInterceptor } from './exclude-password.util';
 
 @Module({
   imports: [
@@ -24,6 +26,9 @@ import { AuthModule } from './auth/auth.module';
     UserModule,
     AuthModule,
     CoinModule,
+  ],
+  providers: [
+    { provide: APP_INTERCEPTOR, useClass: ExcludePasswordInterceptor },
   ],
   controllers: [],
 })

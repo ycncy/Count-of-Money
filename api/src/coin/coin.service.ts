@@ -5,14 +5,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {DeleteResult, Repository, UpdateResult} from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { CreateCoinDto } from './dto/create-coin.dto';
 import { CoinEntity } from './coin.entity';
 import utils from './utils';
 import { CoinInfoModel } from './model/coin-info.model';
 import { ListCoinInfoModel } from './model/list-coin-info.model';
 import { ErrorModel } from './model/error.model';
-import {EditCoinDto} from "./dto/edit-coin.dto";
+import { EditCoinDto } from './dto/edit-coin.dto';
 
 @Injectable()
 export class CoinService {
@@ -73,7 +73,7 @@ export class CoinService {
     const coinEntity: CoinEntity = await this.getById(coinID);
 
     if (!coinEntity) {
-        throw new NotFoundException(`Coin ${coinID} not found`);
+      throw new NotFoundException(`Coin ${coinID} not found`);
     }
 
     let history = undefined;
@@ -191,7 +191,10 @@ export class CoinService {
     }
   }
 
-  async editCoin(coinID: number, editCoinDto: EditCoinDto): Promise<UpdateResult> {
+  async editCoin(
+    coinID: number,
+    editCoinDto: EditCoinDto,
+  ): Promise<UpdateResult> {
     const coin: CoinEntity = await this.getById(coinID);
 
     if (!coin) {

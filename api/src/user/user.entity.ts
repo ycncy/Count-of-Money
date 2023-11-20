@@ -8,7 +8,6 @@ import {
   UpdateDateColumn,
   Index,
 } from 'typeorm';
-
 import { UserProvider, UserRole } from './user.constants';
 
 @Entity('user')
