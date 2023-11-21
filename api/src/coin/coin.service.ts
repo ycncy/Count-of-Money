@@ -14,6 +14,8 @@ import {ListCoinInfoModel} from './model/list-coin-info.model';
 import {ErrorModel} from './model/error.model';
 import {EditCoinDto} from './dto/edit-coin.dto';
 import {ApiCoinEntity} from "./api-coin.entity";
+import {CoinModule} from "./coin.module";
+import {NotFoundError} from "rxjs";
 
 @Injectable()
 export class CoinService {
@@ -215,13 +217,23 @@ export class CoinService {
 
     async create(createCoinDto: CreateCoinDto): Promise<CoinEntity> {
         try {
+            const coinIdFromDatabase: ApiCoinEntity = await this.apiCoinEntityRepository.findOne({
+                where: {
+                    id: createCoinDto.coin_api_id,
+                }
+            });
+
+            if (!coinIdFromDatabase) throw new NotFoundException("Coin not found, invalid coin ID");
+
             const coinEntityFromApi: CoinEntity = await utils.fetchCoinInfo(
-                createCoinDto.coin_api_id,
+                coinIdFromDatabase.id,
             );
             const coin = this.coinEntityRepository.create(coinEntityFromApi);
             return await this.coinEntityRepository.save(coin);
         } catch (error) {
-            if (error.code === '23505') {
+            if (error instanceof NotFoundException) {
+                throw error;
+            } if (error.code === '23505') {
                 throw new ConflictException('Coin already exists');
             } else {
                 throw new InternalServerErrorException('Internal Server Error');
