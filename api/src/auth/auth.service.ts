@@ -23,6 +23,7 @@ export class AuthService {
     role: UserRole;
     provider: UserProvider;
     username: string;
+    baseCurrency: string;
   }) {
     return this.jwtService.sign(payload);
   }
@@ -56,6 +57,7 @@ export class AuthService {
         role: userEntity.role,
         provider: userEntity.provider,
         username: userEntity.username,
+        baseCurrency: userEntity.baseCurrency,
       }),
     };
   }
@@ -94,6 +96,7 @@ export class AuthService {
         role: userCreated.role,
         provider: userCreated.provider,
         username: userCreated.username,
+        baseCurrency: userCreated.baseCurrency,
       });
     } catch {
       throw new InternalServerErrorException();
