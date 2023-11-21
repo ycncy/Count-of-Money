@@ -6,10 +6,13 @@ import {
   Get,
   UseGuards,
   HttpCode,
+  Request,
+  HttpException,
 } from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { DecodedToken } from 'src/auth/auth.dto';
 
 @ApiTags('Favorites')
 @UseGuards(JwtAuthGuard)
@@ -45,11 +48,15 @@ export class FavoriteController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @HttpCode(200)
   @Post(':userId/fav/:coinId')
-  addToFavorites(
+  async addToFavorites(
+    @Request() req: Request & { user: DecodedToken },
     @Param('userId') userId: number,
     @Param('coinId') coinId: number,
   ) {
-    return this.favoriteService.addToFavorites(userId, coinId);
+    if (req.user.sub !== userId && req.user.role !== 'ADMIN') {
+      throw new HttpException('Unauthorized', 401);
+    }
+    return await this.favoriteService.addToFavorites(userId, coinId);
   }
 
   @ApiOperation({ summary: 'Remove a cryptocurrency from favorites' })
@@ -80,11 +87,15 @@ export class FavoriteController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @HttpCode(200)
   @Delete(':userId/fav/:coinId')
-  removeFromFavorites(
+  async removeFromFavorites(
+    @Request() req: Request & { user: DecodedToken },
     @Param('userId') userId: number,
     @Param('coinId') coinId: number,
   ) {
-    return this.favoriteService.removeFromFavorites(userId, coinId);
+    if (req.user.sub !== userId && req.user.role !== 'ADMIN') {
+      throw new HttpException('Unauthorized', 401);
+    }
+    return await this.favoriteService.removeFromFavorites(userId, coinId);
   }
 
   @ApiOperation({ summary: 'Get user favorites' })
@@ -107,7 +118,13 @@ export class FavoriteController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @HttpCode(200)
   @Get(':userId/fav')
-  getFavorites(@Param('userId') userId: number) {
+  async getFavorites(
+    @Request() req: Request & { user: DecodedToken },
+    @Param('userId') userId: number,
+  ) {
+    if (req.user.sub !== userId && req.user.role !== 'ADMIN') {
+      throw new HttpException('Unauthorized', 401);
+    }
     return this.favoriteService.getFavorites(userId);
   }
 
