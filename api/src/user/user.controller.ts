@@ -134,10 +134,27 @@ export class UsersController {
     throw new HttpException('Unauthorized', 401);
   }
 
-  @Get('me')
+  @Get('profile')
   async getMe(
     @Request() req: Request & { user: DecodedToken },
   ): Promise<UserEntity> {
     return await this.usersService.findOne(req.user.sub);
+  }
+
+  @ApiBody({ type: UpdateUserDto })
+  @ApiOperation({ summary: 'Update a user' })
+  @ApiResponse({
+    status: 200,
+    type: UserEntity,
+    description: 'Successfully updated user.',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @HttpCode(200)
+  @Put('profile')
+  async updateMe(
+    @Request() req: Request & { body: UpdateUserDto } & { user: DecodedToken },
+  ): Promise<UserEntity> {
+    return await this.usersService.update(req.user.sub, req.body);
   }
 }
