@@ -23,6 +23,7 @@ export class AuthService {
     role: UserRole;
     provider: UserProvider;
     username: string;
+    baseCurrency: string;
   }) {
     return this.jwtService.sign(payload);
   }
@@ -49,13 +50,16 @@ export class AuthService {
       }
     }
 
-    return this.generateJwt({
-      sub: userEntity.id,
-      email: userEntity.email,
-      role: userEntity.role,
-      provider: userEntity.provider,
-      username: userEntity.username,
-    });
+    return {
+      token: this.generateJwt({
+        sub: userEntity.id,
+        email: userEntity.email,
+        role: userEntity.role,
+        provider: userEntity.provider,
+        username: userEntity.username,
+        baseCurrency: userEntity.baseCurrency,
+      }),
+    };
   }
 
   async registerOAuthUser(user: CreateUserDto) {
@@ -92,6 +96,7 @@ export class AuthService {
         role: userCreated.role,
         provider: userCreated.provider,
         username: userCreated.username,
+        baseCurrency: userCreated.baseCurrency,
       });
     } catch {
       throw new InternalServerErrorException();
@@ -113,9 +118,7 @@ export class AuthService {
     const user = await this.userService.findOneByEmail(email);
 
     if (user && bcrypt.compareSync(pass, user.password)) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { password, ...result } = user;
-      return result;
+      return user;
     }
 
     return null;

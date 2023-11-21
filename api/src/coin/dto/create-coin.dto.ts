@@ -7,7 +7,7 @@ export class CreateCoinDto {
     type: Number,
     required: true,
     name: 'coin_api_id',
-    description: 'Cryptocurrency ID from yahoo finance API'
+    description: 'Cryptocurrency ID from yahoo finance API',
   })
   @IsNotEmpty()
   readonly coin_api_id: number;

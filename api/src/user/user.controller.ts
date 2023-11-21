@@ -23,6 +23,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
+@UseGuards(JwtAuthGuard)
 @ApiTags('Users')
 @SerializeOptions({ excludePrefixes: ['password', 'role', 'id'] })
 @Controller('users')
@@ -47,7 +48,6 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'User not found.' })
   @HttpCode(200)
   @ApiBody({ type: UpdateUserDto })
-  @UseGuards(JwtAuthGuard)
   @Put(':id')
   async update(
     @Request() req: Request & { body: UpdateUserDto } & { user: DecodedToken },
@@ -77,7 +77,6 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @HttpCode(200)
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async delete(
     @Request() req: Request & { user: DecodedToken },
@@ -107,7 +106,6 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @HttpCode(200)
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async get(
     @Request() req: Request & { user: DecodedToken },
@@ -128,12 +126,35 @@ export class UsersController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @HttpCode(200)
-  @UseGuards(JwtAuthGuard)
   @Get()
   async getAll(
     @Request() req: Request & { user: DecodedToken },
   ): Promise<UserEntity[]> {
     if (req.user.role == 'ADMIN') return await this.usersService.getAll();
     throw new HttpException('Unauthorized', 401);
+  }
+
+  @Get('profile')
+  async getMe(
+    @Request() req: Request & { user: DecodedToken },
+  ): Promise<UserEntity> {
+    return await this.usersService.findOne(req.user.sub);
+  }
+
+  @ApiBody({ type: UpdateUserDto })
+  @ApiOperation({ summary: 'Update a user' })
+  @ApiResponse({
+    status: 200,
+    type: UserEntity,
+    description: 'Successfully updated user.',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @HttpCode(200)
+  @Put('profile')
+  async updateMe(
+    @Request() req: Request & { body: UpdateUserDto } & { user: DecodedToken },
+  ): Promise<UserEntity> {
+    return await this.usersService.update(req.user.sub, req.body);
   }
 }

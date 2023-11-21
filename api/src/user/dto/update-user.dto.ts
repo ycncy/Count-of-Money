@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional } from 'class-validator';
+import { CoinEntity } from 'src/coin/coin.entity';
 
 export class UpdateUserDto {
   @ApiProperty()
@@ -18,4 +19,8 @@ export class UpdateUserDto {
   @ApiProperty()
   @IsOptional()
   readonly password: string;
+
+  @ApiProperty()
+  @IsOptional()
+  readonly favorites: CoinEntity[];
 }
