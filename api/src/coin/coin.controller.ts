@@ -31,7 +31,7 @@ import { CoinInfoModel } from './model/coin-info.model';
 import { EditCoinDto } from './dto/edit-coin.dto';
 
 @ApiTags('Crypto-currencies')
-@Controller('/cryptos')
+@Controller('cryptos')
 export class CoinController {
   constructor(private readonly coinService: CoinService) {}
 

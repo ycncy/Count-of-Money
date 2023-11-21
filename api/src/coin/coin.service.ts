@@ -54,7 +54,8 @@ export class CoinService {
         const coinInfo: ListCoinInfoModel = {
           coinId: coinId,
           symbol: history.symbol,
-          last_datetime: history.datetimes[0],
+          imageUrl: coin.imageUrl,
+          lastDatetime: history.datetimes[0],
           high: history.high[0],
           low: history.low[0],
           open: history.open[0],

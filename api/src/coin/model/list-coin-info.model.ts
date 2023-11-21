@@ -8,7 +8,10 @@ export class ListCoinInfoModel {
   symbol: string;
 
   @ApiProperty()
-  last_datetime: Date;
+  imageUrl: string;
+
+  @ApiProperty()
+  lastDatetime: Date;
 
   @ApiProperty()
   high: number;

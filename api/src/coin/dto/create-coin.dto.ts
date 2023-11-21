@@ -12,10 +12,6 @@ export class CreateCoinDto {
   @IsNotEmpty()
   readonly coin_api_id: number;
 
-  @ApiProperty({
-    type: Array<UserEntity>,
-    required: false,
-  })
   @IsOptional()
   readonly user: UserEntity[];
 }
