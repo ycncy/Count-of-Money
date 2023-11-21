@@ -15,7 +15,6 @@ import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DecodedToken } from 'src/auth/auth.dto';
 
 @ApiTags('Favorites')
-@UseGuards(JwtAuthGuard)
 @Controller('favorites')
 export class FavoriteController {
   constructor(private readonly favoriteService: FavoriteService) {}
@@ -47,6 +46,7 @@ export class FavoriteController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @HttpCode(200)
+  @UseGuards(JwtAuthGuard)
   @Post(':userId/fav/:coinId')
   async addToFavorites(
     @Request() req: Request & { user: DecodedToken },
@@ -86,6 +86,7 @@ export class FavoriteController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @HttpCode(200)
+  @UseGuards(JwtAuthGuard)
   @Delete(':userId/fav/:coinId')
   async removeFromFavorites(
     @Request() req: Request & { user: DecodedToken },
@@ -117,6 +118,7 @@ export class FavoriteController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @HttpCode(200)
+  @UseGuards(JwtAuthGuard)
   @Get(':userId/fav')
   async getFavorites(
     @Request() req: Request & { user: DecodedToken },
