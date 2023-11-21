@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoinModule } from './coin/coin.module';
 import { AuthModule } from './auth/auth.module';
-import { ExcludePasswordInterceptor } from './exclude-password.util';
+import { FavoritesModule } from './favorite/favorite.module';
 
 @Module({
   imports: [
@@ -15,21 +14,20 @@ import { ExcludePasswordInterceptor } from './exclude-password.util';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: process.env.DB_HOST,
       port: 5432,
-      username: `cashmoney`,
-      password: `bitcoinisking`,
-      database: `cashmoney`,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
     UserModule,
     AuthModule,
     CoinModule,
+    FavoritesModule,
   ],
-  providers: [
-    { provide: APP_INTERCEPTOR, useClass: ExcludePasswordInterceptor },
-  ],
+  providers: [],
   controllers: [],
 })
 export class AppModule {}

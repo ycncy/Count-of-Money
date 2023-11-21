@@ -7,8 +7,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Index,
+  ManyToMany,
 } from 'typeorm';
 import { UserProvider, UserRole } from './user.constants';
+import { CoinEntity } from 'src/coin/coin.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -29,7 +31,7 @@ export class UserEntity {
   email: string;
 
   @ApiProperty()
-  @Column({ nullable: true })
+  @Column({ nullable: true, select: false })
   password: string;
 
   @ApiProperty()
@@ -40,9 +42,9 @@ export class UserEntity {
   @Column({ default: 'EUR' })
   baseCurrency: string;
 
-  //TODO relation avec la table coin
-  // @Column({ default: [] })
-  // coin: Array<string>;
+  @ApiProperty({ type: () => CoinEntity })
+  @ManyToMany(() => CoinEntity, (coin) => coin.users)
+  favorites: CoinEntity[];
 
   @ApiProperty()
   @Column('text', { array: true, default: '{}' })
