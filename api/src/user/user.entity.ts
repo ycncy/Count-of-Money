@@ -8,8 +8,7 @@ import {
   UpdateDateColumn,
   Index,
 } from 'typeorm';
-
-import { UserRole } from './user.constants';
+import { UserProvider, UserRole } from './user.constants';
 
 @Entity('user')
 export class UserEntity {
@@ -30,7 +29,7 @@ export class UserEntity {
   email: string;
 
   @ApiProperty()
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @ApiProperty()
@@ -53,4 +52,9 @@ export class UserEntity {
   @IsEnum(UserRole)
   @Column({ type: 'enum', enum: UserRole })
   role: UserRole;
+
+  @ApiProperty({ enum: UserProvider })
+  @Column()
+  @IsEnum(UserProvider)
+  provider: UserProvider;
 }

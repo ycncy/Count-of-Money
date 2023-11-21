@@ -3,3 +3,9 @@ export enum UserRole {
   USER = 'USER',
   ANONYMOUS = 'ANONYMOUS',
 }
+
+export enum UserProvider {
+  LOCAL = 'LOCAL',
+  GOOGLE = 'GOOGLE',
+  FACEBOOK = 'FACEBOOK',
+}
