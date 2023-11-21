@@ -46,7 +46,7 @@ const fetchCoinHistory = async (
     const query_url = `https://query2.finance.yahoo.com/v8/finance/chart/${coinSymbol}-${currency}?range=${range}&interval=${granularity}`;
 
     const response = await fetch(query_url, {
-      headers: { 'X-CMC_PRO_API_KEY': '885001da-e129-4a2c-8a82-d6a01e2a7ff8' },
+      headers: { 'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY },
     });
 
     const jsonResponse = await response.json();
