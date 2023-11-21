@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoinModule } from './coin/coin.module';
 import { AuthModule } from './auth/auth.module';
 import { FavoritesModule } from './favorite/favorite.module';
+import { PressReviewModule } from './pressReview/press-review.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { FavoritesModule } from './favorite/favorite.module';
     AuthModule,
     CoinModule,
     FavoritesModule,
+    PressReviewModule,
   ],
   providers: [],
   controllers: [],
