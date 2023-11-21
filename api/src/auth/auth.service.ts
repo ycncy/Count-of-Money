@@ -49,13 +49,15 @@ export class AuthService {
       }
     }
 
-    return this.generateJwt({
-      sub: userEntity.id,
-      email: userEntity.email,
-      role: userEntity.role,
-      provider: userEntity.provider,
-      username: userEntity.username,
-    });
+    return {
+      token: this.generateJwt({
+        sub: userEntity.id,
+        email: userEntity.email,
+        role: userEntity.role,
+        provider: userEntity.provider,
+        username: userEntity.username,
+      }),
+    };
   }
 
   async registerOAuthUser(user: CreateUserDto) {
