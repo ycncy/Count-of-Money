@@ -43,7 +43,9 @@ export class FavoriteService {
       where: { id: userId },
       relations: ['favorites'],
     });
-
+    if (user.favorites.length === 0) {
+      return await this.getGlobalFavorites();
+    }
     return user.favorites;
   }
 
