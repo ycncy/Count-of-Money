@@ -29,9 +29,10 @@ import { DeleteResult, UpdateResult } from 'typeorm';
 import { ListCoinInfoModel } from './model/list-coin-info.model';
 import { CoinInfoModel } from './model/coin-info.model';
 import { EditCoinDto } from './dto/edit-coin.dto';
+import {ApiCoinInfoModel} from "./model/api-coin-info.model";
 
 @ApiTags('Crypto-currencies')
-@Controller('/cryptos')
+@Controller('cryptos')
 export class CoinController {
   constructor(private readonly coinService: CoinService) {}
 
@@ -69,6 +70,27 @@ export class CoinController {
           'Internal Server Error',
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
+      }
+    }
+  }
+
+  @ApiOperation({
+    summary: 'Get top 100 cryptocurrencies from API',
+  })
+  @ApiResponse({
+    status: 200,
+    type: [ApiCoinInfoModel],
+    description: 'Successfully retrieved cryptocurrencies.',
+  })
+  @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
+  @HttpCode(201)
+  @Post('/allFromApi')
+  async saveAllApiCryptos() {
+    try {
+      return await this.coinService.saveAllApiCryptos();
+    } catch (error) {
+      if (error instanceof ConflictException) {
+        throw new HttpException(error.message, HttpStatus.CONFLICT);
       }
     }
   }
@@ -159,6 +181,9 @@ export class CoinController {
     } catch (error) {
       if (error instanceof ConflictException) {
         throw new HttpException(error.message, HttpStatus.CONFLICT);
+      }
+      if (error instanceof NotFoundException) {
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
       }
     }
   }

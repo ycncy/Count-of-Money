@@ -1,8 +1,9 @@
-import { format, parseISO } from 'date-fns';
-import { CoinEntity } from './coin.entity';
+import {format, parseISO} from 'date-fns';
+import {CoinEntity} from './coin.entity';
 import dateProcessUtil from '../date.process.util';
-import { ErrorModel } from './model/error.model';
-import { CoinInfoModel } from './model/coin-info.model';
+import {ErrorModel} from './model/error.model';
+import {CoinInfoModel} from './model/coin-info.model';
+import {ApiCoinInfoModel} from "./model/api-coin-info.model";
 
 const fetchCoinInfo = async (coinId: number) => {
   try {
@@ -86,7 +87,31 @@ const fetchCoinHistory = async (
   }
 };
 
+const fetchAllApiCryptos = async () => {
+  try {
+    const query_url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/map?limit=100`;
+
+    const response = await fetch(query_url, {
+      headers: { 'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY },
+    });
+
+    const jsonResponse = await response.json();
+
+    return jsonResponse.data.map((coin) => {
+      const formattedCoin = new ApiCoinInfoModel();
+      formattedCoin.id = coin.id;
+      formattedCoin.rank = coin.rank;
+      formattedCoin.name = coin.name;
+      formattedCoin.symbol = coin.symbol;
+      return formattedCoin;
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export default {
   fetchCoinInfo,
   fetchCoinHistory,
+  fetchAllApiCryptos
 };
