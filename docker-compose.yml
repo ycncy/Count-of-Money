@@ -1,5 +1,5 @@
 version: '3'
-  
+
 services:
   db:
     image: postgres:14
@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     ports:
-      - "5432:5432"
-    restart: always   
+      - '5432:5432'
+    restart: always
     volumes:
-      - ./postgres-data-db:/var/lib/postgresql/data
+      - ./postgres-data:/var/lib/postgresql/data
