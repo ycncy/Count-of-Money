@@ -1,5 +1,5 @@
 version: '3'
-  
+
 services:
   db:
     image: postgres:14
@@ -8,7 +8,34 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     ports:
-      - "5432:5432"
-    restart: always   
+      - '5432:5432'
+    restart: always
     volumes:
-      - ./postgres-data-db:/var/lib/postgresql/data
+      - ./postgres-data:/var/lib/postgresql/data
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: db
+      JWT_SECRET: ${JWT_SECRET}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      CMC_API_KEY: ${CMC_API_KEY}
+      # SSL_KEY_PATH: ${SSL_KEY_PATH}
+      # SSL_CERT_PATH: ${SSL_CERT_PATH}
+    ports:
+      - "5000:5000"
+      - "8443:8443"
+    restart: always
+  client: 
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always 

@@ -56,9 +56,26 @@ export class UserService {
       relations: ['favorites'],
     });
     if (!user) {
-      throw new NotFoundException(`User ${email} not found`);
+      return null;
     }
     return user;
+  }
+
+  async findOneByEmailWithPassword(
+    email: string,
+  ): Promise<UserEntity | undefined> {
+    return this.userRepository.findOne({
+      where: { email },
+      select: [
+        'id',
+        'email',
+        'password',
+        'role',
+        'provider',
+        'username',
+        'baseCurrency',
+      ],
+    });
   }
 
   async getAll(): Promise<UserEntity[]> {
