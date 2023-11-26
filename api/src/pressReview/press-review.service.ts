@@ -1,9 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as Parser from 'rss-parser';
 
 @Injectable()
 export class PressReviewService {
-  private readonly logger = new Logger(PressReviewService.name);
   private parser = new Parser();
 
   async getLatestNews(newsParam: string | string[]): Promise<any[]> {
@@ -18,9 +17,10 @@ export class PressReviewService {
       sources.push('https://coinjournal.net/fr/actualites/feed/');
     }
     const newsPromises = sources.map((source) => this.parser.parseURL(source));
+    let news = [];
     try {
       const newsResults = await Promise.all(newsPromises);
-      const news = newsResults.flatMap((result) =>
+      news = newsResults.flatMap((result) =>
         result.items.map((item) => {
           const match = item.guid.match(/\?p=(\d+)/);
           const id = match ? match[1] : null;
@@ -40,8 +40,7 @@ export class PressReviewService {
       );
       return news;
     } catch (error) {
-      this.logger.error('Failed to fetch RSS feeds', error);
-      throw new Error('Failed to fetch RSS feeds');
+      return news;
     }
   }
 }

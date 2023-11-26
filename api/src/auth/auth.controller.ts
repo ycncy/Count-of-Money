@@ -31,7 +31,7 @@ export class AuthController {
   @ApiBody({ type: CreateUserDto })
   @Post('register')
   async register(@Request() req: Request & { body: CreateUserDto }) {
-    return this.authService.registerUser(req.body);
+    return await this.authService.registerUser(req.body);
   }
 
   @ApiOperation({ summary: 'Login with Google' })
@@ -57,7 +57,6 @@ export class AuthController {
   async googleAuthCallback(
     @Request() req: Request & { user: signInGoogleDto },
   ) {
-    const token = await this.authService.login(req.user);
-    return { token };
+    return await this.authService.login(req.user);
   }
 }

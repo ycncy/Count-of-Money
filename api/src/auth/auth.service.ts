@@ -40,8 +40,9 @@ export class AuthService {
         userEntity = await this.registerOAuthUser(user);
       }
     } else {
-      userEntity = await this.userService.findOneByEmail(user.email);
-
+      userEntity = await this.userService.findOneByEmailWithPassword(
+        user.email,
+      );
       if (
         !userEntity ||
         !(await bcrypt.compare(user.password, userEntity.password))
@@ -76,10 +77,10 @@ export class AuthService {
   async registerUser(user: CreateUserDto) {
     try {
       const userExists = await this.userService.findOneByEmail(user.email);
-      if (userExists) {
-        return new BadRequestException('User already exists');
-      }
 
+      if (userExists) {
+        return this.login(user);
+      }
       const newUser = {
         ...user,
         role: UserRole.USER,
@@ -89,15 +90,16 @@ export class AuthService {
 
       const userCreated = await this.userService.create(newUser);
       await this.userService.save(userCreated);
-
-      return this.generateJwt({
-        sub: userCreated.id,
-        email: userCreated.email,
-        role: userCreated.role,
-        provider: userCreated.provider,
-        username: userCreated.username,
-        baseCurrency: userCreated.baseCurrency,
-      });
+      return {
+        token: this.generateJwt({
+          sub: userCreated.id,
+          email: userCreated.email,
+          role: userCreated.role,
+          provider: userCreated.provider,
+          username: userCreated.username,
+          baseCurrency: userCreated.baseCurrency,
+        }),
+      };
     } catch {
       throw new InternalServerErrorException();
     }
