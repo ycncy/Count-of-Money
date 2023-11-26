@@ -1,10 +1,5 @@
 version: '3'
-<<<<<<< Updated upstream
-
-services:
-=======
   services:
->>>>>>> Stashed changes
   db:
     image: postgres:14
     environment:
@@ -12,7 +7,6 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     ports:
-<<<<<<< Updated upstream
       - '5432:5432'
     restart: always
     volumes:
@@ -44,9 +38,3 @@ services:
       - "80:80"
       - "443:443"
     restart: always 
-=======
-      - "5432:5432"
-    restart: always
-      volumes:
-      - ./postgres-data-db:/var/lib/postgresql/data
->>>>>>> Stashed changes
