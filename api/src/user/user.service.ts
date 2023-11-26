@@ -52,9 +52,26 @@ export class UserService {
   async findOneByEmail(email: string): Promise<UserEntity> {
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
-      throw new NotFoundException(`User ${email} not found`);
+      return null;
     }
     return user;
+  }
+
+  async findOneByEmailWithPassword(
+    email: string,
+  ): Promise<UserEntity | undefined> {
+    return this.userRepository.findOne({
+      where: { email },
+      select: [
+        'id',
+        'email',
+        'password',
+        'role',
+        'provider',
+        'username',
+        'baseCurrency',
+      ],
+    });
   }
 
   async getAll(): Promise<UserEntity[]> {
