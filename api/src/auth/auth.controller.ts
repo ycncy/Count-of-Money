@@ -19,7 +19,7 @@ export class AuthController {
   @ApiBody({ type: signInDto })
   @Post('login')
   async login(@Request() req: Request & { body: signInDto }) {
-    return this.authService.login(req.body);
+    return await this.authService.login(req.body);
   }
 
   @ApiOperation({ summary: 'Register' })
