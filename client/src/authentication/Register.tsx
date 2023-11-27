@@ -29,6 +29,7 @@ export default function Register() {
         formData
       );
       console.log(response);
+      localStorage.setItem('token', response.data.token);
       navigate('/');
       console.log('User registered successfully:', response.data);
     } catch (error) {
