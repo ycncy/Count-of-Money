@@ -10,113 +10,55 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     fetch('client/data/cards.json')
-      .then((response) => response.json())
-      .then((data: CardData[]) => {
-        console.log('Response:', data);
-        setCardData(data);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
+        .then((response) => response.json())
+        .then((data: CardData[]) => {
+          console.log('Response:', data);
+          setCardData(data);
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+        });
   }, []);
 
   return (
-    <div className='max-w-7xl mx-auto mt-8 p-10 bg-white rounded shadow-md'>
-      <div>
-        <div className='flex items-center'>
-          <img
-            src='../img/logo.png'
-            alt='Profile Picture'
-            className='w-20 h-20 rounded-full mr-4'
-          />
-          <div className='w-full lg:w-4/12 px-4 lg:order-1'>
-            <div className='flex justify-center py-4 lg:pt-4 pt-8'>
-              <div className='mr-4 p-3 text-center'>
-                <span className='text-sm text-blueGray-400'>Username</span>
-                <span className='text-xl font-bold block uppercase tracking-wide text-blueGray-600'>
-                  John
-                </span>
+      <div className="max-w-md mx-auto bg-white p-8 rounded-md shadow-md">
+          <h2 className="text-2xl font-semibold mb-4">User Profile</h2>
+
+          <form action="#" method="POST">
+
+              <div className="mb-4">
+                  <label htmlFor="username" className="block text-sm font-medium text-gray-600">Username</label>
+                  <p className="mt-1 p-2 w-full border rounded-md bg-gray-100">YourUsername</p>
               </div>
-              <div className='lg:mr-4 p-3 text-center'>
-                <span className='text-sm text-blueGray-400'>Level</span>
-                <span className='text-xl font-bold block uppercase tracking-wide text-blueGray-600'>
-                  Premium
-                </span>
+
+              <div className="mb-4">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-600">Email</label>
+                  <p className="mt-1 p-2 w-full border rounded-md bg-gray-100">YourEmail</p>
               </div>
-            </div>
-          </div>
-        </div>
+
+              <div className="mb-4">
+                  <label htmlFor="creationDate" className="block text-sm font-medium text-gray-600">Creation
+                      Date</label>
+                  <p className="mt-1 p-2 w-full border rounded-md bg-gray-100">2023-11-27</p>
+              </div>
+              <div className="mb-4">
+                  <label htmlFor="creationDate" className="block text-sm font-medium text-gray-600">Update
+                      Date</label>
+                  <p className="mt-1 p-2 w-full border rounded-md bg-gray-100">2023-11-27</p>
+              </div>
+              <div className="mb-4">
+                  <label htmlFor="creationDate" className="block text-sm font-medium text-gray-600">Base currency</label>
+                  <p className="mt-1 p-2 w-full border rounded-md bg-gray-100">Dollar</p>
+              </div>
+
+              <div className="mt-6">
+                  <button type="submit"
+                          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+                      Update Profile
+                  </button>
+              </div>
+          </form>
       </div>
-
-      <div className='max-w-3xl mx-auto mt-8 p-10 bg-red-200 rounded shadow-md'>
-        <div className='mt-8'>
-          <ul className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 list-none'>
-            {cardData.map((card, index) => (
-              <li key={index}>
-                <div className='bg-red-600 p-9 rounded-md shadow-md'>
-                  <p>{card.title}</p>
-                  <p>{card.content}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      <div className='max-w-3xl mx-auto mt-8 p-10 bg-red-200 rounded shadow-md'>
-        <h1>Favorite articles</h1>
-        <div className='mt-8'>
-          <ul className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 list-none'>
-            <li>
-              <div className='bg-red-600 p-9 rounded-md shadow-md'>
-                <p>Card 1</p>
-
-                <p>jegruyeripoz"rkoukrgkr toirhtnirytè_</p>
-              </div>
-            </li>
-
-            <li>
-              <div className='bg-red-600 p-9 rounded-md shadow-md'>
-                <p>Card 1</p>
-
-                <p>jegruyeripoz"rkoukrgkr toirhtnirytè_</p>
-              </div>
-            </li>
-
-            <li>
-              <div className='bg-red-600 p-9 rounded-md shadow-md'>
-                <p>Card 1</p>
-
-                <p>jegruyeripoz"rkoukrgkr toirhtnirytè_</p>
-              </div>
-            </li>
-
-            <li>
-              <div className='bg-red-600 p-9 rounded-md shadow-md'>
-                <p>Card 1</p>
-
-                <p>jegruyeripoz"rkoukrgkr toirhtnirytè_</p>
-              </div>
-            </li>
-
-            <li>
-              <div className='bg-red-600 p-9 rounded-md shadow-md'>
-                <p>Card 1</p>
-
-                <p>jegruyeripoz"rkoukrgkr toirhtnirytè_</p>
-              </div>
-            </li>
-            <li>
-              <div className='bg-red-600 p-9 rounded-md shadow-md'>
-                <p>Card 1</p>
-
-                <p>jegruyeripoz"rkoukrgkr toirhtnirytè_</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
   );
 };
 
