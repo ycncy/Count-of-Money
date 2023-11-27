@@ -6,19 +6,26 @@ import Login from './authentication/Login';
 import Register from './authentication/Register';
 import Profile from './authentication/Profile';
 import Chart from './Pages/Chart';
+import { NewsPages } from './Pages/NewsPages';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path='/' element={<Homepage />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='/article' element={<Article />} />
-        <Route path='/profile' element={<Profile />} />
-        <Route path='/chart' element={<Chart />} />
-      </Routes>
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Routes>
+          <Route path='/' element={<Homepage />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='/article' element={<Article />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/chart' element={<Chart />} />
+          <Route path='/news' element={<NewsPages />} />
+        </Routes>
+      </Router>
+    </QueryClientProvider>
   );
 };
 
