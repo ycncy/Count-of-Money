@@ -89,7 +89,7 @@ const fetchCoinHistory = async (
 
 const fetchAllApiCryptos = async () => {
   try {
-    const query_url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/map?limit=100`;
+    const query_url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/map?sort=cmc_rank&limit=100`;
 
     const response = await fetch(query_url, {
       headers: { 'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY },
@@ -97,9 +97,11 @@ const fetchAllApiCryptos = async () => {
 
     const jsonResponse = await response.json();
 
+    console.log(jsonResponse)
+
     return jsonResponse.data.map((coin) => {
       const formattedCoin = new ApiCoinInfoModel();
-      formattedCoin.id = coin.id;
+      formattedCoin.api_id = coin.id;
       formattedCoin.rank = coin.rank;
       formattedCoin.name = coin.name;
       formattedCoin.symbol = coin.symbol;

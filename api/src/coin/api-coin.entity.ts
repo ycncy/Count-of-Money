@@ -1,11 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserEntity } from 'src/user/user.entity';
 import {
     Entity,
     Column,
-    PrimaryGeneratedColumn,
-    ManyToMany,
-    JoinTable,
+    PrimaryColumn, PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity('api_coin')
@@ -13,9 +10,12 @@ export class ApiCoinEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @PrimaryColumn()
+    api_id: number;
+
     @ApiProperty()
     @Column({
-        nullable: true,
+        nullable: false,
     })
     name: string;
 
@@ -27,7 +27,7 @@ export class ApiCoinEntity {
 
     @ApiProperty()
     @Column({
-        nullable: true,
+        nullable: false,
     })
     symbol: string;
 }
