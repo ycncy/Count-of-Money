@@ -35,6 +35,10 @@ export class CoinService {
         });
     }
 
+    getAllApiCryptos() {
+        return this.apiCoinEntityRepository.find();
+    }
+
     async getCoinsInfo(coinIds: number[]) {
         const histories: ListCoinInfoModel[] = [];
 

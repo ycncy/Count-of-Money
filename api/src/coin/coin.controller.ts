@@ -83,6 +83,21 @@ export class CoinController {
     description: 'Successfully retrieved cryptocurrencies.',
   })
   @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
+  @HttpCode(200)
+  @Get('/allFromApi')
+  async getAllApiCryptos() {
+    return await this.coinService.getAllApiCryptos();
+  }
+
+  @ApiOperation({
+    summary: 'Get top 100 cryptocurrencies from API',
+  })
+  @ApiResponse({
+    status: 201,
+    type: [ApiCoinInfoModel],
+    description: 'Successfully retrieved cryptocurrencies.',
+  })
+  @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
   @HttpCode(201)
   @Post('/allFromApi')
   async saveAllApiCryptos() {
