@@ -14,5 +14,6 @@ import { DefaultFavEntity } from './favorite.entity';
   ],
   providers: [FavoriteService],
   controllers: [FavoriteController],
+  exports: [FavoriteService],
 })
 export class FavoritesModule {}

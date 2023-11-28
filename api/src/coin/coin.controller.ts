@@ -13,6 +13,8 @@ import {
   Post,
   Put,
   Query,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -30,6 +32,8 @@ import { ListCoinInfoModel } from './model/list-coin-info.model';
 import { CoinInfoModel } from './model/coin-info.model';
 import { EditCoinDto } from './dto/edit-coin.dto';
 import { ApiCoinInfoModel } from './model/api-coin-info.model';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { DecodedToken } from 'src/auth/auth.dto';
 
 @ApiTags('Crypto-currencies')
 @Controller('cryptos')
@@ -99,9 +103,12 @@ export class CoinController {
   })
   @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
   @HttpCode(201)
+  @UseGuards(JwtAuthGuard)
   @Post('/allFromApi')
-  async saveAllApiCryptos() {
+  async saveAllApiCryptos(@Request() req: Request & { user: DecodedToken }) {
     try {
+      if (req.user.role !== 'ADMIN')
+        throw new HttpException('Unauthorized', 401);
       return await this.coinService.saveAllApiCryptos();
     } catch (error) {
       if (error instanceof ConflictException) {
@@ -189,9 +196,15 @@ export class CoinController {
     description: 'Conflict - Cryptocurrency already exists.',
   })
   @HttpCode(201)
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createCoinDto: CreateCoinDto): Promise<CoinEntity> {
+  create(
+    @Body() createCoinDto: CreateCoinDto,
+    @Request() req: Request & { user: DecodedToken },
+  ): Promise<CoinEntity> {
     try {
+      if (req.user.role !== 'ADMIN')
+        throw new HttpException('Unauthorized', 401);
       return this.coinService.create(createCoinDto);
     } catch (error) {
       if (error instanceof ConflictException) {
@@ -218,12 +231,16 @@ export class CoinController {
   @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
   @HttpCode(200)
   @ApiBody({ type: EditCoinDto })
+  @UseGuards(JwtAuthGuard)
   @Put(':coinID')
   async editCoin(
     @Param('coinID', ParseIntPipe) coinID: number,
     @Body() editCoinDto: EditCoinDto,
+    @Request() req: Request & { user: DecodedToken },
   ): Promise<UpdateResult> {
     try {
+      if (req.user.role !== 'ADMIN')
+        throw new HttpException('Unauthorized', 401);
       return await this.coinService.editCoin(coinID, editCoinDto);
     } catch (error) {
       if (error instanceof NotFoundException) {
@@ -252,10 +269,14 @@ export class CoinController {
   @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
   @HttpCode(204)
   @Delete(':coinID')
+  @UseGuards(JwtAuthGuard)
   async deleteCoin(
+    @Request() req: Request & { user: DecodedToken },
     @Param('coinID', ParseIntPipe) coinID: number,
   ): Promise<DeleteResult> {
     try {
+      if (req.user.role !== 'ADMIN')
+        throw new HttpException('Unauthorized', 401);
       return this.coinService.deleteCoin(coinID);
     } catch (error) {
       if (error instanceof NotFoundException) {

@@ -14,8 +14,6 @@ import { ListCoinInfoModel } from './model/list-coin-info.model';
 import { ErrorModel } from './model/error.model';
 import { EditCoinDto } from './dto/edit-coin.dto';
 import { ApiCoinEntity } from './api-coin.entity';
-import { CoinModule } from './coin.module';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class CoinService {
