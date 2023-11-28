@@ -130,14 +130,84 @@ export class FavoriteController {
     return this.favoriteService.getFavorites(userId);
   }
 
-  @ApiOperation({ summary: 'Get global favorites' })
+  @ApiOperation({ summary: 'Get default favorites' })
   @ApiResponse({
     status: 200,
-    description: 'Successfully get global favorites.',
+    description: 'Successfully get default favorites.',
   })
   @HttpCode(200)
-  @Get('globalfav')
-  getGlobalFavorites() {
-    return this.favoriteService.getGlobalFavorites();
+  @Get('defaultfav')
+  getDefaultFavorites() {
+    return this.favoriteService.getDefaultFavorites();
+  }
+
+  @ApiOperation({ summary: 'Add a default favorite' })
+  @ApiQuery({
+    name: 'coinId',
+    description: 'Cryptocurrency ID',
+    schema: {
+      type: 'number',
+      example: '1',
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully added default favorite.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Cryptocurrency not found.',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @HttpCode(200)
+  @UseGuards(JwtAuthGuard)
+  @Post('defaultfav/:coinId')
+  async addDefaultFavorite(
+    @Request() req: Request & { user: DecodedToken },
+    @Param('coinId') coinId: number,
+  ) {
+    try {
+      if (req.user.role !== 'ADMIN') {
+        throw new HttpException('Unauthorized', 401);
+      }
+      return await this.favoriteService.addDefaultFavorite(coinId);
+    } catch (err) {
+      throw new HttpException('Unauthorized', 401);
+    }
+  }
+
+  @ApiOperation({ summary: 'Delete a default favorite' })
+  @ApiQuery({
+    name: 'coinId',
+    description: 'Cryptocurrency ID',
+    schema: {
+      type: 'number',
+      example: '1',
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully deleted default favorite.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Cryptocurrency not found.',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @HttpCode(200)
+  @UseGuards(JwtAuthGuard)
+  @Delete('defaultfav/:coinId')
+  async deleteDefaultFavorite(
+    @Request() req: Request & { user: DecodedToken },
+    @Param('coinId') coinId: number,
+  ) {
+    try {
+      if (req.user.role !== 'ADMIN') {
+        throw new HttpException('Unauthorized', 401);
+      }
+      return await this.favoriteService.deleteDefaultFavorite(coinId);
+    } catch (err) {
+      throw new HttpException('Unauthorized', 401);
+    }
   }
 }

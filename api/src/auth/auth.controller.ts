@@ -57,6 +57,6 @@ export class AuthController {
   async googleAuthCallback(
     @Request() req: Request & { user: signInGoogleDto },
   ) {
-    return await this.authService.login(req.user);
+    return await this.authService.loginGoogle(req.user);
   }
 }

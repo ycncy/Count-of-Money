@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { UserEntity } from 'src/user/user.entity';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserProvider, UserRole } from 'src/user/user.constants';
+import { signInGoogleDto } from './auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -32,23 +33,41 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException('Unauthenticated');
     }
+    const userEntity: UserEntity =
+      await this.userService.findOneByEmailWithPassword(user.email);
+    if (
+      !userEntity ||
+      !(await bcrypt.compare(user.password, userEntity.password))
+    ) {
+      throw new BadRequestException('Invalid credentials');
+    }
+
+    return {
+      token: this.generateJwt({
+        sub: userEntity.id,
+        email: userEntity.email,
+        role: userEntity.role,
+        provider: userEntity.provider,
+        username: userEntity.username,
+        baseCurrency: userEntity.baseCurrency,
+      }),
+    };
+  }
+
+  async loginGoogle(user: signInGoogleDto) {
+    if (!user) {
+      throw new BadRequestException('Unauthenticated');
+    }
     let userEntity: UserEntity;
 
-    if (user.provider === UserProvider.GOOGLE) {
-      userEntity = await this.userService.findOneByEmail(user.email);
-      if (!userEntity) {
-        userEntity = await this.registerOAuthUser(user);
-      }
-    } else {
-      userEntity = await this.userService.findOneByEmailWithPassword(
-        user.email,
-      );
-      if (
-        !userEntity ||
-        !(await bcrypt.compare(user.password, userEntity.password))
-      ) {
-        throw new BadRequestException('Invalid credentials');
-      }
+    userEntity = await this.userService.findOneByEmail(user.email);
+    if (!userEntity) {
+      userEntity = await this.registerOAuthUser({
+        ...user,
+        password: 'empty',
+        baseCurrency: 'USD',
+        keywords: [],
+      });
     }
 
     return {
