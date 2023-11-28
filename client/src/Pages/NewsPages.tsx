@@ -18,6 +18,7 @@ export const NewsPages = () => {
       enabled: !!user
     }
   );
+  
 
   return (
     <div>
