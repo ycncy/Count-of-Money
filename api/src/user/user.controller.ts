@@ -91,7 +91,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Get a user' })
   @ApiQuery({
-    name: 'id',
+    name: 'id/user',
     description: 'User ID',
     schema: {
       type: 'number',
@@ -106,7 +106,7 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @HttpCode(200)
-  @Get(':id')
+  @Get(':id/user')
   async get(
     @Request() req: Request & { user: DecodedToken },
     @Param('id') id: number,
@@ -134,7 +134,7 @@ export class UsersController {
     throw new HttpException('Unauthorized', 401);
   }
 
-  @Get('profile')
+  @Get('/profile')
   async getMe(
     @Request() req: Request & { user: DecodedToken },
   ): Promise<UserEntity> {

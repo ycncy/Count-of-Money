@@ -11,20 +11,24 @@ import { Reflector } from '@nestjs/core';
 export class JwtAuthGuard implements CanActivate {
   constructor(private jwtService: JwtService, private reflector: Reflector) {}
 
-  canActivate(context: ExecutionContext): boolean | Promise<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const token = request.headers.authorization?.split(' ')[1];
-
     if (!token) {
       throw new UnauthorizedException('Token not found');
     }
 
-    const payload = this.jwtService.decode(token);
-    if (payload.exp < Date.now() / 1000) {
-      throw new UnauthorizedException('Token expired');
+    try {
+      const payload = await this.jwtService.verify(token);
+      request.user = payload;
+      console.log(payload);
+      return true;
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('Token expired');
+      } else {
+        throw new UnauthorizedException('Invalid token');
+      }
     }
-    request.user = payload;
-
-    return true;
   }
 }

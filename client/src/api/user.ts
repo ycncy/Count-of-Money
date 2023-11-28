@@ -12,3 +12,9 @@ export const getNews = async () => {
     .get<News[]>(`/articles`)
     .then((response) => response.data);
 }
+
+export const editUser = async (data: Profile) => {
+  return clientApi
+    .put<Profile>(`/users/${data.id}`, data)
+    .then((response) => response.data);
+}
