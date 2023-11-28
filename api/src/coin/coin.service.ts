@@ -77,6 +77,42 @@ export class CoinService {
     return histories;
   }
 
+  async getAllCoinsInfo() {
+    const histories: ListCoinInfoModel[] = [];
+
+    const coins: CoinEntity[] = await this.coinEntityRepository.find();
+
+    for (const coin of coins) {
+      const history: CoinInfoModel | ErrorModel = await utils.fetchCoinHistory(
+        coin.id,
+        coin.symbol,
+        'USD',
+        '1d',
+        '1d',
+      );
+
+      if (history instanceof ErrorModel) {
+        if (history.error.code === 'Not Found')
+          throw new NotFoundException(history.error.message);
+      } else {
+        const coinInfo: ListCoinInfoModel = {
+          coinId: coin.id,
+          symbol: history.symbol,
+          imageUrl: coin.imageUrl,
+          lastDatetime: history.datetimes[0],
+          high: history.high[0],
+          low: history.low[0],
+          open: history.open[0],
+          close: history.close[0],
+          volume: history.volume[0],
+        };
+
+        histories.push(coinInfo);
+      }
+    }
+    return histories;
+  }
+
   async saveAllApiCryptos() {
     try {
       const data = await utils.fetchAllApiCryptos();
