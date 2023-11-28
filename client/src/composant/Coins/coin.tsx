@@ -4,7 +4,7 @@ import { Coin } from "../../types";
 export const CoinComponent = (coin: Coin) => {
 
   const addToApi = async () => {
-    await addToLocalApi(coin.id); 
+    await addToLocalApi(coin.api_id); 
   }
 
   return (

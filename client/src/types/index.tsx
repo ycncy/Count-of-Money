@@ -1,3 +1,4 @@
+
 export type Profile = {
   id: number,
   createdAt: Date,
@@ -40,3 +41,11 @@ export type News = {
   summary: string
 }
 
+
+export type Coin = { 
+  id: number,
+  rank: number,
+  name: string,
+  symbol: string,
+  api_id: number
+}

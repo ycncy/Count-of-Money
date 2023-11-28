@@ -9,6 +9,6 @@ export const fetchAllCoinsFromApi = async () => {
 
 export const addToLocalApi = async (id: number) => {
   return clientApi
-    .post(`/cryptos/addToLocalApi/${id}`)
+    .post(`/cryptos/`,{coin_api_id: id})
     .then((response) => response.data);
 }

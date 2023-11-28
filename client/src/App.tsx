@@ -8,6 +8,7 @@ import Profile from './authentication/Profile';
 import Chart from './Pages/Chart';
 import { NewsPages } from './Pages/NewsPages';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { Coins } from './Pages/Coins';
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App: React.FC = () => {
           <Route path='/profile' element={<Profile />} />
           <Route path='/chart' element={<Chart />} />
           <Route path='/news' element={<NewsPages />} />
+          <Route path='/coins' element={<Coins />} />
         </Routes>
       </Router>
     </QueryClientProvider>
