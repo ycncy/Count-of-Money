@@ -1,9 +1,9 @@
-import {format, parseISO} from 'date-fns';
-import {CoinEntity} from './coin.entity';
+import { format, parseISO } from 'date-fns';
+import { CoinEntity } from './coin.entity';
 import dateProcessUtil from '../date.process.util';
-import {ErrorModel} from './model/error.model';
-import {CoinInfoModel} from './model/coin-info.model';
-import {ApiCoinInfoModel} from "./model/api-coin-info.model";
+import { ErrorModel } from './model/error.model';
+import { CoinInfoModel } from './model/coin-info.model';
+import { ApiCoinInfoModel } from './model/api-coin-info.model';
 
 const fetchCoinInfo = async (coinId: number) => {
   try {
@@ -97,8 +97,6 @@ const fetchAllApiCryptos = async () => {
 
     const jsonResponse = await response.json();
 
-    console.log(jsonResponse)
-
     return jsonResponse.data.map((coin) => {
       const formattedCoin = new ApiCoinInfoModel();
       formattedCoin.api_id = coin.id;
@@ -110,10 +108,10 @@ const fetchAllApiCryptos = async () => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 export default {
   fetchCoinInfo,
   fetchCoinHistory,
-  fetchAllApiCryptos
+  fetchAllApiCryptos,
 };

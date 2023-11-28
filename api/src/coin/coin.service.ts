@@ -97,14 +97,12 @@ export class CoinService {
 
             addedCoin.push(newCoin);
 
+            newCoin.api_id = coin.api_id;
             newCoin.rank = coin.rank;
             newCoin.name = coin.name;
             newCoin.symbol = coin.symbol;
+
             await this.apiCoinEntityRepository.save(newCoin);
-          } else {
-            console.warn(
-              `La cryptomonnaie avec le symbole ${coin.symbol} existe déjà dans la base de données.`,
-            );
           }
         }),
       );
@@ -226,7 +224,7 @@ export class CoinService {
       const coinIdFromDatabase: ApiCoinEntity =
         await this.apiCoinEntityRepository.findOne({
           where: {
-            id: createCoinDto.coin_api_id,
+            api_id: createCoinDto.coin_api_id,
           },
         });
 
@@ -234,7 +232,7 @@ export class CoinService {
         throw new NotFoundException('Coin not found, invalid coin ID');
 
       const coinEntityFromApi: CoinEntity = await utils.fetchCoinInfo(
-        coinIdFromDatabase.id,
+        coinIdFromDatabase.api_id,
       );
       const coin = this.coinEntityRepository.create(coinEntityFromApi);
       return await this.coinEntityRepository.save(coin);
