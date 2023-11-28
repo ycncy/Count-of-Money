@@ -29,7 +29,7 @@ import { DeleteResult, UpdateResult } from 'typeorm';
 import { ListCoinInfoModel } from './model/list-coin-info.model';
 import { CoinInfoModel } from './model/coin-info.model';
 import { EditCoinDto } from './dto/edit-coin.dto';
-import {ApiCoinInfoModel} from "./model/api-coin-info.model";
+import { ApiCoinInfoModel } from './model/api-coin-info.model';
 
 @ApiTags('Crypto-currencies')
 @Controller('cryptos')

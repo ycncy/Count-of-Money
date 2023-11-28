@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from 'src/user/user.entity';
 import { CoinEntity } from 'src/coin/coin.entity';
+import { DefaultFavEntity } from './favorite.entity';
 
 @Injectable()
 export class FavoriteService {
@@ -11,6 +12,8 @@ export class FavoriteService {
     private usersRepository: Repository<UserEntity>,
     @InjectRepository(CoinEntity)
     private coinsRepository: Repository<CoinEntity>,
+    @InjectRepository(DefaultFavEntity)
+    private defaultFavRepository: Repository<DefaultFavEntity>,
   ) {}
 
   async addToFavorites(userId: number, coinId: number): Promise<void> {
@@ -38,22 +41,31 @@ export class FavoriteService {
     }
   }
 
-  async getFavorites(userId: number): Promise<CoinEntity[]> {
+  async getFavorites(
+    userId: number,
+  ): Promise<CoinEntity[] | DefaultFavEntity[]> {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
       relations: ['favorites'],
     });
     if (user.favorites.length === 0) {
-      return await this.getGlobalFavorites();
+      return await this.getDefaultFavorites();
     }
     return user.favorites;
   }
 
-  async getGlobalFavorites(): Promise<CoinEntity[]> {
-    const user = await this.usersRepository.findOne({
-      where: { id: 1 },
-      relations: ['favorites'],
-    });
-    return user.favorites;
+  async getDefaultFavorites(): Promise<DefaultFavEntity[]> {
+    const fav = await this.defaultFavRepository.find();
+    return fav;
+  }
+
+  async addDefaultFavorite(coinId: number): Promise<void> {
+    const coin = await this.coinsRepository.findOneBy({ id: coinId });
+
+    await this.defaultFavRepository.save(coin);
+  }
+
+  async deleteDefaultFavorite(coinId: number): Promise<void> {
+    await this.defaultFavRepository.delete(coinId);
   }
 }
