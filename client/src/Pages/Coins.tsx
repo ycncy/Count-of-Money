@@ -35,7 +35,10 @@ export const Coins = () => {
           )}
       <div>
         {coins?.map((coin) => (
-         <CoinComponent {...coin} />
+         <CoinComponent 
+         userRole = {user?.role}
+         coin = {coin}
+          />
         ))}
         </div>
     </div>
