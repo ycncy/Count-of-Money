@@ -38,6 +38,7 @@ export const Coins = () => {
          <CoinComponent 
          userRole = {user?.role}
          coin = {coin}
+         key={coin.id}
           />
         ))}
         </div>

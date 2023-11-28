@@ -49,3 +49,15 @@ export type Coin = {
   symbol: string,
   api_id: number
 }
+
+export type LocalCoin = {
+    coinId: number,
+    symbol: string,
+    imageUrl: string,
+    lastDatetime: Date,
+    high: number,
+    low: number,
+    open: number,
+    close: number,
+    volume: number,
+}

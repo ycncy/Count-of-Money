@@ -45,6 +45,7 @@ export class CoinController {
   })
   @ApiQuery({
     name: 'cmids',
+    required: false,
     description: 'List of cryptocurrencies IDs',
     schema: {
       type: 'string',
@@ -65,7 +66,11 @@ export class CoinController {
         ? cmids.split(',').map((id) => parseInt(id, 10))
         : [];
 
-      return await this.coinService.getCoinsInfo(coinIds);
+      if (coinIds.length === 0) {
+        return await this.coinService.getAllCoinsInfo();
+      } else {
+        return await this.coinService.getCoinsInfo(coinIds);
+      }
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw new HttpException(error.message, HttpStatus.NOT_FOUND);
