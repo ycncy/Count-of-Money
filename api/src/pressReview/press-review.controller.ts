@@ -1,7 +1,7 @@
 import { Controller, Get, ParseArrayPipe, Query } from '@nestjs/common';
 import { PressReviewService } from './press-review.service';
 import { ApiTags } from '@nestjs/swagger';
-import {GetLatestNewsSwaggerDecorator} from "../swaggerDecorators/press-review-swagger.decorators";
+import { GetLatestNewsSwaggerDecorator } from '../swaggerDecorators/press-review-swagger.decorators';
 
 @ApiTags('News')
 @Controller('articles')

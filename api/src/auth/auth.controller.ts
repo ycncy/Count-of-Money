@@ -15,8 +15,8 @@ import {
   GoogleCallbackSwaggerDecorator,
   GoogleLoginSwaggerDecorator,
   LoginSwaggerDecorator,
-  RegisterSwaggerDecorator
-} from "../swaggerDecorators/auth-swagger.decorators";
+  RegisterSwaggerDecorator,
+} from '../swaggerDecorators/auth-swagger.decorators';
 
 @ApiTags('Auth')
 @Controller('auth')

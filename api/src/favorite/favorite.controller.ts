@@ -18,8 +18,8 @@ import {
   DeleteDefaultFavoriteSwaggerDecorator,
   GetDefaultFavoritesSwaggerDecorator,
   GetFavoritesSwaggerDecorator,
-  RemoveFromFavoritesSwaggerDecorator
-} from "../swaggerDecorators/favorite-swagger.decorators";
+  RemoveFromFavoritesSwaggerDecorator,
+} from '../swaggerDecorators/favorite-swagger.decorators';
 
 @ApiTags('Favorites')
 @Controller('favorites')

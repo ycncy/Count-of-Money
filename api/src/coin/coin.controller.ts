@@ -40,10 +40,14 @@ import { HttpExceptionFilter } from '../globalFilters/http-exception.filter';
 import { ParseArrayOptions } from '@nestjs/common/pipes/parse-array.pipe';
 import {
   CreateSwaggerDecorator,
-  DeleteSwaggerDecorator, EditSwaggerDecorator,
-  GetAllApiCryptosSwaggerDecorator, GetByIdSwaggerDecorator,
-  GetCryptosSwaggerDecorator, GetHistorySwaggerDecorator, SaveAllApiCryptosSwaggerDecorator
-} from "../swaggerDecorators/coin-swagger.decorators";
+  DeleteSwaggerDecorator,
+  EditSwaggerDecorator,
+  GetAllApiCryptosSwaggerDecorator,
+  GetByIdSwaggerDecorator,
+  GetCryptosSwaggerDecorator,
+  GetHistorySwaggerDecorator,
+  SaveAllApiCryptosSwaggerDecorator,
+} from '../swaggerDecorators/coin-swagger.decorators';
 
 @ApiTags('Crypto-currencies')
 @Controller('cryptos')
@@ -82,7 +86,6 @@ export class CoinController {
     if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
     return await this.coinService.saveAllApiCryptos();
   }
-
 
   @GetHistorySwaggerDecorator()
   @Get(':coinID/history/:period')
