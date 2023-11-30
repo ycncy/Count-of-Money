@@ -1,9 +1,9 @@
 import {applyDecorators, HttpCode} from "@nestjs/common";
-import {ApiBody, ApiOperation, ApiQuery, ApiResponse} from "nestjs/swagger";
+import {ApiBody, ApiOperation, ApiQuery, ApiResponse} from "@nestjs/swagger";
 import {ListCoinInfoModel} from "../coin/model/list-coin-info.model";
 import {ApiCoinInfoModel} from "../coin/model/api-coin-info.model";
 import {CoinInfoModel} from "../coin/model/coin-info.model";
-import {ApiParam} from "nestjs/swagger";
+import {ApiParam} from "@nestjs/swagger";
 import {EditCoinDto} from "../coin/dto/edit-coin.dto";
 
 export function GetCryptosSwaggerDecorator() {
