@@ -1,8 +1,8 @@
-import { Controller, UseGuards, Post, Request, Get } from '@nestjs/common';
+import {Controller, UseGuards, Post, Request, Get, Body} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { signInDto, signInGoogleDto } from './auth.dto';
+import { SignInDto, SignInGoogleDto } from './auth.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
@@ -16,10 +16,10 @@ export class AuthController {
     description: 'Successfully logged in.',
     type: String,
   })
-  @ApiBody({ type: signInDto })
+  @ApiBody({ type: SignInDto })
   @Post('login')
-  async login(@Request() req: Request & { body: signInDto }) {
-    return await this.authService.login(req.body);
+  async login(@Body() signInDto: SignInDto) {
+    return await this.authService.login(signInDto);
   }
 
   @ApiOperation({ summary: 'Register' })
@@ -30,8 +30,8 @@ export class AuthController {
   })
   @ApiBody({ type: CreateUserDto })
   @Post('register')
-  async register(@Request() req: Request & { body: CreateUserDto }) {
-    return await this.authService.registerUser(req.body);
+  async register(@Body() createUserDto: CreateUserDto) {
+    return await this.authService.registerUser(createUserDto);
   }
 
   @ApiOperation({ summary: 'Login with Google' })
@@ -42,7 +42,7 @@ export class AuthController {
   })
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth(@Request() req: Request & { user: signInGoogleDto }) {
+  async googleAuth(@Request() req: Request & { user: SignInGoogleDto }) {
     return req.user;
   }
 
@@ -55,7 +55,7 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthCallback(
-    @Request() req: Request & { user: signInGoogleDto },
+    @Request() req: Request & { user: SignInGoogleDto },
   ) {
     return await this.authService.loginGoogle(req.user);
   }
