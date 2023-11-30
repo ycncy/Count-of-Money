@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from 'src/user/user.entity';
@@ -16,38 +16,62 @@ export class FavoriteService {
     private defaultFavRepository: Repository<DefaultFavEntity>,
   ) {}
 
-  async addToFavorites(userId: number, coinId: number): Promise<void> {
-    const user = await this.usersRepository.findOne({
+  async addToFavorites(
+    userId: number,
+    coinId: number,
+  ): Promise<{ message: string; status: number }> {
+    const user: UserEntity = await this.usersRepository.findOne({
       where: { id: userId },
       relations: ['favorites'],
     });
-    const coin = await this.coinsRepository.findOneBy({ id: coinId });
 
-    if (user && coin) {
-      user.favorites.push(coin);
-      await this.usersRepository.save(user);
-    }
+    if (user === null) throw new NotFoundException(`User ${userId} not found`);
+
+    const coin: CoinEntity = await this.coinsRepository.findOneBy({
+      id: coinId,
+    });
+
+    if (coin === null) throw new NotFoundException(`User ${userId} not found`);
+
+    user.favorites.push(coin);
+    await this.usersRepository.save(user);
+    return {
+      status: 200,
+      message: 'Coin added to user favorite successfully',
+    };
   }
 
-  async removeFromFavorites(userId: number, coinId: number): Promise<void> {
-    const user = await this.usersRepository.findOne({
+  async removeFromFavorites(
+    userId: number,
+    coinId: number,
+  ): Promise<{ message: string; status: number }> {
+    const user: UserEntity = await this.usersRepository.findOne({
       where: { id: userId },
       relations: ['favorites'],
     });
+
+    if (user === null) throw new NotFoundException(`User ${userId} not found`);
 
     if (user) {
       user.favorites = user.favorites.filter((coin) => coin.id !== coinId);
       await this.usersRepository.save(user);
+      return {
+        status: 200,
+        message: 'Coin removed from user favorite successfully',
+      };
     }
   }
 
   async getFavorites(
     userId: number,
   ): Promise<CoinEntity[] | DefaultFavEntity[]> {
-    const user = await this.usersRepository.findOne({
+    const user: UserEntity = await this.usersRepository.findOne({
       where: { id: userId },
       relations: ['favorites'],
     });
+
+    if (user === null) throw new NotFoundException(`User ${userId} not found`);
+
     if (user.favorites.length === 0) {
       return await this.getDefaultFavorites();
     }
@@ -55,17 +79,40 @@ export class FavoriteService {
   }
 
   async getDefaultFavorites(): Promise<DefaultFavEntity[]> {
-    const fav = await this.defaultFavRepository.find();
-    return fav;
+    return await this.defaultFavRepository.find();
   }
 
-  async addDefaultFavorite(coinId: number): Promise<void> {
-    const coin = await this.coinsRepository.findOneBy({ id: coinId });
+  async addDefaultFavorite(
+    coinId: number,
+  ): Promise<{ message: string; status: number }> {
+    const coin: CoinEntity = await this.coinsRepository.findOneBy({
+      id: coinId,
+    });
+
+    if (coin === null) throw new NotFoundException(`Coin ${coinId} not found`);
 
     await this.defaultFavRepository.save(coin);
+
+    return {
+      status: 200,
+      message: 'Coin added to default favorite successfully',
+    };
   }
 
-  async deleteDefaultFavorite(coinId: number): Promise<void> {
+  async deleteDefaultFavorite(
+    coinId: number,
+  ): Promise<{ message: string; status: number }> {
+    const coin: CoinEntity = await this.coinsRepository.findOneBy({
+      id: coinId,
+    });
+
+    if (coin === null) throw new NotFoundException(`Coin ${coinId} not found`);
+
     await this.defaultFavRepository.delete(coinId);
+
+    return {
+      status: 200,
+      message: 'Coin removed from default favorite successfully',
+    };
   }
 }
