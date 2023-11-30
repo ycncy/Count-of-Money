@@ -255,7 +255,7 @@ export class CoinService {
     }
   }
 
-  async create(createCoinDto: CreateCoinDto): Promise<CoinEntity> {
+  async createCoin(createCoinDto: CreateCoinDto): Promise<CoinEntity> {
     try {
       const coinIdFromDatabase: ApiCoinEntity =
         await this.apiCoinEntityRepository.findOne({
