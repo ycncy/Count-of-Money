@@ -72,7 +72,7 @@ export class CoinController {
         separator: ',',
       }),
     )
-    coinIds: Array<number>,
+    coinIds: number[],
   ) {
     if (coinIds.length === 0) {
       return await this.coinService.getAllCoinsInfo();

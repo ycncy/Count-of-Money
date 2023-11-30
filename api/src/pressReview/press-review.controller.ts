@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, ParseArrayPipe, Query } from '@nestjs/common';
 import { PressReviewService } from './press-review.service';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -23,7 +23,10 @@ export class NewsController {
     summary: 'Get latest news',
   })
   @Get()
-  async getLatestNews(@Query() query: any) {
-    return await this.pressReviewService.getLatestNews(query.news);
+  async getLatestNews(
+    @Query('news', new ParseArrayPipe({ items: String, separator: ',' }))
+    news: string[],
+  ) {
+    return await this.pressReviewService.getLatestNews(news);
   }
 }
