@@ -1,61 +1,52 @@
-import { Controller, UseGuards, Post, Request, Get } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Post,
+  Request,
+  Get,
+  Body,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { signInDto, signInGoogleDto } from './auth.dto';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SignInDto, SignInGoogleDto } from './auth.dto';
+import { ApiTags } from '@nestjs/swagger';
+import {
+  GoogleCallbackSwaggerDecorator,
+  GoogleLoginSwaggerDecorator,
+  LoginSwaggerDecorator,
+  RegisterSwaggerDecorator,
+} from '../swagger-decorator/auth-swagger.decorators';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @ApiOperation({ summary: 'Login' })
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully logged in.',
-    type: String,
-  })
-  @ApiBody({ type: signInDto })
+  @LoginSwaggerDecorator()
   @Post('login')
-  async login(@Request() req: Request & { body: signInDto }) {
-    return await this.authService.login(req.body);
+  async login(@Body() signInDto: SignInDto) {
+    return await this.authService.login(signInDto);
   }
 
-  @ApiOperation({ summary: 'Register' })
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully registered.',
-    type: String,
-  })
-  @ApiBody({ type: CreateUserDto })
+  @RegisterSwaggerDecorator()
   @Post('register')
-  async register(@Request() req: Request & { body: CreateUserDto }) {
-    return await this.authService.registerUser(req.body);
+  async register(@Body() createUserDto: CreateUserDto) {
+    return await this.authService.registerUser(createUserDto);
   }
 
-  @ApiOperation({ summary: 'Login with Google' })
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully logged in with Google.',
-    type: String,
-  })
+  @GoogleLoginSwaggerDecorator()
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth(@Request() req: Request & { user: signInGoogleDto }) {
+  async googleAuth(@Request() req: Request & { user: SignInGoogleDto }) {
     return req.user;
   }
 
-  @ApiOperation({ summary: 'Login with Google callback' })
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully logged in with Google.',
-    type: String,
-  })
+  @GoogleCallbackSwaggerDecorator()
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthCallback(
-    @Request() req: Request & { user: signInGoogleDto },
+    @Request() req: Request & { user: SignInGoogleDto },
   ) {
     return await this.authService.loginGoogle(req.user);
   }

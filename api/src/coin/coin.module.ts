@@ -2,8 +2,8 @@ import { Module, forwardRef } from '@nestjs/common';
 import { CoinService } from './coin.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoinController } from './coin.controller';
-import { CoinEntity } from './coin.entity';
-import { ApiCoinEntity } from './api-coin.entity';
+import { CoinEntity } from './entity/coin.entity';
+import { ApiCoinEntity } from './entity/api-coin.entity';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({

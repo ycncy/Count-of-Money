@@ -2,7 +2,7 @@ import { UserProvider, UserRole } from 'src/user/user.constants';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
-export class signInDto {
+export class SignInDto {
   @ApiProperty()
   @IsNotEmpty()
   readonly email: string;
@@ -12,7 +12,7 @@ export class signInDto {
   readonly password: string;
 }
 
-export class signInGoogleDto {
+export class SignInGoogleDto {
   @ApiProperty()
   @IsNotEmpty()
   accesToken: string;

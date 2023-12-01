@@ -8,20 +8,22 @@ import {
   Get,
   Param,
   HttpException,
-  HttpCode,
+  Body, ParseIntPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserEntity } from './user.entity';
+import { UserEntity } from './entity/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { DecodedToken } from 'src/auth/auth.dto';
+import { ApiTags } from '@nestjs/swagger';
 import {
-  ApiBody,
-  ApiOperation,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+  DeleteUserSwaggerDecorator,
+  GetAllUserSwaggerDecorator,
+  GetMeUserSwaggerDecorator,
+  GetUserSwaggerDecorator,
+  UpdateMeUserSwaggerDecorator,
+  UpdateUserSwaggerDecorator,
+} from '../swagger-decorator/user-swagger.decorators';
 
 @UseGuards(JwtAuthGuard)
 @ApiTags('Users')
@@ -30,131 +32,75 @@ import {
 export class UsersController {
   constructor(private readonly usersService: UserService) {}
 
-  @ApiOperation({ summary: 'Update a user' })
-  @ApiQuery({
-    name: 'id',
-    description: 'User ID',
-    schema: {
-      type: 'number',
-      example: '1,2,3,4,5',
-    },
-  })
-  @ApiResponse({
-    status: 200,
-    type: UserEntity,
-    description: 'Successfully updated user.',
-  })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'User not found.' })
-  @HttpCode(200)
-  @ApiBody({ type: UpdateUserDto })
-  @Put(':id')
-  async update(
-    @Request() req: Request & { body: UpdateUserDto } & { user: DecodedToken },
-    @Param('id') id: number,
-  ): Promise<UserEntity> {
-    const userId = req.user.sub;
-    if (userId === id || req.user.role === 'ADMIN') {
-      return await this.usersService.update(userId, req.body);
-    }
-    throw new HttpException('Unauthorized', 401);
-  }
-
-  @ApiOperation({ summary: 'Delete a user' })
-  @ApiQuery({
-    name: 'id',
-    description: 'User ID',
-    schema: {
-      type: 'number',
-      example: '1,2,3,4,5',
-    },
-  })
-  @ApiResponse({
-    status: 200,
-    type: UserEntity,
-    description: 'Successfully deleted user.',
-  })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'User not found.' })
-  @HttpCode(200)
-  @Delete(':id')
-  async delete(
-    @Request() req: Request & { user: DecodedToken },
-    @Param('id') id: number,
-  ): Promise<void> {
-    const userId = req.user.sub;
-    if (userId == id || req.user.role == 'ADMIN') {
-      return await this.usersService.delete(userId);
-    }
-    throw new HttpException('Unauthorized', 401);
-  }
-
-  @ApiOperation({ summary: 'Get a user' })
-  @ApiQuery({
-    name: 'id/user',
-    description: 'User ID',
-    schema: {
-      type: 'number',
-      example: '1,2,3,4,5',
-    },
-  })
-  @ApiResponse({
-    status: 200,
-    type: UserEntity,
-    description: 'Successfully get user.',
-  })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'User not found.' })
-  @HttpCode(200)
-  @Get(':id/user')
-  async get(
-    @Request() req: Request & { user: DecodedToken },
-    @Param('id') id: number,
-  ): Promise<UserEntity> {
-    const userId = req.user.sub;
-    if (userId == id || req.user.role == 'ADMIN') {
-      return await this.usersService.findOne(id);
-    }
-    throw new HttpException('Unauthorized', 401);
-  }
-
-  @ApiOperation({ summary: 'Get all users' })
-  @ApiResponse({
-    status: 200,
-    type: [UserEntity],
-    description: 'Successfully get users.',
-  })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @HttpCode(200)
-  @Get()
-  async getAll(
-    @Request() req: Request & { user: DecodedToken },
-  ): Promise<UserEntity[]> {
-    if (req.user.role == 'ADMIN') return await this.usersService.getAll();
-    throw new HttpException('Unauthorized', 401);
-  }
-
+  @GetMeUserSwaggerDecorator()
   @Get('/profile')
   async getMe(
-    @Request() req: Request & { user: DecodedToken },
+      @Request() req: Request & { user: DecodedToken },
   ): Promise<UserEntity> {
     return await this.usersService.findOne(req.user.sub);
   }
 
-  @ApiBody({ type: UpdateUserDto })
-  @ApiOperation({ summary: 'Update a user' })
-  @ApiResponse({
-    status: 200,
-    type: UserEntity,
-    description: 'Successfully updated user.',
-  })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @ApiResponse({ status: 404, description: 'User not found.' })
-  @HttpCode(200)
+  @UpdateMeUserSwaggerDecorator()
   @Put('profile')
   async updateMe(
-    @Request() req: Request & { body: UpdateUserDto } & { user: DecodedToken },
+      @Request() req: Request & { user: DecodedToken },
+      @Body() updateUserDto: UpdateUserDto,
+  ): Promise<{ message: string; status: number }> {
+    return await this.usersService.update(req.user.sub, updateUserDto);
+  }
+
+  @GetUserSwaggerDecorator()
+  @Get(':userId')
+  async get(
+      @Request() req: Request & { user: DecodedToken },
+      @Param(
+          'userId',
+          ParseIntPipe
+      ) userId: number,
   ): Promise<UserEntity> {
-    return await this.usersService.update(req.user.sub, req.body);
+    const authenticatedUserId = req.user.sub;
+    if (authenticatedUserId === userId || req.user.role === 'ADMIN') {
+      return await this.usersService.findOne(userId);
+    }
+    throw new HttpException('Unauthorized', 401);
+  }
+
+  @GetAllUserSwaggerDecorator()
+  @Get()
+  async getAll(
+      @Request() req: Request & { user: DecodedToken },
+  ): Promise<UserEntity[]> {
+    if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
+    return await this.usersService.getAll();
+  }
+
+  @UpdateUserSwaggerDecorator()
+  @Put(':userId')
+  async update(
+    @Request() req: Request & { user: DecodedToken },
+    @Body() updateUserDto: UpdateUserDto,
+    @Param(
+        'userId',
+        ParseIntPipe
+    ) userId: number,
+  ): Promise<{ message: string; status: number }> {
+    const authenticatedUserId = req.user.sub;
+    if (authenticatedUserId === userId || req.user.role === 'ADMIN') {
+      return await this.usersService.update(userId, updateUserDto);
+    }
+    throw new HttpException('Unauthorized', 401);
+  }
+
+  @DeleteUserSwaggerDecorator()
+  @Delete(':userId')
+  async delete(
+    @Request() req: Request & { user: DecodedToken },
+    @Param('userId') userId: number,
+  ): Promise<{ message: string; status: number }> {
+    const authenticatedUserId = req.user.sub;
+    if (authenticatedUserId === userId || req.user.role === 'ADMIN') {
+      return await this.usersService.delete(userId);
+    }
+    throw new HttpException('Unauthorized', 401);
   }
 }

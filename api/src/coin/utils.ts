@@ -1,5 +1,5 @@
 import { format, parseISO } from 'date-fns';
-import { CoinEntity } from './coin.entity';
+import { CoinEntity } from './entity/coin.entity';
 import dateProcessUtil from '../date.process.util';
 import { ErrorModel } from './model/error.model';
 import { CoinInfoModel } from './model/coin-info.model';

@@ -5,12 +5,11 @@ import * as Parser from 'rss-parser';
 export class PressReviewService {
   private parser = new Parser();
 
-  async getLatestNews(newsParam: string | string[]): Promise<any[]> {
+  async getLatestNews(newsParam: string[]): Promise<any[]> {
     const sources = [];
 
-    if (newsParam) {
-      const newsItems = Array.isArray(newsParam) ? newsParam : [newsParam];
-      newsItems.forEach((item) => {
+    if (newsParam.length !== 0) {
+      newsParam.forEach((item: string) => {
         sources.push(`https://coinjournal.net/fr/actualites/tag/${item}/feed/`);
       });
     } else {

@@ -1,15 +1,17 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
-import { UserEntity } from 'src/user/user.entity';
+import { UserEntity } from 'src/user/entity/user.entity';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserProvider, UserRole } from 'src/user/user.constants';
-import { signInGoogleDto } from './auth.dto';
+import { SignInDto, SignInGoogleDto } from './auth.dto';
 
 @Injectable()
 export class AuthService {
@@ -29,10 +31,11 @@ export class AuthService {
     return this.jwtService.sign(payload);
   }
 
-  async login(user: any) {
-    if (!user) {
-      throw new BadRequestException('Unauthenticated');
+  async login(user: SignInDto) {
+    if (!user.email || !user.password) {
+      throw new UnauthorizedException('Missing email or password');
     }
+
     const userEntity: UserEntity =
       await this.userService.findOneByEmailWithPassword(user.email);
     if (
@@ -54,7 +57,7 @@ export class AuthService {
     };
   }
 
-  async loginGoogle(user: signInGoogleDto) {
+  async loginGoogle(user: SignInGoogleDto) {
     if (!user) {
       throw new BadRequestException('Unauthenticated');
     }
@@ -95,11 +98,14 @@ export class AuthService {
 
   async registerUser(user: CreateUserDto) {
     try {
-      const userExists = await this.userService.findOneByEmail(user.email);
+      const userExists: UserEntity = await this.userService.findOneByEmail(
+        user.email,
+      );
 
-      if (userExists) {
-        return this.login(user);
+      if (userExists !== null) {
+        throw new ConflictException('User already exists');
       }
+
       const newUser = {
         ...user,
         role: UserRole.USER,
