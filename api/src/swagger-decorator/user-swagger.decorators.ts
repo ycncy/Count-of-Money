@@ -1,19 +1,11 @@
 import { applyDecorators, HttpCode } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserEntity } from '../user/entity/user.entity';
 import { UpdateUserDto } from '../user/dto/update-user.dto';
 
 export function UpdateUserSwaggerDecorator() {
   return applyDecorators(
     ApiOperation({ summary: 'Update a user' }),
-    ApiQuery({
-      name: 'id',
-      description: 'User ID',
-      schema: {
-        type: 'number',
-        example: '1,2,3,4,5',
-      },
-    }),
     ApiResponse({
       status: 200,
       type: UserEntity,
@@ -29,14 +21,6 @@ export function UpdateUserSwaggerDecorator() {
 export function DeleteUserSwaggerDecorator() {
   return applyDecorators(
     ApiOperation({ summary: 'Delete a user' }),
-    ApiQuery({
-      name: 'id',
-      description: 'User ID',
-      schema: {
-        type: 'number',
-        example: '1,2,3,4,5',
-      },
-    }),
     ApiResponse({
       status: 200,
       type: UserEntity,

@@ -34,7 +34,7 @@ import {
 } from '../swagger-decorator/coin-swagger.decorators';
 
 @ApiTags('Crypto-currencies')
-@Controller('cryptos')
+@Controller('coins')
 export class CoinController {
   constructor(private readonly coinService: CoinService) {}
 
@@ -110,7 +110,7 @@ export class CoinController {
     @Param('coinId', ParseIntPipe) coinID: number,
     @Body() editCoinDto: EditCoinDto,
     @Request() req: Request & { user: DecodedToken },
-  ): Promise<UpdateResult> {
+  ): Promise<{ message: string; status: number }> {
     if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
     return await this.coinService.editCoin(coinID, editCoinDto);
   }
@@ -121,7 +121,7 @@ export class CoinController {
   async deleteCoin(
     @Request() req: Request & { user: DecodedToken },
     @Param('coinId', ParseIntPipe) coinID: number,
-  ): Promise<DeleteResult> {
+  ): Promise<{ message: string; status: number }> {
     if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
     return this.coinService.deleteCoin(coinID);
   }

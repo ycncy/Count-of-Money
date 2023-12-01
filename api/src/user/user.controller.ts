@@ -8,7 +8,7 @@ import {
   Get,
   Param,
   HttpException,
-  Body,
+  Body, ParseIntPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserEntity } from './entity/user.entity';
@@ -32,13 +32,58 @@ import {
 export class UsersController {
   constructor(private readonly usersService: UserService) {}
 
+  @GetMeUserSwaggerDecorator()
+  @Get('/profile')
+  async getMe(
+      @Request() req: Request & { user: DecodedToken },
+  ): Promise<UserEntity> {
+    return await this.usersService.findOne(req.user.sub);
+  }
+
+  @UpdateMeUserSwaggerDecorator()
+  @Put('profile')
+  async updateMe(
+      @Request() req: Request & { user: DecodedToken },
+      @Body() updateUserDto: UpdateUserDto,
+  ): Promise<{ message: string; status: number }> {
+    return await this.usersService.update(req.user.sub, updateUserDto);
+  }
+
+  @GetUserSwaggerDecorator()
+  @Get(':userId')
+  async get(
+      @Request() req: Request & { user: DecodedToken },
+      @Param(
+          'userId',
+          ParseIntPipe
+      ) userId: number,
+  ): Promise<UserEntity> {
+    const authenticatedUserId = req.user.sub;
+    if (authenticatedUserId === userId || req.user.role === 'ADMIN') {
+      return await this.usersService.findOne(userId);
+    }
+    throw new HttpException('Unauthorized', 401);
+  }
+
+  @GetAllUserSwaggerDecorator()
+  @Get()
+  async getAll(
+      @Request() req: Request & { user: DecodedToken },
+  ): Promise<UserEntity[]> {
+    if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
+    return await this.usersService.getAll();
+  }
+
   @UpdateUserSwaggerDecorator()
   @Put(':userId')
   async update(
     @Request() req: Request & { user: DecodedToken },
     @Body() updateUserDto: UpdateUserDto,
-    @Param('userId') userId: number,
-  ): Promise<UserEntity> {
+    @Param(
+        'userId',
+        ParseIntPipe
+    ) userId: number,
+  ): Promise<{ message: string; status: number }> {
     const authenticatedUserId = req.user.sub;
     if (authenticatedUserId === userId || req.user.role === 'ADMIN') {
       return await this.usersService.update(userId, updateUserDto);
@@ -51,50 +96,11 @@ export class UsersController {
   async delete(
     @Request() req: Request & { user: DecodedToken },
     @Param('userId') userId: number,
-  ): Promise<void> {
+  ): Promise<{ message: string; status: number }> {
     const authenticatedUserId = req.user.sub;
     if (authenticatedUserId === userId || req.user.role === 'ADMIN') {
       return await this.usersService.delete(userId);
     }
     throw new HttpException('Unauthorized', 401);
-  }
-
-  @GetUserSwaggerDecorator()
-  @Get(':userId')
-  async get(
-    @Request() req: Request & { user: DecodedToken },
-    @Param('userId') userId: number,
-  ): Promise<UserEntity> {
-    const authenticatedUserId = req.user.sub;
-    if (authenticatedUserId === userId || req.user.role === 'ADMIN') {
-      return await this.usersService.findOne(userId);
-    }
-    throw new HttpException('Unauthorized', 401);
-  }
-
-  @GetAllUserSwaggerDecorator()
-  @Get()
-  async getAll(
-    @Request() req: Request & { user: DecodedToken },
-  ): Promise<UserEntity[]> {
-    if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
-    else return await this.usersService.getAll();
-  }
-
-  @GetMeUserSwaggerDecorator()
-  @Get('/profile')
-  async getMe(
-    @Request() req: Request & { user: DecodedToken },
-  ): Promise<UserEntity> {
-    return await this.usersService.findOne(req.user.sub);
-  }
-
-  @UpdateMeUserSwaggerDecorator()
-  @Put('profile')
-  async updateMe(
-    @Request() req: Request & { user: DecodedToken },
-    @Body() updateUserDto: UpdateUserDto,
-  ): Promise<UserEntity> {
-    return await this.usersService.update(req.user.sub, updateUserDto);
   }
 }

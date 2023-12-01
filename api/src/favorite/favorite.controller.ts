@@ -28,7 +28,7 @@ export class FavoriteController {
 
   @AddToFavoritesSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Post('users/:userId/coin/:coinId')
+  @Post('users/:userId/coins/:coinId')
   async addToFavorites(
     @Request() req: Request & { user: DecodedToken },
     @Param('userId') userId: number,
@@ -42,7 +42,7 @@ export class FavoriteController {
 
   @RemoveFromFavoritesSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Delete('users/:userId/coin/:coinId')
+  @Delete('users/:userId/coins/:coinId')
   async removeFromFavorites(
     @Request() req: Request & { user: DecodedToken },
     @Param('userId') userId: number,
@@ -75,7 +75,7 @@ export class FavoriteController {
 
   @AddDefaultFavoriteSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Post('default/:coinId')
+  @Post('default/coins/:coinId')
   async addDefaultFavorite(
     @Request() req: Request & { user: DecodedToken },
     @Param('coinId') coinId: number,
@@ -88,7 +88,7 @@ export class FavoriteController {
 
   @DeleteDefaultFavoriteSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Delete('default/:coinId')
+  @Delete('default/coins/:coinId')
   async deleteDefaultFavorite(
     @Request() req: Request & { user: DecodedToken },
     @Param('coinId') coinId: number,

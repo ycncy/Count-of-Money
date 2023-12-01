@@ -7,6 +7,10 @@ export class UpdateUserDto {
   @IsOptional()
   readonly username: string;
 
+  @ApiProperty()
+  @IsOptional()
+  readonly email: string;
+
   //TODO create enum for baseCurrency
   @ApiProperty()
   @IsOptional()

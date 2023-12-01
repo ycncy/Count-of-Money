@@ -109,16 +109,17 @@ export class CoinService {
               },
             });
 
-          if (!existingCoin) {
-            const newCoin: ApiCoinEntity = new ApiCoinEntity();
+          const newCoin: ApiCoinEntity = new ApiCoinEntity();
 
+          newCoin.api_id = coin.api_id;
+          newCoin.rank = coin.rank;
+          newCoin.name = coin.name;
+          newCoin.symbol = coin.symbol;
+
+          if (existingCoin) {
+            await this.apiCoinEntityRepository.update({api_id: coin.api_id}, newCoin);
+          } else {
             addedCoin.push(newCoin);
-
-            newCoin.api_id = coin.api_id;
-            newCoin.rank = coin.rank;
-            newCoin.name = coin.name;
-            newCoin.symbol = coin.symbol;
-
             await this.apiCoinEntityRepository.save(newCoin);
           }
         }),
@@ -268,23 +269,33 @@ export class CoinService {
   async editCoin(
     coinID: number,
     editCoinDto: EditCoinDto,
-  ): Promise<UpdateResult> {
+  ): Promise<{ message: string; status: number }> {
     const coin: CoinEntity = await this.getById(coinID);
 
     if (!coin) {
       throw new NotFoundException(`Coin with ID ${coinID} not found`);
     }
 
-    return this.coinEntityRepository.update({ id: +coinID }, editCoinDto);
+    await this.coinEntityRepository.update({ id: +coinID }, editCoinDto);
+
+    return {
+      status: 200,
+      message: `Coin ${coinID} updated successfully`,
+    };
   }
 
-  async deleteCoin(coinID: number): Promise<DeleteResult> {
+  async deleteCoin(coinID: number): Promise<{ message: string; status: number }> {
     const coin: CoinEntity = await this.getById(coinID);
 
     if (!coin) {
       throw new NotFoundException(`Coin with ID ${coinID} not found`);
     }
 
-    return this.coinEntityRepository.delete({ id: coin.id });
+    await this.coinEntityRepository.delete({ id: coin.id });
+
+    return {
+      status: 200,
+      message: `Coin ${coinID} deleted successfully`,
+    };
   }
 }

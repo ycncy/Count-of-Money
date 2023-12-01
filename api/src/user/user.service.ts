@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {DeleteResult, Repository, UpdateResult} from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from './entity/user.entity';
 import { UserProvider, UserRole } from './user.constants';
@@ -86,19 +86,29 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<{ message: string; status: number }>{
     const user: UserEntity = await this.findOne(id);
     if (!user) {
       throw new NotFoundException(`User ${id} not found`);
     }
-    return this.userRepository.save({ id, ...updateUserDto });
+    await this.userRepository.update(id, updateUserDto);
+
+    return {
+      status: 200,
+      message: `User ${id} updated successfully`,
+    };
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: number): Promise<{ message: string; status: number }>  {
     const user: UserEntity = await this.findOne(id);
     if (!user) {
       throw new NotFoundException(`User ${id} not found`);
     }
     await this.userRepository.delete(id);
+
+    return {
+      status: 200,
+      message: 'User deleted successfully',
+    };
   }
 }

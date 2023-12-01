@@ -154,10 +154,10 @@ export function DeleteSwaggerDecorator() {
       },
     }),
     ApiResponse({
-      status: 204,
+      status: 200,
       description: 'Successfully deleted cryptocurrency.',
     }),
     ApiResponse({ status: 404, description: 'Cryptocurrency not found.' }),
-    HttpCode(204),
+    HttpCode(200),
   );
 }
