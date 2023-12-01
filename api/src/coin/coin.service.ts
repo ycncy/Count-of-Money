@@ -7,13 +7,13 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { CreateCoinDto } from './dto/create-coin.dto';
-import { CoinEntity } from './coin.entity';
+import { CoinEntity } from './entity/coin.entity';
 import utils from './utils';
 import { CoinInfoModel } from './model/coin-info.model';
 import { ListCoinInfoModel } from './model/list-coin-info.model';
 import { ErrorModel } from './model/error.model';
 import { EditCoinDto } from './dto/edit-coin.dto';
-import { ApiCoinEntity } from './api-coin.entity';
+import { ApiCoinEntity } from './entity/api-coin.entity';
 
 @Injectable()
 export class CoinService {
@@ -36,81 +36,62 @@ export class CoinService {
     return this.apiCoinEntityRepository.find();
   }
 
-  async getCoinsInfo(coinIds: number[]) {
+  async getCoinsInfo(coinIds: number[] = []) {
     const histories: ListCoinInfoModel[] = [];
 
-    for (const coinId of coinIds) {
-      const coin: CoinEntity = await this.getById(coinId);
+    if (coinIds.length === 0) {
+      const coins: CoinEntity[] = await this.coinEntityRepository.find();
 
-      if (!coin) {
-        throw new NotFoundException(`Coin ${coinId} not found`);
+      for (const coin of coins) {
+        await this.processCoin(coin, histories);
       }
+    } else {
+      for (const coinId of coinIds) {
+        const coin: CoinEntity = await this.getById(coinId);
 
-      const history: CoinInfoModel | ErrorModel = await utils.fetchCoinHistory(
-        coin.id,
-        coin.symbol,
-        'USD',
-        '1d',
-        '1d',
-      );
+        if (!coin) {
+          throw new NotFoundException(`Coin ${coinId} not found`);
+        }
 
-      if (history instanceof ErrorModel) {
-        if (history.error.code === 'Not Found')
-          throw new NotFoundException(history.error.message);
-      } else {
-        const coinInfo: ListCoinInfoModel = {
-          coinId: coinId,
-          symbol: history.symbol,
-          imageUrl: coin.imageUrl,
-          lastDatetime: history.datetimes[0],
-          high: history.high[0],
-          low: history.low[0],
-          open: history.open[0],
-          close: history.close[0],
-          volume: history.volume[0],
-        };
-
-        histories.push(coinInfo);
+        await this.processCoin(coin, histories);
       }
     }
 
     return histories;
   }
 
-  async getAllCoinsInfo() {
-    const histories: ListCoinInfoModel[] = [];
-
-    const coins: CoinEntity[] = await this.coinEntityRepository.find();
-
-    for (const coin of coins) {
-      const history: CoinInfoModel | ErrorModel = await utils.fetchCoinHistory(
-        coin.id,
-        coin.symbol,
-        'USD',
-        '1d',
-        '1d',
-      );
-
-      if (history instanceof ErrorModel) {
-        if (history.error.code === 'Not Found')
-          throw new NotFoundException(history.error.message);
-      } else {
-        const coinInfo: ListCoinInfoModel = {
-          coinId: coin.id,
-          symbol: history.symbol,
-          imageUrl: coin.imageUrl,
-          lastDatetime: history.datetimes[0],
-          high: history.high[0],
-          low: history.low[0],
-          open: history.open[0],
-          close: history.close[0],
-          volume: history.volume[0],
-        };
-
-        histories.push(coinInfo);
-      }
+  private async processCoin(coin: CoinEntity, histories: ListCoinInfoModel[]) {
+    if (!coin) {
+      throw new NotFoundException(`Coin ${coin.id} not found`);
     }
-    return histories;
+
+    const history: CoinInfoModel | ErrorModel = await utils.fetchCoinHistory(
+      coin.id,
+      coin.symbol,
+      'USD',
+      '1d',
+      '1d',
+    );
+
+    if (history instanceof ErrorModel) {
+      if (history.error.code === 'Not Found') {
+        throw new NotFoundException(history.error.message);
+      }
+    } else {
+      const coinInfo: ListCoinInfoModel = {
+        coinId: coin.id,
+        symbol: history.symbol,
+        imageUrl: coin.imageUrl,
+        lastDatetime: history.datetimes[0],
+        high: history.high[0],
+        low: history.low[0],
+        open: history.open[0],
+        close: history.close[0],
+        volume: history.volume[0],
+      };
+
+      histories.push(coinInfo);
+    }
   }
 
   async saveAllApiCryptos() {

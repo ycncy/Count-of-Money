@@ -1,13 +1,10 @@
 import {
   Body,
-  ConflictException,
   Controller,
   Delete,
   Get,
-  HttpCode,
   HttpException,
   HttpStatus,
-  NotFoundException,
   Param,
   ParseArrayPipe,
   ParseIntPipe,
@@ -15,29 +12,16 @@ import {
   Put,
   Query,
   Request,
-  UseFilters,
   UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { CoinEntity } from './coin.entity';
+import { ApiTags } from '@nestjs/swagger';
+import { CoinEntity } from './entity/coin.entity';
 import { CoinService } from './coin.service';
 import { CreateCoinDto } from './dto/create-coin.dto';
 import { DeleteResult, UpdateResult } from 'typeorm';
-import { ListCoinInfoModel } from './model/list-coin-info.model';
-import { CoinInfoModel } from './model/coin-info.model';
 import { EditCoinDto } from './dto/edit-coin.dto';
-import { ApiCoinInfoModel } from './model/api-coin-info.model';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { DecodedToken } from 'src/auth/auth.dto';
-import { HttpExceptionFilter } from '../globalFilters/http-exception.filter';
-import { ParseArrayOptions } from '@nestjs/common/pipes/parse-array.pipe';
 import {
   CreateSwaggerDecorator,
   DeleteSwaggerDecorator,
@@ -47,7 +31,7 @@ import {
   GetCryptosSwaggerDecorator,
   GetHistorySwaggerDecorator,
   SaveAllApiCryptosSwaggerDecorator,
-} from '../swaggerDecorators/coin-swagger.decorators';
+} from '../swagger-decorator/coin-swagger.decorators';
 
 @ApiTags('Crypto-currencies')
 @Controller('cryptos')
@@ -62,15 +46,12 @@ export class CoinController {
       new ParseArrayPipe({
         items: Number,
         separator: ',',
+        optional: true,
       }),
     )
-    coinIds: number[],
+    coinIds: number[] = [],
   ) {
-    if (coinIds.length === 0) {
-      return await this.coinService.getAllCoinsInfo();
-    } else {
-      return await this.coinService.getCoinsInfo(coinIds);
-    }
+    return await this.coinService.getCoinsInfo(coinIds);
   }
 
   @GetAllApiCryptosSwaggerDecorator()
@@ -88,18 +69,18 @@ export class CoinController {
   }
 
   @GetHistorySwaggerDecorator()
-  @Get(':coinID/history/:period')
+  @Get(':coinId/history/:period')
   async getHistoryByCoinId(
-    @Param('coinID', ParseIntPipe) coinID: number,
+    @Param('coinId', ParseIntPipe) coinID: number,
     @Param('period') period: string,
   ) {
     return await this.coinService.getCoinHistory(coinID, period);
   }
 
   @GetByIdSwaggerDecorator()
-  @Get(':coinID')
+  @Get(':coinId')
   async getById(
-    @Param('coinID', ParseIntPipe) coinID: number,
+    @Param('coinId', ParseIntPipe) coinID: number,
   ): Promise<CoinEntity> {
     const coin: CoinEntity = await this.coinService.getById(Number(coinID));
 
@@ -124,9 +105,9 @@ export class CoinController {
 
   @EditSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Put(':coinID')
+  @Put(':coinId')
   async editCoin(
-    @Param('coinID', ParseIntPipe) coinID: number,
+    @Param('coinId', ParseIntPipe) coinID: number,
     @Body() editCoinDto: EditCoinDto,
     @Request() req: Request & { user: DecodedToken },
   ): Promise<UpdateResult> {
@@ -135,11 +116,11 @@ export class CoinController {
   }
 
   @DeleteSwaggerDecorator()
-  @Delete(':coinID')
+  @Delete(':coinId')
   @UseGuards(JwtAuthGuard)
   async deleteCoin(
     @Request() req: Request & { user: DecodedToken },
-    @Param('coinID', ParseIntPipe) coinID: number,
+    @Param('coinId', ParseIntPipe) coinID: number,
   ): Promise<DeleteResult> {
     if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
     return this.coinService.deleteCoin(coinID);

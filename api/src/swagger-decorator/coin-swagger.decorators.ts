@@ -16,8 +16,10 @@ export function GetCryptosSwaggerDecorator() {
       required: false,
       description: 'List of cryptocurrencies IDs',
       schema: {
-        type: 'string',
-        example: '1,2,3,4,5',
+        type: 'array',
+        items: {
+          example: '1,2,3,4,5',
+        },
       },
     }),
     ApiResponse({
@@ -69,7 +71,7 @@ export function GetHistorySwaggerDecorator() {
       description: 'Successfully retrieved cryptocurrency history.',
     }),
     ApiParam({
-      name: 'coinID',
+      name: 'coinId',
       description: 'ID of the cryptocurrency to get history',
       schema: {
         example: 1,
@@ -93,7 +95,7 @@ export function GetByIdSwaggerDecorator() {
       description: 'Successfully retrieved cryptocurrency.',
     }),
     ApiParam({
-      name: 'coinID',
+      name: 'coinId',
       description: "ID of the cryptocurrency to get it's information",
       schema: {
         example: 1,
@@ -125,7 +127,7 @@ export function EditSwaggerDecorator() {
   return applyDecorators(
     ApiOperation({ summary: 'Edit cryptocurrency by ID' }),
     ApiParam({
-      name: 'coinID',
+      name: 'coinId',
       description: 'ID of the cryptocurrency',
       schema: {
         example: 1,
@@ -145,7 +147,7 @@ export function DeleteSwaggerDecorator() {
   return applyDecorators(
     ApiOperation({ summary: 'Delete cryptocurrency by ID' }),
     ApiParam({
-      name: 'coinID',
+      name: 'coinId',
       description: 'ID of the cryptocurrency',
       schema: {
         example: 1,

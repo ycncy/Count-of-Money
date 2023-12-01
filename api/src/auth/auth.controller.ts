@@ -16,7 +16,7 @@ import {
   GoogleLoginSwaggerDecorator,
   LoginSwaggerDecorator,
   RegisterSwaggerDecorator,
-} from '../swaggerDecorators/auth-swagger.decorators';
+} from '../swagger-decorator/auth-swagger.decorators';
 
 @ApiTags('Auth')
 @Controller('auth')

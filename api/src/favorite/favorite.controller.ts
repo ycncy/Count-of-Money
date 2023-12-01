@@ -19,7 +19,7 @@ import {
   GetDefaultFavoritesSwaggerDecorator,
   GetFavoritesSwaggerDecorator,
   RemoveFromFavoritesSwaggerDecorator,
-} from '../swaggerDecorators/favorite-swagger.decorators';
+} from '../swagger-decorator/favorite-swagger.decorators';
 
 @ApiTags('Favorites')
 @Controller('favorites')
@@ -28,7 +28,7 @@ export class FavoriteController {
 
   @AddToFavoritesSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Post(':userId/coin/:coinId')
+  @Post('users/:userId/coin/:coinId')
   async addToFavorites(
     @Request() req: Request & { user: DecodedToken },
     @Param('userId') userId: number,
@@ -42,7 +42,7 @@ export class FavoriteController {
 
   @RemoveFromFavoritesSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Delete(':userId/coin/:coinId')
+  @Delete('users/:userId/coin/:coinId')
   async removeFromFavorites(
     @Request() req: Request & { user: DecodedToken },
     @Param('userId') userId: number,
@@ -56,7 +56,7 @@ export class FavoriteController {
 
   @GetFavoritesSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Get(':userId')
+  @Get('users/:userId')
   async getFavorites(
     @Request() req: Request & { user: DecodedToken },
     @Param('userId') userId: number,

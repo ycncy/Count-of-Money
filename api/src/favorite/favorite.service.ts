@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserEntity } from 'src/user/user.entity';
-import { CoinEntity } from 'src/coin/coin.entity';
+import { UserEntity } from 'src/user/entity/user.entity';
+import { CoinEntity } from 'src/coin/entity/coin.entity';
 import { DefaultFavEntity } from './favorite.entity';
 
 @Injectable()
