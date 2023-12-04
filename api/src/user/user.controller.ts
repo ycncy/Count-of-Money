@@ -8,7 +8,8 @@ import {
   Get,
   Param,
   HttpException,
-  Body, ParseIntPipe,
+  Body,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserEntity } from './entity/user.entity';
@@ -35,7 +36,7 @@ export class UsersController {
   @GetMeUserSwaggerDecorator()
   @Get('/profile')
   async getProfile(
-      @Request() req: Request & { user: DecodedToken },
+    @Request() req: Request & { user: DecodedToken },
   ): Promise<UserEntity> {
     return await this.usersService.findOne(req.user.sub);
   }
@@ -43,8 +44,8 @@ export class UsersController {
   @UpdateMeUserSwaggerDecorator()
   @Put('profile')
   async updateProfile(
-      @Request() req: Request & { user: DecodedToken },
-      @Body() updateUserDto: UpdateUserDto,
+    @Request() req: Request & { user: DecodedToken },
+    @Body() updateUserDto: UpdateUserDto,
   ): Promise<{ message: string; status: number }> {
     return await this.usersService.update(req.user.sub, updateUserDto);
   }
@@ -52,11 +53,8 @@ export class UsersController {
   @GetUserSwaggerDecorator()
   @Get(':userId')
   async get(
-      @Request() req: Request & { user: DecodedToken },
-      @Param(
-          'userId',
-          ParseIntPipe
-      ) userId: number,
+    @Request() req: Request & { user: DecodedToken },
+    @Param('userId', ParseIntPipe) userId: number,
   ): Promise<UserEntity> {
     const authenticatedUserId = req.user.sub;
     if (authenticatedUserId === userId || req.user.role === 'ADMIN') {
@@ -68,7 +66,7 @@ export class UsersController {
   @GetAllUserSwaggerDecorator()
   @Get()
   async getAll(
-      @Request() req: Request & { user: DecodedToken },
+    @Request() req: Request & { user: DecodedToken },
   ): Promise<UserEntity[]> {
     if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
     return await this.usersService.getAll();
@@ -79,10 +77,7 @@ export class UsersController {
   async update(
     @Request() req: Request & { user: DecodedToken },
     @Body() updateUserDto: UpdateUserDto,
-    @Param(
-        'userId',
-        ParseIntPipe
-    ) userId: number,
+    @Param('userId', ParseIntPipe) userId: number,
   ): Promise<{ message: string; status: number }> {
     const authenticatedUserId = req.user.sub;
     if (authenticatedUserId === userId || req.user.role === 'ADMIN') {

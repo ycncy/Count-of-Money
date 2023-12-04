@@ -10,7 +10,7 @@ export function GetLatestNewsSwaggerDecorator() {
         type: 'string',
         example: 'bitcoin, etherum',
       },
-        required: false
+      required: false,
     }),
     ApiResponse({
       status: 200,

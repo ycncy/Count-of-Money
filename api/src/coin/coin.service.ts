@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateCoinDto } from './dto/create-coin.dto';
 import { CoinEntity } from './entity/coin.entity';
 import utils from './utils';
@@ -117,7 +117,10 @@ export class CoinService {
           newCoin.symbol = coin.symbol;
 
           if (existingCoin) {
-            await this.apiCoinEntityRepository.update({apiId: coin.apiId}, newCoin);
+            await this.apiCoinEntityRepository.update(
+              { apiId: coin.apiId },
+              newCoin,
+            );
           } else {
             addedCoin.push(newCoin);
             await this.apiCoinEntityRepository.save(newCoin);
@@ -284,7 +287,9 @@ export class CoinService {
     };
   }
 
-  async deleteCoin(coinID: number): Promise<{ message: string; status: number }> {
+  async deleteCoin(
+    coinID: number,
+  ): Promise<{ message: string; status: number }> {
     const coin: CoinEntity = await this.getById(coinID);
 
     if (!coin) {

@@ -106,14 +106,15 @@ export class FavoriteService {
   async deleteDefaultFavorite(
     coinId: number,
   ): Promise<{ message: string; status: number }> {
-    const coin: DefaultFavoriteEntity = await this.defaultFavRepository.findOneBy({
+    const coin: DefaultFavoriteEntity =
+      await this.defaultFavRepository.findOneBy({
         coinId: coinId,
-    });
+      });
 
     if (coin === null) throw new NotFoundException(`Coin ${coinId} not found`);
 
     await this.defaultFavRepository.delete({
-      coinId: coinId
+      coinId: coinId,
     });
 
     return {

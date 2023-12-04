@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {CoinEntity} from "../coin/entity/coin.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { CoinEntity } from '../coin/entity/coin.entity';
 
 @Entity('default_fav')
 export class DefaultFavoriteEntity {
@@ -8,7 +8,7 @@ export class DefaultFavoriteEntity {
   id: number;
 
   @ApiProperty()
-  @ManyToOne(() => CoinEntity, coin => coin.id)
+  @ManyToOne(() => CoinEntity, (coin) => coin.id)
   @Column({
     nullable: false,
     unique: true,
