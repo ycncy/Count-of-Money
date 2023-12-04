@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateCoinDto } from './dto/create-coin.dto';
 import { CoinEntity } from './entity/coin.entity';
 import utils from './utils';
@@ -14,8 +14,7 @@ import { ListCoinInfoModel } from './model/list-coin-info.model';
 import { ErrorModel } from './model/error.model';
 import { EditCoinDto } from './dto/edit-coin.dto';
 import { ApiCoinEntity } from './entity/api-coin.entity';
-import { CoinModule } from './coin.module';
-import { NotFoundError } from 'rxjs';
+import {IPaginationOptions, paginate} from "nestjs-typeorm-paginate";
 
 @Injectable()
 export class CoinService {
@@ -34,8 +33,8 @@ export class CoinService {
     });
   }
 
-  getAllApiCryptos() {
-    return this.apiCoinEntityRepository.find();
+  getAllApiCryptos(options: IPaginationOptions) {
+    return paginate<ApiCoinEntity>(this.apiCoinEntityRepository, options);
   }
 
   async getCoinsInfo(coinIds: number[] = []) {
@@ -113,14 +112,14 @@ export class CoinService {
 
           const newCoin: ApiCoinEntity = new ApiCoinEntity();
 
-          newCoin.api_id = coin.api_id;
+          newCoin.apiId = coin.apiId;
           newCoin.rank = coin.rank;
           newCoin.name = coin.name;
           newCoin.symbol = coin.symbol;
 
           if (existingCoin) {
             await this.apiCoinEntityRepository.update(
-              { api_id: coin.api_id },
+              { apiId: coin.apiId },
               newCoin,
             );
           } else {
@@ -247,7 +246,7 @@ export class CoinService {
       const coinIdFromDatabase: ApiCoinEntity =
         await this.apiCoinEntityRepository.findOne({
           where: {
-            api_id: createCoinDto.coinApiId,
+            apiId: createCoinDto.coinApiId,
           },
         });
 
@@ -255,7 +254,7 @@ export class CoinService {
         throw new NotFoundException('Coin not found, invalid coin ID');
 
       const coinEntityFromApi: CoinEntity = await utils.fetchCoinInfo(
-        coinIdFromDatabase.api_id,
+        coinIdFromDatabase.apiId,
       );
       const coin = this.coinEntityRepository.create(coinEntityFromApi);
       return await this.coinEntityRepository.save(coin);

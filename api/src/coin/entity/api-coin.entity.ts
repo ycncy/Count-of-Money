@@ -10,7 +10,6 @@ export class ApiCoinEntity {
   @Column({
     nullable: true,
   })
-  api_id: number;
   apiId: number;
 
   @ApiProperty()
