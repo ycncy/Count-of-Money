@@ -34,7 +34,7 @@ export class UsersController {
 
   @GetMeUserSwaggerDecorator()
   @Get('/profile')
-  async getMe(
+  async getProfile(
       @Request() req: Request & { user: DecodedToken },
   ): Promise<UserEntity> {
     return await this.usersService.findOne(req.user.sub);
@@ -42,7 +42,7 @@ export class UsersController {
 
   @UpdateMeUserSwaggerDecorator()
   @Put('profile')
-  async updateMe(
+  async updateProfile(
       @Request() req: Request & { user: DecodedToken },
       @Body() updateUserDto: UpdateUserDto,
   ): Promise<{ message: string; status: number }> {

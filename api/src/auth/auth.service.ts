@@ -24,6 +24,7 @@ export class AuthService {
     sub: number;
     email: string;
     role: UserRole;
+    keywords: string[];
     provider: UserProvider;
     username: string;
     baseCurrency: string;
@@ -50,6 +51,7 @@ export class AuthService {
         sub: userEntity.id,
         email: userEntity.email,
         role: userEntity.role,
+        keywords: userEntity.keywords,
         provider: userEntity.provider,
         username: userEntity.username,
         baseCurrency: userEntity.baseCurrency,
@@ -78,6 +80,7 @@ export class AuthService {
         sub: userEntity.id,
         email: userEntity.email,
         role: userEntity.role,
+        keywords: userEntity.keywords,
         provider: userEntity.provider,
         username: userEntity.username,
         baseCurrency: userEntity.baseCurrency,
@@ -120,6 +123,7 @@ export class AuthService {
           sub: userCreated.id,
           email: userCreated.email,
           role: userCreated.role,
+          keywords: userCreated.keywords,
           provider: userCreated.provider,
           username: userCreated.username,
           baseCurrency: userCreated.baseCurrency,
