@@ -34,6 +34,7 @@ export class DecodedToken {
   sub: number;
   email: string;
   role: UserRole;
+  keywords: string[];
   provider: UserProvider;
   username: string;
   iat: number;

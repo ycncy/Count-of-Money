@@ -1,10 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { CoinEntity } from '../coin/entity/coin.entity';
 
-@Entity('defaultFav')
-export class DefaultFavEntity {
+@Entity('default_fav')
+export class DefaultFavoriteEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ApiProperty()
+  @ManyToOne(() => CoinEntity, (coin) => coin.id)
+  @Column({
+    nullable: false,
+    unique: true,
+  })
+  coinId: number;
 
   @ApiProperty()
   @Column({

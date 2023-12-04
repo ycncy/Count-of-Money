@@ -2,7 +2,6 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -97,37 +96,33 @@ export class AuthService {
   }
 
   async registerUser(user: CreateUserDto) {
-    try {
-      const userExists: UserEntity = await this.userService.findOneByEmail(
-        user.email,
-      );
+    const userExists: UserEntity = await this.userService.findOneByEmail(
+      user.email,
+    );
 
-      if (userExists !== null) {
-        throw new ConflictException('User already exists');
-      }
-
-      const newUser = {
-        ...user,
-        role: UserRole.USER,
-        provider: UserProvider.LOCAL,
-        password: user.password,
-      };
-
-      const userCreated = await this.userService.create(newUser);
-      await this.userService.save(userCreated);
-      return {
-        token: this.generateJwt({
-          sub: userCreated.id,
-          email: userCreated.email,
-          role: userCreated.role,
-          provider: userCreated.provider,
-          username: userCreated.username,
-          baseCurrency: userCreated.baseCurrency,
-        }),
-      };
-    } catch {
-      throw new InternalServerErrorException();
+    if (userExists !== null) {
+      throw new ConflictException('User already exists');
     }
+
+    const newUser = {
+      ...user,
+      role: UserRole.USER,
+      provider: UserProvider.LOCAL,
+      password: user.password,
+    };
+
+    const userCreated = await this.userService.create(newUser);
+    await this.userService.save(userCreated);
+    return {
+      token: this.generateJwt({
+        sub: userCreated.id,
+        email: userCreated.email,
+        role: userCreated.role,
+        provider: userCreated.provider,
+        username: userCreated.username,
+        baseCurrency: userCreated.baseCurrency,
+      }),
+    };
   }
 
   async googleAuth(req) {
