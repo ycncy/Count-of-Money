@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpException,
@@ -18,7 +19,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { CoinEntity } from './entity/coin.entity';
 import { CoinService } from './coin.service';
 import { CreateCoinDto } from './dto/create-coin.dto';
-import { DeleteResult, UpdateResult } from 'typeorm';
 import { EditCoinDto } from './dto/edit-coin.dto';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { DecodedToken } from 'src/auth/auth.dto';
@@ -56,8 +56,15 @@ export class CoinController {
 
   @GetAllApiCryptosSwaggerDecorator()
   @Get('/allFromApi')
-  async getAllApiCryptos() {
-    return await this.coinService.getAllApiCryptos();
+  async getAllApiCryptos(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+  ) {
+    return await this.coinService.getAllApiCryptos({
+      page,
+      limit,
+      route: 'http://localhost:5000/api/coins/allFromApi',
+    });
   }
 
   @SaveAllApiCryptosSwaggerDecorator()

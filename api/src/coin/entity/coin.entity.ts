@@ -23,13 +23,13 @@ export class CoinEntity {
   @ApiProperty({ type: () => UserEntity })
   @ManyToMany(() => UserEntity, (user) => user.favorites)
   @JoinTable({
-    name: 'favorites', // Nom personnalisé pour la table de jointure
+    name: 'favorites',
     joinColumn: {
-      name: 'coin_id',
+      name: 'coinId',
       referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-      name: 'user_id',
+      name: 'userId',
       referencedColumnName: 'id',
     },
   })

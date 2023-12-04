@@ -7,13 +7,15 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { CreateCoinDto } from './dto/create-coin.dto';
-import { CoinEntity } from './entity/coin.entity';
+import { CoinEntity } from './coin.entity';
 import utils from './utils';
 import { CoinInfoModel } from './model/coin-info.model';
 import { ListCoinInfoModel } from './model/list-coin-info.model';
 import { ErrorModel } from './model/error.model';
 import { EditCoinDto } from './dto/edit-coin.dto';
-import { ApiCoinEntity } from './entity/api-coin.entity';
+import { ApiCoinEntity } from './api-coin.entity';
+import { CoinModule } from './coin.module';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class CoinService {

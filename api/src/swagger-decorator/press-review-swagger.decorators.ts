@@ -8,8 +8,9 @@ export function GetLatestNewsSwaggerDecorator() {
       description: 'List of news tags',
       schema: {
         type: 'string',
-        example: 'bitcoin',
+        example: 'bitcoin, etherum',
       },
+      required: false,
     }),
     ApiResponse({
       status: 200,
