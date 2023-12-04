@@ -5,16 +5,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { CreateCoinDto } from './dto/create-coin.dto';
-import { CoinEntity } from './entity/coin.entity';
+import { CoinEntity } from './coin.entity';
 import utils from './utils';
 import { CoinInfoModel } from './model/coin-info.model';
 import { ListCoinInfoModel } from './model/list-coin-info.model';
 import { ErrorModel } from './model/error.model';
 import { EditCoinDto } from './dto/edit-coin.dto';
-import { ApiCoinEntity } from './entity/api-coin.entity';
-import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { ApiCoinEntity } from './api-coin.entity';
+import { CoinModule } from './coin.module';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class CoinService {
@@ -33,8 +34,8 @@ export class CoinService {
     });
   }
 
-  getAllApiCryptos(options: IPaginationOptions) {
-    return paginate<ApiCoinEntity>(this.apiCoinEntityRepository, options);
+  getAllApiCryptos() {
+    return this.apiCoinEntityRepository.find();
   }
 
   async getCoinsInfo(coinIds: number[] = []) {
@@ -96,39 +97,43 @@ export class CoinService {
   }
 
   async saveAllApiCryptos() {
-    const data = await utils.fetchAllApiCryptos();
+    try {
+      const data = await utils.fetchAllApiCryptos();
 
-    const addedCoin: Array<ApiCoinEntity> = [];
+      const addedCoin: Array<ApiCoinEntity> = [];
 
-    await Promise.all(
-      data.map(async (coin) => {
-        const existingCoin: ApiCoinEntity =
-          await this.apiCoinEntityRepository.findOne({
-            where: {
-              symbol: coin.symbol,
-            },
-          });
+      await Promise.all(
+        data.map(async (coin) => {
+          const existingCoin: ApiCoinEntity =
+            await this.apiCoinEntityRepository.findOne({
+              where: {
+                symbol: coin.symbol,
+              },
+            });
 
-        const newCoin: ApiCoinEntity = new ApiCoinEntity();
+          const newCoin: ApiCoinEntity = new ApiCoinEntity();
 
-        newCoin.apiId = coin.apiId;
-        newCoin.rank = coin.rank;
-        newCoin.name = coin.name;
-        newCoin.symbol = coin.symbol;
+          newCoin.api_id = coin.api_id;
+          newCoin.rank = coin.rank;
+          newCoin.name = coin.name;
+          newCoin.symbol = coin.symbol;
 
-        if (existingCoin) {
-          await this.apiCoinEntityRepository.update(
-            { apiId: coin.apiId },
-            newCoin,
-          );
-        } else {
-          addedCoin.push(newCoin);
-          await this.apiCoinEntityRepository.save(newCoin);
-        }
-      }),
-    );
+          if (existingCoin) {
+            await this.apiCoinEntityRepository.update(
+              { api_id: coin.api_id },
+              newCoin,
+            );
+          } else {
+            addedCoin.push(newCoin);
+            await this.apiCoinEntityRepository.save(newCoin);
+          }
+        }),
+      );
 
-    return addedCoin;
+      return addedCoin;
+    } catch (error) {
+      throw new InternalServerErrorException('Internal Server Error');
+    }
   }
 
   async getCoinHistory(coinID: number, granularity: string) {
@@ -242,7 +247,7 @@ export class CoinService {
       const coinIdFromDatabase: ApiCoinEntity =
         await this.apiCoinEntityRepository.findOne({
           where: {
-            apiId: createCoinDto.coinApiId,
+            api_id: createCoinDto.coin_api_id,
           },
         });
 
@@ -250,7 +255,7 @@ export class CoinService {
         throw new NotFoundException('Coin not found, invalid coin ID');
 
       const coinEntityFromApi: CoinEntity = await utils.fetchCoinInfo(
-        coinIdFromDatabase.apiId,
+        coinIdFromDatabase.api_id,
       );
       const coin = this.coinEntityRepository.create(coinEntityFromApi);
       return await this.coinEntityRepository.save(coin);

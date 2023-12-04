@@ -1,16 +1,15 @@
-import { addToLocalApi } from "../../api/admin";
-import { Coin } from "../../types";
+import { addToLocalApi } from '../../api/admin';
+import { Coin } from '../../types';
 
 interface Props {
   coin: Coin;
   userRole: string | undefined;
 }
 
-export const CoinComponent = ({coin, userRole} :Props ) => {
-
+export const CoinComponent = ({ coin, userRole }: Props) => {
   const addToApi = async () => {
-    await addToLocalApi(coin.api_id); 
-  }
+    await addToLocalApi(coin.api_id);
+  };
 
   return (
     <div>
@@ -20,9 +19,9 @@ export const CoinComponent = ({coin, userRole} :Props ) => {
         <h3>{coin.symbol}</h3>
         <h4>{coin.rank}</h4>
         <h4>{coin.id}</h4>
-        {userRole === "ADMIN" && (
+        {userRole === 'ADMIN' && (
           <button onClick={addToApi}>add to local API</button>
-          )}
+        )}
       </div>
     </div>
   );
