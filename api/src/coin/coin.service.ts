@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateCoinDto } from './dto/create-coin.dto';
 import { CoinEntity } from './entity/coin.entity';
 import utils from './utils';
@@ -14,6 +14,11 @@ import { ListCoinInfoModel } from './model/list-coin-info.model';
 import { ErrorModel } from './model/error.model';
 import { EditCoinDto } from './dto/edit-coin.dto';
 import { ApiCoinEntity } from './entity/api-coin.entity';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class CoinService {
@@ -32,8 +37,8 @@ export class CoinService {
     });
   }
 
-  getAllApiCryptos() {
-    return this.apiCoinEntityRepository.find();
+  getAllApiCryptos(options: IPaginationOptions) {
+    return paginate<ApiCoinEntity>(this.apiCoinEntityRepository, options);
   }
 
   async getCoinsInfo(coinIds: number[] = []) {
