@@ -7,7 +7,7 @@ export class PressReviewService {
 
   async getLatestNews(newsParam: string[]): Promise<any[]> {
     const sources = [];
-
+    console.log('GET news', newsParam);
     if (newsParam.length !== 0) {
       newsParam.forEach((item: string) => {
         sources.push(`https://coinjournal.net/fr/actualites/tag/${item}/feed/`);

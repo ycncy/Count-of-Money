@@ -117,7 +117,10 @@ export class CoinService {
           newCoin.symbol = coin.symbol;
 
           if (existingCoin) {
-            await this.apiCoinEntityRepository.update({api_id: coin.api_id}, newCoin);
+            await this.apiCoinEntityRepository.update(
+              { api_id: coin.api_id },
+              newCoin,
+            );
           } else {
             addedCoin.push(newCoin);
             await this.apiCoinEntityRepository.save(newCoin);
@@ -284,7 +287,9 @@ export class CoinService {
     };
   }
 
-  async deleteCoin(coinID: number): Promise<{ message: string; status: number }> {
+  async deleteCoin(
+    coinID: number,
+  ): Promise<{ message: string; status: number }> {
     const coin: CoinEntity = await this.getById(coinID);
 
     if (!coin) {
