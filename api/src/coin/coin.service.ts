@@ -14,11 +14,7 @@ import { ListCoinInfoModel } from './model/list-coin-info.model';
 import { ErrorModel } from './model/error.model';
 import { EditCoinDto } from './dto/edit-coin.dto';
 import { ApiCoinEntity } from './entity/api-coin.entity';
-import {
-  paginate,
-  Pagination,
-  IPaginationOptions,
-} from 'nestjs-typeorm-paginate';
+import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class CoinService {
@@ -100,43 +96,39 @@ export class CoinService {
   }
 
   async saveAllApiCryptos() {
-    try {
-      const data = await utils.fetchAllApiCryptos();
+    const data = await utils.fetchAllApiCryptos();
 
-      const addedCoin: Array<ApiCoinEntity> = [];
+    const addedCoin: Array<ApiCoinEntity> = [];
 
-      await Promise.all(
-        data.map(async (coin) => {
-          const existingCoin: ApiCoinEntity =
-            await this.apiCoinEntityRepository.findOne({
-              where: {
-                symbol: coin.symbol,
-              },
-            });
+    await Promise.all(
+      data.map(async (coin) => {
+        const existingCoin: ApiCoinEntity =
+          await this.apiCoinEntityRepository.findOne({
+            where: {
+              symbol: coin.symbol,
+            },
+          });
 
-          const newCoin: ApiCoinEntity = new ApiCoinEntity();
+        const newCoin: ApiCoinEntity = new ApiCoinEntity();
 
-          newCoin.apiId = coin.apiId;
-          newCoin.rank = coin.rank;
-          newCoin.name = coin.name;
-          newCoin.symbol = coin.symbol;
+        newCoin.apiId = coin.apiId;
+        newCoin.rank = coin.rank;
+        newCoin.name = coin.name;
+        newCoin.symbol = coin.symbol;
 
-          if (existingCoin) {
-            await this.apiCoinEntityRepository.update(
-              { apiId: coin.apiId },
-              newCoin,
-            );
-          } else {
-            addedCoin.push(newCoin);
-            await this.apiCoinEntityRepository.save(newCoin);
-          }
-        }),
-      );
+        if (existingCoin) {
+          await this.apiCoinEntityRepository.update(
+            { apiId: coin.apiId },
+            newCoin,
+          );
+        } else {
+          addedCoin.push(newCoin);
+          await this.apiCoinEntityRepository.save(newCoin);
+        }
+      }),
+    );
 
-      return addedCoin;
-    } catch (error) {
-      throw new InternalServerErrorException('Internal Server Error');
-    }
+    return addedCoin;
   }
 
   async getCoinHistory(coinID: number, granularity: string) {

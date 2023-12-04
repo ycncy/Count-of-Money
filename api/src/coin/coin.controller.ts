@@ -1,6 +1,7 @@
 import {
   Body,
-  Controller, DefaultValuePipe,
+  Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpException,
@@ -31,7 +32,6 @@ import {
   GetHistorySwaggerDecorator,
   SaveAllApiCryptosSwaggerDecorator,
 } from '../swagger-decorator/coin-swagger.decorators';
-import {Paginate, PaginateQuery} from "nestjs-paginate";
 
 @ApiTags('Crypto-currencies')
 @Controller('coins')
@@ -57,13 +57,13 @@ export class CoinController {
   @GetAllApiCryptosSwaggerDecorator()
   @Get('/allFromApi')
   async getAllApiCryptos(
-      @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-      @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ) {
     return await this.coinService.getAllApiCryptos({
       page,
       limit,
-      route: "http://localhost:5000/api/coins/allFromApi"
+      route: 'http://localhost:5000/api/coins/allFromApi',
     });
   }
 
