@@ -11,6 +11,7 @@ import { UserEntity } from 'src/user/entity/user.entity';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserProvider, UserRole } from 'src/user/user.constants';
 import { SignInDto, SignInGoogleDto } from './auth.dto';
+import {ResponseModel} from "../response-model/response.model";
 
 @Injectable()
 export class AuthService {
@@ -111,7 +112,7 @@ export class AuthService {
       password: user.password,
     };
 
-    const userCreated = await this.userService.create(newUser);
+    const userCreated: UserEntity = await this.userService.create(newUser);
     await this.userService.save(userCreated);
     return {
       token: this.generateJwt({
@@ -136,8 +137,8 @@ export class AuthService {
     };
   }
 
-  async validateUser(email: string, pass: string) {
-    const user = await this.userService.findOneByEmail(email);
+  async validateUser(email: string, pass: string): Promise<UserEntity> {
+    const user: UserEntity = await this.userService.findOneByEmail(email);
 
     if (user && bcrypt.compareSync(pass, user.password)) {
       return user;

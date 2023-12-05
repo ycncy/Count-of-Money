@@ -1,9 +1,11 @@
 import { format, parseISO } from 'date-fns';
 import { CoinEntity } from './entity/coin.entity';
 import dateProcessUtil from '../date.process.util';
-import { ErrorModel } from './model/error.model';
+import { ErrorModel } from '../response-model/error.model';
 import { CoinInfoModel } from './model/coin-info.model';
 import { ApiCoinInfoModel } from './model/api-coin-info.model';
+import { ResponseModel } from '../response-model/response.model';
+import { ApiCoinEntity } from './entity/api-coin.entity';
 
 const fetchCoinInfo = async (coinId: number) => {
   try {
@@ -19,7 +21,7 @@ const fetchCoinInfo = async (coinId: number) => {
     const data = await response.json();
     const coinData = data['data'][Object.keys(data['data'])[0]];
 
-    const newCoinEntity = new CoinEntity();
+    const newCoinEntity: CoinEntity = new CoinEntity();
     newCoinEntity.fullName = coinData.name;
     newCoinEntity.imageUrl = coinData.logo;
     newCoinEntity.description = coinData.description;
@@ -42,11 +44,11 @@ const fetchCoinHistory = async (
   currency: string,
   range: string,
   granularity: string,
-) => {
+): Promise<CoinInfoModel | ErrorModel> => {
   try {
     const query_url = `https://query2.finance.yahoo.com/v8/finance/chart/${coinSymbol}-${currency}?range=${range}&interval=${granularity}`;
 
-    const response = await fetch(query_url, {
+    const response: Response = await fetch(query_url, {
       headers: { 'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY },
     });
 
@@ -54,12 +56,12 @@ const fetchCoinHistory = async (
 
     if (jsonResponse.chart.error) {
       if (jsonResponse.chart.error.code === 'Not Found') {
-        const errorDetails = {
-          code: jsonResponse.chart.error.code,
+        const errorDetails: ResponseModel = {
+          status: parseInt(jsonResponse.chart.error.code),
           message: jsonResponse.chart.error.description,
         };
 
-        const errorResponse = new ErrorModel();
+        const errorResponse: ErrorModel = new ErrorModel();
         errorResponse.error = errorDetails;
 
         return errorResponse;
@@ -97,8 +99,8 @@ const fetchAllApiCryptos = async () => {
 
     const jsonResponse = await response.json();
 
-    return jsonResponse.data.map((coin) => {
-      const formattedCoin = new ApiCoinInfoModel();
+    return jsonResponse.data.map((coin: ApiCoinEntity) => {
+      const formattedCoin: ApiCoinInfoModel = new ApiCoinInfoModel();
       formattedCoin.apiId = coin.id;
       formattedCoin.rank = coin.rank;
       formattedCoin.name = coin.name;

@@ -11,6 +11,7 @@ import { UserEntity } from './entity/user.entity';
 import { UserProvider, UserRole } from './user.constants';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ResponseModel } from '../response-model/response.model';
 
 @Injectable()
 export class UserService {
@@ -89,7 +90,7 @@ export class UserService {
   async update(
     id: number,
     updateUserDto: UpdateUserDto,
-  ): Promise<{ message: string; status: number }> {
+  ): Promise<ResponseModel> {
     const user: UserEntity = await this.findOne(id);
     if (!user) {
       throw new NotFoundException(`User ${id} not found`);
@@ -102,7 +103,7 @@ export class UserService {
     };
   }
 
-  async delete(id: number): Promise<{ message: string; status: number }> {
+  async delete(id: number): Promise<ResponseModel> {
     const user: UserEntity = await this.findOne(id);
     if (!user) {
       throw new NotFoundException(`User ${id} not found`);

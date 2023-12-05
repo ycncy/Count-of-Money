@@ -25,6 +25,7 @@ import {
   UpdateMeUserSwaggerDecorator,
   UpdateUserSwaggerDecorator,
 } from '../swagger-decorator/user-swagger.decorators';
+import { ResponseModel } from '../response-model/response.model';
 
 @UseGuards(JwtAuthGuard)
 @ApiTags('Users')
@@ -46,7 +47,7 @@ export class UsersController {
   async updateProfile(
     @Request() req: Request & { user: DecodedToken },
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<{ message: string; status: number }> {
+  ): Promise<ResponseModel> {
     return await this.usersService.update(req.user.sub, updateUserDto);
   }
 
@@ -78,7 +79,7 @@ export class UsersController {
     @Request() req: Request & { user: DecodedToken },
     @Body() updateUserDto: UpdateUserDto,
     @Param('userId', ParseIntPipe) userId: number,
-  ): Promise<{ message: string; status: number }> {
+  ): Promise<ResponseModel> {
     const authenticatedUserId = req.user.sub;
     if (authenticatedUserId === userId || req.user.role === 'ADMIN') {
       return await this.usersService.update(userId, updateUserDto);
@@ -91,7 +92,7 @@ export class UsersController {
   async delete(
     @Request() req: Request & { user: DecodedToken },
     @Param('userId') userId: number,
-  ): Promise<{ message: string; status: number }> {
+  ): Promise<ResponseModel> {
     const authenticatedUserId = req.user.sub;
     if (authenticatedUserId === userId || req.user.role === 'ADMIN') {
       return await this.usersService.delete(userId);

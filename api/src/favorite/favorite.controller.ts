@@ -20,6 +20,9 @@ import {
   GetFavoritesSwaggerDecorator,
   RemoveFromFavoritesSwaggerDecorator,
 } from '../swagger-decorator/favorite-swagger.decorators';
+import { CoinEntity } from '../coin/entity/coin.entity';
+import { DefaultFavoriteEntity } from './favorite.entity';
+import { ResponseModel } from '../response-model/response.model';
 
 @ApiTags('Favorites')
 @Controller('favorites')
@@ -33,7 +36,7 @@ export class FavoriteController {
     @Request() req: Request & { user: DecodedToken },
     @Param('userId') userId: number,
     @Param('coinId') coinId: number,
-  ) {
+  ): Promise<ResponseModel> {
     if (req.user.sub !== userId && req.user.role !== 'ADMIN') {
       throw new HttpException('Unauthorized', 401);
     }
@@ -60,7 +63,7 @@ export class FavoriteController {
   async getFavorites(
     @Request() req: Request & { user: DecodedToken },
     @Param('userId') userId: number,
-  ) {
+  ): Promise<CoinEntity[] | DefaultFavoriteEntity[]> {
     if (req.user.sub !== userId && req.user.role !== 'ADMIN') {
       throw new HttpException('Unauthorized', 401);
     }

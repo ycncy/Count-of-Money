@@ -6,7 +6,7 @@ export class CreateCoinDto {
   @ApiProperty({
     type: Number,
     required: true,
-    name: 'coin_api_id',
+    name: 'coinApiId',
     description: 'Cryptocurrency ID from yahoo finance API',
   })
   @IsNotEmpty()
