@@ -10,8 +10,9 @@ export class PressReviewService {
   private parser = new Parser();
 
   async getLatestPublicNews() {
-    console.log("public")
-    return this.fetchPressReviews(['https://coinjournal.net/fr/actualites/feed/'])
+    return this.fetchPressReviews([
+      'https://coinjournal.net/fr/actualites/feed/',
+    ]);
   }
 
   async getUserNewsFromKeyWords(user: DecodedToken) {
