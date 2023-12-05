@@ -31,30 +31,22 @@ export class FavoriteController {
 
   @AddToFavoritesSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Post('users/:userId/coins/:coinId')
+  @Post('coins/:coinId')
   async addToFavorites(
     @Request() req: Request & { user: DecodedToken },
-    @Param('userId') userId: number,
     @Param('coinId') coinId: number,
   ): Promise<ResponseModel> {
-    if (req.user.sub !== userId && req.user.role !== 'ADMIN') {
-      throw new HttpException('Unauthorized', 401);
-    }
-    return await this.favoriteService.addToFavorites(userId, coinId);
+    return await this.favoriteService.addToFavorites(req.user.sub, coinId);
   }
 
   @RemoveFromFavoritesSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Delete('users/:userId/coins/:coinId')
+  @Delete('coins/:coinId')
   async removeFromFavorites(
     @Request() req: Request & { user: DecodedToken },
-    @Param('userId') userId: number,
     @Param('coinId') coinId: number,
   ) {
-    if (req.user.sub !== userId && req.user.role !== 'ADMIN') {
-      throw new HttpException('Unauthorized', 401);
-    }
-    return await this.favoriteService.removeFromFavorites(userId, coinId);
+    return await this.favoriteService.removeFromFavorites(req.user.sub, coinId);
   }
 
   @GetFavoritesSwaggerDecorator()
