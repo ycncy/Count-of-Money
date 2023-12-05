@@ -57,6 +57,6 @@ export class UserEntity {
 
   @ApiProperty({ enum: UserProvider })
   @IsEnum(UserProvider)
-  @Column({ type: 'enum', enum: UserProvider })
+  @Column({ type: 'enum', enum: UserProvider, nullable: true })
   provider: UserProvider;
 }

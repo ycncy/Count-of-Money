@@ -1,5 +1,5 @@
-import { Coin } from "../types";
-import { clientApi } from "./client-api";
+import { Coin } from '../types';
+import { clientApi } from './client-api';
 
 export const fetchAllCoinsFromApi = async () => {
   return clientApi
@@ -12,4 +12,4 @@ export const addToLocalApi = async (id: number) => {
   return clientApi
     .post(`/coins/`,{coinApiId: id})
     .then((response) => response.data);
-}
+};

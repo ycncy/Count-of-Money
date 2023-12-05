@@ -7,11 +7,11 @@ export const getMe = async () => {
     .then((response) => response.data);
 };
 
-export const getNews = async () => {
+export const getNews = async (search: string) => {
   return clientApi
-    .get<News[]>(`/articles`)
+    .get<News[]>(`/articles?news=${encodeURIComponent(search)}`)
     .then((response) => response.data);
-}
+};
 
 export const editUser = async (data: Profile) => {
   return clientApi

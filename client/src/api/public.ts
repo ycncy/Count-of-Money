@@ -1,5 +1,5 @@
-import { Coin, LocalCoin } from "../types";
-import { clientApi } from "./client-api";
+import { Coin, LocalCoin } from '../types';
+import { clientApi } from './client-api';
 
 export const getAllCoins = async () => {
   return clientApi
