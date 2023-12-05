@@ -99,7 +99,7 @@ const fetchAllApiCryptos = async () => {
 
     return jsonResponse.data.map((coin) => {
       const formattedCoin = new ApiCoinInfoModel();
-      formattedCoin.api_id = coin.id;
+      formattedCoin.apiId = coin.id;
       formattedCoin.rank = coin.rank;
       formattedCoin.name = coin.name;
       formattedCoin.symbol = coin.symbol;

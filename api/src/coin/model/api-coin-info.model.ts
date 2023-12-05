@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ApiCoinInfoModel {
   @ApiProperty()
-  api_id: number;
+  apiId: number;
 
   @ApiProperty()
   rank: number;

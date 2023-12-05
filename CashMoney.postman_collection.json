@@ -1,0 +1,388 @@
+{
+	"info": {
+		"_postman_id": "fb909b64-4064-4070-adda-f5d0b15f41cd",
+		"name": "CashMoney",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21993036"
+	},
+	"item": [
+		{
+			"name": "userCRUD",
+			"item": [
+				{
+					"name": "getOne",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyLCJlbWFpbCI6InRlc3Q3QHRlc3QudGVzdCIsInJvbGUiOiJBRE1JTiIsInByb3ZpZGVyIjoiTE9DQUwiLCJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE3MDA0OTA2MDEsImV4cCI6MTcwMDU3NzAwMX0.Xs7TjvYrfYHnXUKO8SQYyOBDk-1cyiC4Gw8cmtaIjyc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/users/17",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"users",
+								"17"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"test384799988kuubiu88666\",\n    \"email\": \"test5654764599998nbnn888666@test.test\",\n    \"password\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test5654764599998nbnn888666@test.test\",\n    \"password\": \"test\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "coins",
+			"item": [
+				{
+					"name": "createCoin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyLCJlbWFpbCI6InRlc3Q3QHRlc3QudGVzdCIsInJvbGUiOiJBRE1JTiIsInByb3ZpZGVyIjoiTE9DQUwiLCJ1c2VybmFtZSI6InRlc3QiLCJiYXNlQ3VycmVuY3kiOiJFVVIiLCJpYXQiOjE3MDA1NjExNDgsImV4cCI6MTcwMDY0NzU0OH0.qytUN94aHJdLup7ayaUEmNfA_yUE1j7gZCkFXb1FDkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coin_api_id\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/cryptos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"cryptos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCoin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyLCJlbWFpbCI6InRlc3Q3QHRlc3QudGVzdCIsInJvbGUiOiJBRE1JTiIsInByb3ZpZGVyIjoiTE9DQUwiLCJ1c2VybmFtZSI6InRlc3QiLCJiYXNlQ3VycmVuY3kiOiJFVVIiLCJpYXQiOjE3MDA1NjExNDgsImV4cCI6MTcwMDY0NzU0OH0.qytUN94aHJdLup7ayaUEmNfA_yUE1j7gZCkFXb1FDkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"coin_api_id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/cryptos/1/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"cryptos",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "favorites",
+			"item": [
+				{
+					"name": "addFav",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyLCJlbWFpbCI6InRlc3Q3QHRlc3QudGVzdCIsInJvbGUiOiJBRE1JTiIsInByb3ZpZGVyIjoiTE9DQUwiLCJ1c2VybmFtZSI6InRlc3QiLCJiYXNlQ3VycmVuY3kiOiJFVVIiLCJpYXQiOjE3MDA1NjExNDgsImV4cCI6MTcwMDY0NzU0OH0.qytUN94aHJdLup7ayaUEmNfA_yUE1j7gZCkFXb1FDkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/favorites/11/fav/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"favorites",
+								"11",
+								"fav",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteFav",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyLCJlbWFpbCI6InRlc3Q3QHRlc3QudGVzdCIsInJvbGUiOiJBRE1JTiIsInByb3ZpZGVyIjoiTE9DQUwiLCJ1c2VybmFtZSI6InRlc3QiLCJiYXNlQ3VycmVuY3kiOiJFVVIiLCJpYXQiOjE3MDA1NjExNDgsImV4cCI6MTcwMDY0NzU0OH0.qytUN94aHJdLup7ayaUEmNfA_yUE1j7gZCkFXb1FDkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/favorites/12/fav/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"favorites",
+								"12",
+								"fav",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "press-review",
+			"item": [
+				{
+					"name": "getAllNews",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyLCJlbWFpbCI6InRlc3Q3QHRlc3QudGVzdCIsInJvbGUiOiJBRE1JTiIsInByb3ZpZGVyIjoiTE9DQUwiLCJ1c2VybmFtZSI6InRlc3QiLCJiYXNlQ3VycmVuY3kiOiJFVVIiLCJpYXQiOjE3MDA1NjExNDgsImV4cCI6MTcwMDY0NzU0OH0.qytUN94aHJdLup7ayaUEmNfA_yUE1j7gZCkFXb1FDkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/articles?news=btc&news=eth",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"articles"
+							],
+							"query": [
+								{
+									"key": "news",
+									"value": "btc"
+								},
+								{
+									"key": "news",
+									"value": "eth"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOneNews",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEyLCJlbWFpbCI6InRlc3Q3QHRlc3QudGVzdCIsInJvbGUiOiJBRE1JTiIsInByb3ZpZGVyIjoiTE9DQUwiLCJ1c2VybmFtZSI6InRlc3QiLCJiYXNlQ3VycmVuY3kiOiJFVVIiLCJpYXQiOjE3MDA1NjExNDgsImV4cCI6MTcwMDY0NzU0OH0.qytUN94aHJdLup7ayaUEmNfA_yUE1j7gZCkFXb1FDkw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/articles/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"articles",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
