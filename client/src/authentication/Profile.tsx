@@ -94,9 +94,13 @@ const Profile: React.FC = () => {
             <li>
             </li>
           </ul>
-
-        </div>
+        </div>          
       </div>
+      <ProfileModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleUpdateProfile}
+      />
       <div className="max-w-7xl mx-auto  p-10 bg-white rounded  h-screen">    
   
 
@@ -216,11 +220,7 @@ const Profile: React.FC = () => {
         </div>
       </div>
       
-      <ProfileModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onSubmit={handleUpdateProfile}
-      />
+
       </section>
   );
 };
