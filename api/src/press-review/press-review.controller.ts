@@ -33,8 +33,7 @@ export class NewsController {
     news: string[] = [],
   ) {
     if (!req.user) return await this.pressReviewService.getLatestPublicNews();
-    if (news.length === 0 && req.user)
-      return await this.pressReviewService.getUserNewsFromKeyWords(req.user);
-    return await this.pressReviewService.getLatestNews(news);
+    else if (news.length === 0 && req.user) return await this.pressReviewService.getUserNewsFromKeyWords(req.user);
+    else return await this.pressReviewService.getLatestNews(news);
   }
 }
