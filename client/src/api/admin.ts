@@ -3,12 +3,13 @@ import { clientApi } from './client-api';
 
 export const fetchAllCoinsFromApi = async () => {
   return clientApi
-    .post<Coin[]>(`/coins/AllFromApi`)
+    .post<Coin>(`/coins/AllFromApi`)
     .then((response) => response.data);
 };
 
 export const addToLocalApi = async (id: number) => {
+  console.log(id)
   return clientApi
-    .post(`/coins/`, { coin_api_id: id })
+    .post(`/coins/`,{coinApiId: id})
     .then((response) => response.data);
 };

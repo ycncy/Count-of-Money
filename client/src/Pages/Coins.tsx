@@ -14,7 +14,7 @@ export const Coins = () => {
   
   const { data: coins } = useQuery(
     ["Coins"], 
-    () => getAllCoins(), 
+    () => getAllCoins() || [], 
     {
       enabled: !!user,
     }
@@ -24,7 +24,7 @@ export const Coins = () => {
     fetchAllCoinsFromApi();
   };
 
-
+  console.log(coins);
   return (
     <div>
       <h1>Coins</h1>
@@ -34,7 +34,7 @@ export const Coins = () => {
         </div> 
           )}
       <div>
-        {coins?.map((coin) => (
+        {coins?.items?.map((coin) => (
          <CoinComponent 
          userRole = {user?.role}
          coin = {coin}

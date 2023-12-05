@@ -12,6 +12,7 @@ import { Coins } from './Pages/Coins';
 import { LocalCoins } from './Pages/LocalCoins';
 import CardArticle from './composant/CardArticle/CardArticle';
 import Admin from './Pages/Admin';
+import { Charts } from './Pages/Charts';
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App: React.FC = () => {
           <Route path='/localcoins' element={<LocalCoins />} />
           <Route path='/admin' element={<Admin />} />
           <Route path='/article' element={<CardArticle />} />
+          <Route path= '/chartCoin' element = {<Charts />} />
         </Routes>
       </Router>
     </QueryClientProvider>

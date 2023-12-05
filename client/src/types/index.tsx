@@ -29,13 +29,53 @@ export type News = {
   summary: string;
 };
 
+export type CoinData = { 
+  id: number,
+  rank: number,
+  name: string,
+  symbol: string,
+  apiId: number
+}
+
 export type Coin = {
-  id: number;
-  rank: number;
-  name: string;
+  items: [CoinData],
+  links: CoinLinks,
+  meta: CoinMeta
+}
+
+export type CoinLinks = {
+  first: string,
+  last: string,
+  next: string,
+  previous: string
+}
+
+export type CoinMeta = {
+  totalItems: number,
+  itemCount: number,
+  itemsPerPage: number,
+  totalPages: number, 
+  currentPage: number
+}
+export type CoinHistory = {
+  coinId: number;
   symbol: string;
-  api_id: number;
-};
+  datetimes: string[];
+  high: number[];
+  low: number[];
+  open: number[];
+  close: number[];
+  volume: number[];
+}
+
+export type VictoryDataPoint = {
+  x: Date;
+  open: number;
+  close: number;
+  high: number;
+  low: number;
+  volume: number;
+}
 
 export type LocalCoin = {
   coinId: number;
