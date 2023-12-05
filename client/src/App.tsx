@@ -10,6 +10,7 @@ import { NewsPages } from './Pages/NewsPages';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Coins } from './Pages/Coins';
 import { LocalCoins } from './Pages/LocalCoins';
+import { Charts } from './Pages/Charts';
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App: React.FC = () => {
           <Route path='/news' element={<NewsPages />} />
           <Route path='/coins' element={<Coins />} />
           <Route path= '/localcoins' element = {<LocalCoins />} />
+          <Route path= '/chartCoin' element = {<Charts />} />
         </Routes>
       </Router>
     </QueryClientProvider>

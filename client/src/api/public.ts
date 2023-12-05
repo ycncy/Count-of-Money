@@ -3,12 +3,12 @@ import { clientApi } from "./client-api";
 
 export const getAllCoins = async () => {
   return clientApi
-  .get<Coin[]>("/cryptos/allFromApi")
+  .get<Coin>("/coins/allFromApi")
   .then((response) => response.data);
 }
 
 export const getAllLocalCoins = async () => {
   return clientApi
-  .get<LocalCoin[]>("/cryptos")
+  .get<LocalCoin[]>("/coins")
   .then((response) => response.data);
 }

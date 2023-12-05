@@ -42,12 +42,52 @@ export type News = {
 }
 
 
-export type Coin = { 
+export type CoinData = { 
   id: number,
   rank: number,
   name: string,
   symbol: string,
-  api_id: number
+  apiId: number
+}
+
+export type Coin = {
+  items: [CoinData],
+  links: CoinLinks,
+  meta: CoinMeta
+}
+
+export type CoinLinks = {
+  first: string,
+  last: string,
+  next: string,
+  previous: string
+}
+
+export type CoinMeta = {
+  totalItems: number,
+  itemCount: number,
+  itemsPerPage: number,
+  totalPages: number, 
+  currentPage: number
+}
+export type CoinHistory = {
+  coinId: number;
+  symbol: string;
+  datetimes: string[];
+  high: number[];
+  low: number[];
+  open: number[];
+  close: number[];
+  volume: number[];
+}
+
+export type VictoryDataPoint = {
+  x: Date;
+  open: number;
+  close: number;
+  high: number;
+  low: number;
+  volume: number;
 }
 
 export type LocalCoin = {
