@@ -6,6 +6,7 @@ import Login from './authentication/Login';
 import Register from './authentication/Register';
 import Profile from './authentication/Profile';
 import Chart from './Pages/Chart';
+import UpdateProfile from './composant/UpdateProfileForm/UpdateProfile';
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
         <Route path='/register' element={<Register />} />
         <Route path='/article' element={<Article />} />
         <Route path='/profile' element={<Profile />} />
+        <Route path='/update-profile' element={<UpdateProfile/>} />
         <Route path='/chart' element={<Chart />} />
       </Routes>
     </Router>
