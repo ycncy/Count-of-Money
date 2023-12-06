@@ -18,10 +18,11 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { DecodedToken } from 'src/auth/auth.dto';
 import { ApiTags } from '@nestjs/swagger';
 import {
+  AddKeywordsToUserSwaggerDecorator,
   DeleteUserSwaggerDecorator,
   GetAllUserSwaggerDecorator,
   GetMeUserSwaggerDecorator,
-  GetUserSwaggerDecorator,
+  GetUserSwaggerDecorator, RemoveKeywordFromUserSwaggerDecorator,
   UpdateMeUserSwaggerDecorator,
   UpdateUserSwaggerDecorator,
 } from '../swagger-decorator/user-swagger.decorators';
@@ -34,6 +35,7 @@ import { ResponseModel } from '../response-model/response.model';
 export class UsersController {
   constructor(private readonly usersService: UserService) {}
 
+  @AddKeywordsToUserSwaggerDecorator()
   @Post('keywords')
   async addKeyword(
       @Request() req: Request & { user: DecodedToken },
@@ -54,6 +56,7 @@ export class UsersController {
     return await this.usersService.addKeywords(req.user.sub, keywords);
   }
 
+  @RemoveKeywordFromUserSwaggerDecorator()
   @Delete('keywords/:keyword')
   async removeKeyword(
       @Request() req: Request & { user: DecodedToken },
