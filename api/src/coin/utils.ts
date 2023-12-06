@@ -5,6 +5,15 @@ import { ErrorModel } from './model/error.model';
 import { CoinInfoModel } from './model/coin-info.model';
 import { ApiCoinInfoModel } from './model/api-coin-info.model';
 
+export enum Granularity {
+  MONTH = 'MONTH',
+  WEEK = 'WEEK',
+  FIVE_DAYS = 'FIVE_DAYS',
+  DAY = 'DAY',
+  HOUR = 'HOUR',
+  MINUTE = 'MINUTE',
+}
+
 const fetchCoinInfo = async (coinId: number) => {
   try {
     const response = await fetch(

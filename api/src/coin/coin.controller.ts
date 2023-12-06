@@ -32,6 +32,7 @@ import {
   GetHistorySwaggerDecorator,
   SaveAllApiCryptosSwaggerDecorator,
 } from '../swagger-decorator/coin-swagger.decorators';
+import { Granularity } from './utils';
 
 @ApiTags('Crypto-currencies')
 @Controller('coins')
@@ -79,7 +80,7 @@ export class CoinController {
   @Get(':coinId/history/:period')
   async getHistoryByCoinId(
     @Param('coinId', ParseIntPipe) coinID: number,
-    @Param('period') period: string,
+    @Param('period') period: Granularity,
   ) {
     return await this.coinService.getCoinHistory(coinID, period);
   }

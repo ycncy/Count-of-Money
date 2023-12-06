@@ -17,6 +17,15 @@ export type Roles = 'ADMIN' | 'USER' | 'ANONYMOUS';
 
 export type BaseCurrency = 'EUR' | 'USD' | 'GBP' | 'JPY' | 'CHF';
 
+export enum Granularity {
+  MONTH = 'MONTH',
+  WEEK = 'WEEK',
+  FIVE_DAYS = 'FIVE_DAYS',
+  DAY = 'DAY',
+  HOUR = 'HOUR',
+  MINUTE = 'MINUTE',
+}
+
 export type News = {
   creator: string;
   title: string;
@@ -75,6 +84,11 @@ export type VictoryDataPoint = {
   high: number;
   low: number;
   volume: number;
+}
+
+export type CoinHistoryWithSymbol = {
+  symbol: string;
+  dataPoints: VictoryDataPoint[];
 }
 
 export type LocalCoin = {

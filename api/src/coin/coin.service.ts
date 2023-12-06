@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCoinDto } from './dto/create-coin.dto';
 import { CoinEntity } from './entity/coin.entity';
-import utils from './utils';
+import utils, { Granularity } from './utils';
 import { CoinInfoModel } from './model/coin-info.model';
 import { ListCoinInfoModel } from './model/list-coin-info.model';
 import { ErrorModel } from './model/error.model';
@@ -131,16 +131,15 @@ export class CoinService {
     return addedCoin;
   }
 
-  async getCoinHistory(coinID: number, granularity: string) {
+  async getCoinHistory(coinID: number, granularity: Granularity) {
     const coinEntity: CoinEntity = await this.getById(coinID);
 
     if (!coinEntity) {
       throw new NotFoundException(`Coin ${coinID} not found`);
     }
-
     let history = undefined;
     switch (granularity) {
-      case 'month':
+      case Granularity.MONTH:
         history = await utils.fetchCoinHistory(
           coinEntity.id,
           coinEntity.symbol,
@@ -155,7 +154,7 @@ export class CoinService {
         }
 
         return history;
-      case 'week':
+      case Granularity.WEEK:
         history = await utils.fetchCoinHistory(
           coinEntity.id,
           coinEntity.symbol,
@@ -170,7 +169,7 @@ export class CoinService {
         }
 
         return history;
-      case '5days':
+      case Granularity.FIVE_DAYS:
         history = await utils.fetchCoinHistory(
           coinEntity.id,
           coinEntity.symbol,
@@ -185,7 +184,7 @@ export class CoinService {
         }
 
         return history;
-      case 'day':
+      case Granularity.DAY:
         history = await utils.fetchCoinHistory(
           coinEntity.id,
           coinEntity.symbol,
@@ -200,7 +199,7 @@ export class CoinService {
         }
 
         return history;
-      case 'hour':
+      case Granularity.HOUR:
         history = await utils.fetchCoinHistory(
           coinEntity.id,
           coinEntity.symbol,
@@ -215,7 +214,7 @@ export class CoinService {
         }
 
         return history;
-      case 'minute':
+      case Granularity.MINUTE:
         history = await utils.fetchCoinHistory(
           coinEntity.id,
           coinEntity.symbol,
@@ -232,7 +231,7 @@ export class CoinService {
         return history;
       default:
         throw new NotFoundException(
-          'Invalid granularity, must be in [month, week, 5days, day, hour, minute]',
+          'Invalid granularity, must be in [MONTH, WEEK, FIVE_DAYS, DAY, HOUR, MINUTE]',
         );
     }
   }
