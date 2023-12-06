@@ -7,11 +7,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PressReviewService } from './press-review.service';
-import { ApiTags } from '@nestjs/swagger';
+import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
 import { GetLatestNewsSwaggerDecorator } from '../swagger-decorator/press-review-swagger.decorators';
 import { DecodedToken } from '../auth/auth.dto';
 import { PublicGuard } from '../auth/guard/public.guard';
 
+@ApiBearerAuth()
 @ApiTags('News')
 @Controller('articles')
 export class NewsController {

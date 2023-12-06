@@ -16,7 +16,7 @@ import { UserEntity } from './entity/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { DecodedToken } from 'src/auth/auth.dto';
-import { ApiTags } from '@nestjs/swagger';
+import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
 import {
   AddKeywordsToUserSwaggerDecorator,
   DeleteUserSwaggerDecorator,
@@ -28,6 +28,7 @@ import {
 } from '../swagger-decorator/user-swagger.decorators';
 import { ResponseModel } from '../response-model/response.model';
 
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @ApiTags('Users')
 @SerializeOptions({ excludePrefixes: ['password', 'role', 'id'] })

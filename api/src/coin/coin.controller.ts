@@ -16,7 +16,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
 import { CoinEntity } from './entity/coin.entity';
 import { CoinService } from './coin.service';
 import { CreateCoinDto } from './dto/create-coin.dto';
@@ -36,6 +36,7 @@ import {
 import { ResponseModel } from '../response-model/response.model';
 import { ListCoinInfoModel } from './model/list-coin-info.model';
 
+@ApiBearerAuth()
 @ApiTags('Crypto-currencies')
 @Controller('coins')
 export class CoinController {

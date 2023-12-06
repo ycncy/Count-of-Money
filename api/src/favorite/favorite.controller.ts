@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { ApiTags } from '@nestjs/swagger';
+import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
 import { DecodedToken } from 'src/auth/auth.dto';
 import {
   AddDefaultFavoriteSwaggerDecorator,
@@ -24,6 +24,7 @@ import { CoinEntity } from '../coin/entity/coin.entity';
 import { DefaultFavoriteEntity } from './favorite.entity';
 import { ResponseModel } from '../response-model/response.model';
 
+@ApiBearerAuth()
 @ApiTags('Favorites')
 @Controller('favorites')
 export class FavoriteController {
