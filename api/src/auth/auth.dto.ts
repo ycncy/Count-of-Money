@@ -15,7 +15,7 @@ export class SignInDto {
 export class SignInGoogleDto {
   @ApiProperty()
   @IsNotEmpty()
-  accesToken: string;
+  accessToken: string;
 
   @ApiProperty()
   @IsNotEmpty()

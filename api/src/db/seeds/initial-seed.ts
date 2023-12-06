@@ -10,11 +10,11 @@ export class UserSeeder {
     private readonly userEntityRepository: Repository<UserEntity>,
   ) {}
 
-  public async run() {
+  async run() {
     const adminCheck = this.userEntityRepository.findBy({
       username: 'admin',
     });
-    if (adminCheck) {
+    if (adminCheck !== null) {
       return;
     }
     const user = this.userEntityRepository.create({
