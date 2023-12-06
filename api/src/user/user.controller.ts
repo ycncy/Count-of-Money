@@ -9,7 +9,7 @@ import {
   Param,
   HttpException,
   Body,
-  ParseIntPipe,
+  ParseIntPipe, Post, ParseArrayPipe, BadRequestException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserEntity } from './entity/user.entity';
@@ -33,6 +33,34 @@ import { ResponseModel } from '../response-model/response.model';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UserService) {}
+
+  @Post('keywords')
+  async addKeyword(
+      @Request() req: Request & { user: DecodedToken },
+      @Body(
+          'keywords',
+          new ParseArrayPipe({
+            items: String,
+            separator: ',',
+            optional: true,
+            exceptionFactory: () => {
+              throw new BadRequestException(
+                  "Invalid parameter 'keywords': must be a valid list",
+              );
+            },
+          }),
+      ) keywords: string[]
+  ): Promise<ResponseModel> {
+    return await this.usersService.addKeywords(req.user.sub, keywords);
+  }
+
+  @Delete('keywords/:keyword')
+  async removeKeyword(
+      @Request() req: Request & { user: DecodedToken },
+      @Param('keyword') keyword: string
+  ): Promise<ResponseModel> {
+    return await this.usersService.removeKeyword(req.user.sub, keyword);
+  }
 
   @GetMeUserSwaggerDecorator()
   @Get('/profile')
