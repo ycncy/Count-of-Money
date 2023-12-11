@@ -25,7 +25,7 @@ export default function Register() {
 
     try {
       const response = await axios.post(
-        process.env.REACT_APP_API_URL + 'auth/register',
+        'http://localhost:5000/api/auth/register',
         formData
       );
       console.log(response);

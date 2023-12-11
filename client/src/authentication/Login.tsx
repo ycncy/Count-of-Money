@@ -14,9 +14,9 @@ export default function Login() {
       email: formData.get('email'),
       password: formData.get('password'),
     };
-    console.log(process.env.REACT_APP_API_URL);
+  //  console.log(process.env.REACT_APP_API_URL);
     const { data } = await axios.post(
-      process.env.REACT_APP_API_URL + 'auth/login',
+      'http://localhost:5000/api/auth/login',
       form
     );
     if (data.status === parseInt('401')) {
@@ -26,7 +26,8 @@ export default function Login() {
         console.log('User not found');
       } else {
         localStorage.setItem('token', data.token);
-        navigate('/');
+        console.log(data.token);
+        navigate('/profile');
       }
     }
   };

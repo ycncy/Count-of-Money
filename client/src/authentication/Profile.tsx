@@ -3,14 +3,23 @@ import React, { useEffect, useState } from 'react';
 import ProfileModal from '../composant/ProfileModalProps/ProfileModalProps';
 
 const Profile: React.FC = () => {
+    const [userData, setUserData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        baseCurrency: '',
+      });
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const [tagInput, setTagInput] = useState('');
     const [tags, setTags] = useState<string[]>([]);
     const [favoriteCryptos, setFavoriteCryptos] = useState([]);
     const [isModalOpen, setModalOpen] = useState(false);
 
+     
     const handleOpenModal = () => {
-        setModalOpen(true);
+        setModalOpen(true);        
+        setDropdownVisible(false);
+
       };
     
       const handleCloseModal = () => {
@@ -18,16 +27,29 @@ const Profile: React.FC = () => {
       };
 
     useEffect(() => {
-      const fetchFavoriteCryptos = async () => {
+      const fetchUserData = async () => {
         try {
-          const response = await axios.get('/api/favoriteCryptos'); // Replace with your API endpoint
-          setFavoriteCryptos(response.data);
+          console.log(axios.get(
+            'http://localhost:5000/api/users/profile',
+            { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+            ));
+          const response = await axios.get(''); 
+          setUserData(response.data);
         } catch (error) {
-          console.error('Error fetching favorite cryptocurrencies:', error);
+          console.error('Error fetching user data:', error);
         }
-      };
+      }
+      // const fetchFavoriteCryptos = async () => {
+      //   try {
+      //     const response = await axios.get('/api/favoriteCryptos');
+      //     setFavoriteCryptos(response.data);
+      //   } catch (error) {
+      //     console.error('Error fetching favorite cryptocurrencies:', error);
+      //   }
+      // };
   
-      fetchFavoriteCryptos();
+      // fetchFavoriteCryptos();
+      fetchUserData();
     }, []);
 
     const toggleDropdown = () => {
@@ -60,8 +82,12 @@ const Profile: React.FC = () => {
       };
     
   return (
-    <section>
-    <div className="flex items-center justify-end mb-6 bg-gray-100 p-4 rounded shadow-lg ">
+    <section><ProfileModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleUpdateProfile}
+      />
+    <div className={`flex items-center justify-end mb-6 bg-gray-100 p-4 rounded shadow-lg relative ${isModalOpen ? 'z-0' : 'z-10'}`}>
         <img
           src=""
           alt=""
@@ -83,7 +109,8 @@ const Profile: React.FC = () => {
                     onClick={handleOpenModal}
                   >
                     Modifier le profil
-                  </button>                    </li>
+                  </button>                    
+                  </li>
                     <li>
                     <a className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base" href="/update-profile">Autre chose</a>
                     </li>
@@ -96,20 +123,16 @@ const Profile: React.FC = () => {
           </ul>
         </div>          
       </div>
-      <ProfileModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onSubmit={handleUpdateProfile}
-      />
-      <div className="max-w-7xl mx-auto  p-10 bg-white rounded  h-screen">    
+ 
+      <div className="max-w-7xl mx-auto  p-10 bg-white rounded">    
   
 
         <div className="ud-mx-auto ud-mt-15 ud-max-w-292.5 ud-px-4 sm:ud-px-8 xl:ud-px-0">
         <h2 className="text-xl font-bold mb-2">Ajouter des mots clés</h2>
         <p className="italic my-5">Ajoutez jusqu'à 5 mots clé, cela vous aidera à obtenir des résultat plus pertinants.</p>
         <form className="flex items-center" onSubmit={handleAddTag}>
-        <label className="sr-only">Search</label>
-        <div className="relative w-full">
+        <label />
+        <div className=" w-full">
           <input
             type="text"
             id="simple-search"
