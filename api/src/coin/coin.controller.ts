@@ -1,156 +1,105 @@
 import {
+  BadRequestException,
   Body,
-  ConflictException,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
-  HttpCode,
   HttpException,
   HttpStatus,
-  NotFoundException,
   Param,
+  ParseArrayPipe,
   ParseIntPipe,
   Post,
   Put,
   Query,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { CoinEntity } from './coin.entity';
+import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
+import { CoinEntity } from './entity/coin.entity';
 import { CoinService } from './coin.service';
 import { CreateCoinDto } from './dto/create-coin.dto';
-import { DeleteResult, UpdateResult } from 'typeorm';
-import { ListCoinInfoModel } from './model/list-coin-info.model';
-import { CoinInfoModel } from './model/coin-info.model';
 import { EditCoinDto } from './dto/edit-coin.dto';
-import {ApiCoinInfoModel} from "./model/api-coin-info.model";
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { DecodedToken } from 'src/auth/auth.dto';
+import {
+  CreateSwaggerDecorator,
+  DeleteSwaggerDecorator,
+  EditSwaggerDecorator,
+  GetAllApiCryptosSwaggerDecorator,
+  GetByIdSwaggerDecorator,
+  GetCryptosSwaggerDecorator,
+  GetHistorySwaggerDecorator,
+  SaveAllApiCryptosSwaggerDecorator,
+} from '../swagger-decorator/coin-swagger.decorators';
+import { ResponseModel } from '../response-model/response.model';
+import { ListCoinInfoModel } from './model/list-coin-info.model';
 
+@ApiBearerAuth()
 @ApiTags('Crypto-currencies')
-@Controller('cryptos')
+@Controller('coins')
 export class CoinController {
   constructor(private readonly coinService: CoinService) {}
 
-  @ApiOperation({
-    summary: 'Get daily information about one or multiple cryptocurrencies',
-  })
-  @ApiQuery({
-    name: 'cmids',
-    description: 'List of cryptocurrencies IDs',
-    schema: {
-      type: 'string',
-      example: '1,2,3,4,5',
-    },
-  })
-  @ApiResponse({
-    status: 200,
-    type: [ListCoinInfoModel],
-    description: 'Successfully retrieved cryptocurrency information.',
-  })
-  @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
-  @HttpCode(200)
+  @GetCryptosSwaggerDecorator()
   @Get()
-  async getCryptos(@Query('cmids') cmids: string) {
-    try {
-      const coinIds: number[] = cmids
-        ? cmids.split(',').map((id) => parseInt(id, 10))
-        : [];
-
-      return await this.coinService.getCoinsInfo(coinIds);
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-      } else {
-        throw new HttpException(
-          'Internal Server Error',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+  async getCryptos(
+    @Query(
+      'cmids',
+      new ParseArrayPipe({
+        items: Number,
+        separator: ',',
+        optional: true,
+        exceptionFactory: () => {
+          throw new BadRequestException(
+            "Invalid parameter 'cmids': must be a valid list",
+          );
+        },
+      }),
+    )
+    coinIds: number[] = [],
+  ): Promise<ListCoinInfoModel[]> {
+    return await this.coinService.getCoinsInfo(coinIds);
   }
 
-  @ApiOperation({
-    summary: 'Get top 100 cryptocurrencies from API',
-  })
-  @ApiResponse({
-    status: 200,
-    type: [ApiCoinInfoModel],
-    description: 'Successfully retrieved cryptocurrencies.',
-  })
-  @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
-  @HttpCode(201)
+  @GetAllApiCryptosSwaggerDecorator()
+  @UseGuards(JwtAuthGuard)
+  @Get('/allFromApi')
+  async getAllApiCryptos(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+    @Request() req: Request & { user: DecodedToken },
+  ) {
+    if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
+    return await this.coinService.getAllApiCryptos({
+      page,
+      limit,
+      route: 'http://localhost:5000/api/coins/allFromApi',
+    });
+  }
+
+  @SaveAllApiCryptosSwaggerDecorator()
+  @UseGuards(JwtAuthGuard)
   @Post('/allFromApi')
-  async saveAllApiCryptos() {
-    try {
-      return await this.coinService.saveAllApiCryptos();
-    } catch (error) {
-      if (error instanceof ConflictException) {
-        throw new HttpException(error.message, HttpStatus.CONFLICT);
-      }
-    }
+  async saveAllApiCryptos(@Request() req: Request & { user: DecodedToken }) {
+    if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
+    return await this.coinService.saveAllApiCryptos();
   }
 
-  @ApiOperation({ summary: 'Get cryptocurrency history by ID and period' })
-  @ApiResponse({
-    status: 200,
-    type: CoinInfoModel,
-    description: 'Successfully retrieved cryptocurrency history.',
-  })
-  @ApiParam({
-    name: 'coinID',
-    description: 'ID of the cryptocurrency to get history',
-    schema: {
-      example: 1,
-    },
-  })
-  @ApiParam({
-    name: 'period',
-    enum: ['month', 'week', '5days', 'day', 'hour', 'minute'],
-    description: 'Period of time to get history',
-  })
-  @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
-  @HttpCode(200)
-  @Get(':coinID/history/:period')
+  @GetHistorySwaggerDecorator()
+  @Get(':coinId/history/:period')
   async getHistoryByCoinId(
-    @Param('coinID', ParseIntPipe) coinID: number,
+    @Param('coinId', ParseIntPipe) coinID: number,
     @Param('period') period: string,
   ) {
-    try {
-      return await this.coinService.getCoinHistory(coinID, period);
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-      } else {
-        throw new HttpException(
-          'Internal Server Error',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+    return await this.coinService.getCoinHistory(coinID, period);
   }
 
-  @ApiOperation({ summary: 'Get cryptocurrency by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully retrieved cryptocurrency.',
-  })
-  @ApiParam({
-    name: 'coinID',
-    description: "ID of the cryptocurrency to get it's information",
-    schema: {
-      example: 1,
-    },
-  })
-  @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
-  @HttpCode(200)
-  @Get(':coinID')
+  @GetByIdSwaggerDecorator()
+  @Get(':coinId')
   async getById(
-    @Param('coinID', ParseIntPipe) coinID: number,
+    @Param('coinId', ParseIntPipe) coinID: number,
   ): Promise<CoinEntity> {
     const coin: CoinEntity = await this.coinService.getById(Number(coinID));
 
@@ -162,95 +111,37 @@ export class CoinController {
     );
   }
 
-  @ApiOperation({
-    summary: 'Create a new cryptocurrency from yahoo finance API data',
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Successfully created a new cryptocurrency.',
-  })
-  @ApiResponse({
-    status: 409,
-    description: 'Conflict - Cryptocurrency already exists.',
-  })
-  @HttpCode(201)
+  @CreateSwaggerDecorator()
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createCoinDto: CreateCoinDto): Promise<CoinEntity> {
-    try {
-      return this.coinService.create(createCoinDto);
-    } catch (error) {
-      if (error instanceof ConflictException) {
-        throw new HttpException(error.message, HttpStatus.CONFLICT);
-      }
-      if (error instanceof NotFoundException) {
-        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-      }
-    }
+  createCoin(
+    @Body() createCoinDto: CreateCoinDto,
+    @Request() req: Request & { user: DecodedToken },
+  ): Promise<CoinEntity> {
+    if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
+    return this.coinService.createCoin(createCoinDto);
   }
 
-  @ApiOperation({ summary: 'Edit cryptocurrency by ID' })
-  @ApiParam({
-    name: 'coinID',
-    description: 'ID of the cryptocurrency',
-    schema: {
-      example: 1,
-    },
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully edited cryptocurrency.',
-  })
-  @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
-  @HttpCode(200)
-  @ApiBody({ type: EditCoinDto })
-  @Put(':coinID')
+  @EditSwaggerDecorator()
+  @UseGuards(JwtAuthGuard)
+  @Put(':coinId')
   async editCoin(
-    @Param('coinID', ParseIntPipe) coinID: number,
+    @Param('coinId', ParseIntPipe) coinID: number,
     @Body() editCoinDto: EditCoinDto,
-  ): Promise<UpdateResult> {
-    try {
-      return await this.coinService.editCoin(coinID, editCoinDto);
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-      } else {
-        throw new HttpException(
-          'Internal Server Error',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+    @Request() req: Request & { user: DecodedToken },
+  ): Promise<ResponseModel> {
+    if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
+    return await this.coinService.editCoin(coinID, editCoinDto);
   }
 
-  @ApiOperation({ summary: 'Delete cryptocurrency by ID' })
-  @ApiParam({
-    name: 'coinID',
-    description: 'ID of the cryptocurrency',
-    schema: {
-      example: 1,
-    },
-  })
-  @ApiResponse({
-    status: 204,
-    description: 'Successfully deleted cryptocurrency.',
-  })
-  @ApiResponse({ status: 404, description: 'Cryptocurrency not found.' })
-  @HttpCode(204)
-  @Delete(':coinID')
+  @DeleteSwaggerDecorator()
+  @Delete(':coinId')
+  @UseGuards(JwtAuthGuard)
   async deleteCoin(
-    @Param('coinID', ParseIntPipe) coinID: number,
-  ): Promise<DeleteResult> {
-    try {
-      return this.coinService.deleteCoin(coinID);
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-      } else {
-        throw new HttpException(
-          'Internal Server Error',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
-    }
+    @Request() req: Request & { user: DecodedToken },
+    @Param('coinId', ParseIntPipe) coinID: number,
+  ): Promise<ResponseModel> {
+    if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
+    return this.coinService.deleteCoin(coinID);
   }
 }
