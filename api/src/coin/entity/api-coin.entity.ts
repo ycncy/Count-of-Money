@@ -29,4 +29,10 @@ export class ApiCoinEntity {
     nullable: false,
   })
   symbol: string;
+
+  @ApiProperty()
+  @Column({
+    nullable: true,
+  })
+  imageUrl: string;
 }

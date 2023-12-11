@@ -1,4 +1,8 @@
-import {ConflictException, Injectable, NotFoundException} from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from 'src/user/entity/user.entity';
@@ -32,7 +36,7 @@ export class FavoriteService {
     if (coin === null) throw new NotFoundException(`Coin ${coinId} not found`);
 
     if (user.favorites.find((coin) => coin.id === coinId)) {
-        throw new ConflictException(`Coin ${coinId} already in favorites`)
+      throw new ConflictException(`Coin ${coinId} already in favorites`);
     }
 
     user.favorites.push(coin);

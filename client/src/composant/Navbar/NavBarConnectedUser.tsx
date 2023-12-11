@@ -47,11 +47,11 @@ const NavBarConnectedUser: React.FC<NavBarConnectedUserProps> = ({
       </div>
 
       <div className='flex items-center ml-auto'>
-        <Link to='/Profile' className='text-white hover:text-gray-300 mx-4'>
+        <Link to='/profile' className='text-white hover:text-gray-300 mx-4'>
           Profile
         </Link>
 
-        <Link to='/Article' className='text-white hover:text-gray-300 mx-4'>
+        <Link to='/articles' className='text-white hover:text-gray-300 mx-4'>
           Article
         </Link>
 

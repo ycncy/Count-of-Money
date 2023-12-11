@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import { getMe } from '../api/user';
 import { getAllCoins } from '../api/public';
-import { log } from 'console';
+import { addToFavouritesCoins } from '../api/admin';
 
 function Admin() {
   const { data: user } = useQuery('me', getMe, {
@@ -13,6 +13,34 @@ function Admin() {
   const { data: coins } = useQuery(['Coins'], () => getAllCoins(), {
     enabled: !!user,
   });
+
+  //Add coin to favourites
+
+  const handleAddToFavourites = async (coinId: number) => {
+    try {
+      const response = await addToFavouritesCoins(coinId);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  // const { data: addFavorite } = useQuery(
+  //   ['Coins'],
+  //   () => addToFavouritesCoins(),
+  //   {
+  //     enabled: !!user,
+  //   }
+  // );
+
+  //Delete coin from favourites
+  // const { data: deleteFavorite } = useQuery(
+  //   ['Coins'],
+  //   () => deleteFavoriteCoins(),
+  //   {
+  //     enabled: !!user,
+  //   }
+  // );
+
   console.log(coins);
   return (
     <div className='bg-gray-100 min-h-screen'>
@@ -118,15 +146,27 @@ function Admin() {
                 <th className='text-left'>Nom</th>
                 <th className='text-left'>Symbole</th>
                 <th className='text-left'>Niveau</th>
+                <th className='text-left'>Add/Delete coin for users</th>
               </tr>
             </thead>
             <tbody>
-              {coins?.map((coin) => (
+              {coins?.items?.map((coin) => (
                 <tr>
                   <td>{coin.id}</td>
                   <td>{coin.name}</td>
                   <td>{coin.symbol}</td>
                   <td>{coin.rank}</td>
+                  <td>
+                    <button
+                      className='text-blue-500 hover:underline'
+                      onClick={() => handleAddToFavourites(coin.apiId)}
+                    >
+                      Add
+                    </button>
+                    <button className='text-red-500 ml-2 hover:underline'>
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
               {/* Ajoutez plus d'utilisateurs ici */}
