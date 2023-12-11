@@ -121,14 +121,14 @@ function Admin() {
               </tr>
             </thead>
             <tbody>
-              {coins?.map((coin) => (
+              {/* {coins?.map((coin) => (
                 <tr>
                   <td>{coin.id}</td>
                   <td>{coin.name}</td>
                   <td>{coin.symbol}</td>
                   <td>{coin.rank}</td>
                 </tr>
-              ))}
+              ))} */}
               {/* Ajoutez plus d'utilisateurs ici */}
             </tbody>
           </table>

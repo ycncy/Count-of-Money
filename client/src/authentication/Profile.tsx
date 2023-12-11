@@ -33,7 +33,11 @@ const Profile: React.FC = () => {
             'http://localhost:5000/api/users/profile',
             { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
             ));
-          const response = await axios.get(''); 
+          const response = await axios.get(
+            'http://localhost:5000/api/users/profile',
+            { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+            );
+            console.log(response.data);
           setUserData(response.data);
         } catch (error) {
           console.error('Error fetching user data:', error);
@@ -94,7 +98,7 @@ const Profile: React.FC = () => {
           className="w-10 h-10 rounded-full mr-2 mx-6"
         />
         <div>
-          <p className='mx-2 font-sans font-bold mr-4'>Username</p>
+          <p className='mx-2 font-sans font-bold mr-4'>{userData.email}</p>
         </div>
         <div className="ml-auto">
         <ul className="flex items-center gap-2 2xsm:gap-4">
