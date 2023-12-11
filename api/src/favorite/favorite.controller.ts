@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { ApiTags } from '@nestjs/swagger';
+import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
 import { DecodedToken } from 'src/auth/auth.dto';
 import {
   AddDefaultFavoriteSwaggerDecorator,
@@ -20,7 +20,11 @@ import {
   GetFavoritesSwaggerDecorator,
   RemoveFromFavoritesSwaggerDecorator,
 } from '../swagger-decorator/favorite-swagger.decorators';
+import { CoinEntity } from '../coin/entity/coin.entity';
+import { DefaultFavoriteEntity } from './favorite.entity';
+import { ResponseModel } from '../response-model/response.model';
 
+@ApiBearerAuth()
 @ApiTags('Favorites')
 @Controller('favorites')
 export class FavoriteController {
@@ -28,30 +32,22 @@ export class FavoriteController {
 
   @AddToFavoritesSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Post('users/:userId/coins/:coinId')
+  @Post('coins/:coinId')
   async addToFavorites(
     @Request() req: Request & { user: DecodedToken },
-    @Param('userId') userId: number,
     @Param('coinId') coinId: number,
-  ) {
-    if (req.user.sub !== userId && req.user.role !== 'ADMIN') {
-      throw new HttpException('Unauthorized', 401);
-    }
-    return await this.favoriteService.addToFavorites(userId, coinId);
+  ): Promise<ResponseModel> {
+    return await this.favoriteService.addToFavorites(req.user.sub, coinId);
   }
 
   @RemoveFromFavoritesSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Delete('users/:userId/coins/:coinId')
+  @Delete('coins/:coinId')
   async removeFromFavorites(
     @Request() req: Request & { user: DecodedToken },
-    @Param('userId') userId: number,
     @Param('coinId') coinId: number,
   ) {
-    if (req.user.sub !== userId && req.user.role !== 'ADMIN') {
-      throw new HttpException('Unauthorized', 401);
-    }
-    return await this.favoriteService.removeFromFavorites(userId, coinId);
+    return await this.favoriteService.removeFromFavorites(req.user.sub, coinId);
   }
 
   @GetFavoritesSwaggerDecorator()
@@ -60,7 +56,7 @@ export class FavoriteController {
   async getFavorites(
     @Request() req: Request & { user: DecodedToken },
     @Param('userId') userId: number,
-  ) {
+  ): Promise<CoinEntity[] | DefaultFavoriteEntity[]> {
     if (req.user.sub !== userId && req.user.role !== 'ADMIN') {
       throw new HttpException('Unauthorized', 401);
     }

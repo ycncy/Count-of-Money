@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   DefaultValuePipe,
@@ -15,7 +16,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CoinEntity } from './entity/coin.entity';
 import { CoinService } from './coin.service';
 import { CreateCoinDto } from './dto/create-coin.dto';
@@ -33,7 +34,10 @@ import {
   SaveAllApiCryptosSwaggerDecorator,
 } from '../swagger-decorator/coin-swagger.decorators';
 import { Granularity } from './utils';
+import { ResponseModel } from '../response-model/response.model';
+import { ListCoinInfoModel } from './model/list-coin-info.model';
 
+@ApiBearerAuth()
 @ApiTags('Crypto-currencies')
 @Controller('coins')
 export class CoinController {
@@ -48,19 +52,27 @@ export class CoinController {
         items: Number,
         separator: ',',
         optional: true,
+        exceptionFactory: () => {
+          throw new BadRequestException(
+            "Invalid parameter 'cmids': must be a valid list",
+          );
+        },
       }),
     )
     coinIds: number[] = [],
-  ) {
+  ): Promise<ListCoinInfoModel[]> {
     return await this.coinService.getCoinsInfo(coinIds);
   }
 
   @GetAllApiCryptosSwaggerDecorator()
+  @UseGuards(JwtAuthGuard)
   @Get('/allFromApi')
   async getAllApiCryptos(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+    @Request() req: Request & { user: DecodedToken },
   ) {
+    if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
     return await this.coinService.getAllApiCryptos({
       page,
       limit,
@@ -118,7 +130,7 @@ export class CoinController {
     @Param('coinId', ParseIntPipe) coinID: number,
     @Body() editCoinDto: EditCoinDto,
     @Request() req: Request & { user: DecodedToken },
-  ): Promise<{ message: string; status: number }> {
+  ): Promise<ResponseModel> {
     if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
     return await this.coinService.editCoin(coinID, editCoinDto);
   }
@@ -129,7 +141,7 @@ export class CoinController {
   async deleteCoin(
     @Request() req: Request & { user: DecodedToken },
     @Param('coinId', ParseIntPipe) coinID: number,
-  ): Promise<{ message: string; status: number }> {
+  ): Promise<ResponseModel> {
     if (req.user.role !== 'ADMIN') throw new HttpException('Unauthorized', 401);
     return this.coinService.deleteCoin(coinID);
   }

@@ -9,6 +9,12 @@ export class PressReviewService {
 
   private parser = new Parser();
 
+  async getLatestPublicNews() {
+    return this.fetchPressReviews([
+      'https://coinjournal.net/fr/actualites/feed/',
+    ]);
+  }
+
   async getUserNewsFromKeyWords(user: DecodedToken) {
     const sources: string[] = [];
 
@@ -43,7 +49,7 @@ export class PressReviewService {
     return newsResults.flatMap((result) => {
       if (result.status === 'fulfilled') {
         return result.value.items.map((item) => {
-          const match = item.guid.match(/\?p=(\d+)/);
+          const match: RegExpMatchArray = item.guid.match(/\?p=(\d+)/);
           const id = match ? match[1] : null;
 
           return {
@@ -58,8 +64,7 @@ export class PressReviewService {
             summary: item.contentSnippet,
           };
         });
-      }
-      return [];
+      } else return [];
     });
   }
 }

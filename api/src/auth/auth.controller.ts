@@ -17,8 +17,9 @@ import {
   LoginSwaggerDecorator,
   RegisterSwaggerDecorator,
 } from '../swagger-decorator/auth-swagger.decorators';
+import {ResponseModel} from "../response-model/response.model";
 
-@ApiTags('Auth')
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}

@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { CoinEntity } from 'src/coin/entity/coin.entity';
 import { DefaultFavoriteEntity } from './favorite.entity';
+import { ResponseModel } from '../response-model/response.model';
 
 @Injectable()
 export class FavoriteService {
@@ -16,10 +17,7 @@ export class FavoriteService {
     private defaultFavRepository: Repository<DefaultFavoriteEntity>,
   ) {}
 
-  async addToFavorites(
-    userId: number,
-    coinId: number,
-  ): Promise<{ message: string; status: number }> {
+  async addToFavorites(userId: number, coinId: number): Promise<ResponseModel> {
     const user: UserEntity = await this.usersRepository.findOne({
       where: { id: userId },
       relations: ['favorites'],
@@ -35,6 +33,7 @@ export class FavoriteService {
 
     user.favorites.push(coin);
     await this.usersRepository.save(user);
+
     return {
       status: 200,
       message: 'Coin added to user favorite successfully',
@@ -44,7 +43,7 @@ export class FavoriteService {
   async removeFromFavorites(
     userId: number,
     coinId: number,
-  ): Promise<{ message: string; status: number }> {
+  ): Promise<ResponseModel> {
     const user: UserEntity = await this.usersRepository.findOne({
       where: { id: userId },
       relations: ['favorites'],
@@ -82,16 +81,14 @@ export class FavoriteService {
     return await this.defaultFavRepository.find();
   }
 
-  async addDefaultFavorite(
-    coinId: number,
-  ): Promise<{ message: string; status: number }> {
+  async addDefaultFavorite(coinId: number): Promise<ResponseModel> {
     const coin: CoinEntity = await this.coinsRepository.findOneBy({
       id: coinId,
     });
 
     if (coin === null) throw new NotFoundException(`Coin ${coinId} not found`);
 
-    const newCoin = new DefaultFavoriteEntity();
+    const newCoin: DefaultFavoriteEntity = new DefaultFavoriteEntity();
     Object.assign(newCoin, coin);
     newCoin.coinId = coin.id;
 
@@ -103,9 +100,7 @@ export class FavoriteService {
     };
   }
 
-  async deleteDefaultFavorite(
-    coinId: number,
-  ): Promise<{ message: string; status: number }> {
+  async deleteDefaultFavorite(coinId: number): Promise<ResponseModel> {
     const coin: DefaultFavoriteEntity =
       await this.defaultFavRepository.findOneBy({
         coinId: coinId,

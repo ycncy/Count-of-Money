@@ -1,7 +1,8 @@
 import { applyDecorators, HttpCode } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {ApiBody, ApiOperation, ApiParam, ApiResponse} from '@nestjs/swagger';
 import { UserEntity } from '../user/entity/user.entity';
 import { UpdateUserDto } from '../user/dto/update-user.dto';
+import {ResponseModel} from "../response-model/response.model";
 
 export function UpdateUserSwaggerDecorator() {
   return applyDecorators(
@@ -84,5 +85,49 @@ export function UpdateMeUserSwaggerDecorator() {
     ApiResponse({ status: 404, description: 'User not found.' }),
     HttpCode(200),
     ApiBody({ type: UpdateUserDto }),
+  );
+}
+
+export function AddKeywordsToUserSwaggerDecorator() {
+  return applyDecorators(
+    ApiOperation({ summary: 'Add keywords to user' }),
+    ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                keywords: {
+                    type: 'array',
+                    items: {
+                        type: 'string',
+                    }
+                }
+            }
+        }
+    }),
+    ApiResponse({
+      status: 200,
+      type: ResponseModel,
+      description: 'Successfully added keywords to user.',
+    }),
+    ApiResponse({ status: 401, description: 'Unauthorized.' }),
+    HttpCode(200),
+  );
+}
+
+export function RemoveKeywordFromUserSwaggerDecorator() {
+  return applyDecorators(
+    ApiOperation({ summary: 'Remove keyword from user' }),
+    ApiParam({
+        name: 'keyword',
+        type: 'string',
+        required: true,
+    }),
+    ApiResponse({
+      status: 200,
+      type: ResponseModel,
+      description: 'Successfully removed keyword from user.',
+    }),
+    ApiResponse({ status: 401, description: 'Unauthorized.' }),
+    HttpCode(200),
   );
 }

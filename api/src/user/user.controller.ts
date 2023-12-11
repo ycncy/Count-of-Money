@@ -9,29 +9,62 @@ import {
   Param,
   HttpException,
   Body,
-  ParseIntPipe,
+  ParseIntPipe, Post, ParseArrayPipe, BadRequestException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserEntity } from './entity/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { DecodedToken } from 'src/auth/auth.dto';
-import { ApiTags } from '@nestjs/swagger';
+import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
 import {
+  AddKeywordsToUserSwaggerDecorator,
   DeleteUserSwaggerDecorator,
   GetAllUserSwaggerDecorator,
   GetMeUserSwaggerDecorator,
-  GetUserSwaggerDecorator,
+  GetUserSwaggerDecorator, RemoveKeywordFromUserSwaggerDecorator,
   UpdateMeUserSwaggerDecorator,
   UpdateUserSwaggerDecorator,
 } from '../swagger-decorator/user-swagger.decorators';
+import { ResponseModel } from '../response-model/response.model';
 
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @ApiTags('Users')
 @SerializeOptions({ excludePrefixes: ['password', 'role', 'id'] })
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UserService) {}
+
+  @AddKeywordsToUserSwaggerDecorator()
+  @Post('keywords')
+  async addKeyword(
+      @Request() req: Request & { user: DecodedToken },
+      @Body(
+          'keywords',
+          new ParseArrayPipe({
+            items: String,
+            separator: ',',
+            optional: true,
+            exceptionFactory: () => {
+              throw new BadRequestException(
+                  "Invalid parameter 'keywords': must be a valid list",
+              );
+            },
+          }),
+      ) keywords: string[]
+  ): Promise<ResponseModel> {
+    return await this.usersService.addKeywords(req.user.sub, keywords);
+  }
+
+  @RemoveKeywordFromUserSwaggerDecorator()
+  @Delete('keywords/:keyword')
+  async removeKeyword(
+      @Request() req: Request & { user: DecodedToken },
+      @Param('keyword') keyword: string
+  ): Promise<ResponseModel> {
+    return await this.usersService.removeKeyword(req.user.sub, keyword);
+  }
 
   @GetMeUserSwaggerDecorator()
   @Get('/profile')
@@ -46,7 +79,7 @@ export class UsersController {
   async updateProfile(
     @Request() req: Request & { user: DecodedToken },
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<{ message: string; status: number }> {
+  ): Promise<ResponseModel> {
     return await this.usersService.update(req.user.sub, updateUserDto);
   }
 
@@ -78,7 +111,7 @@ export class UsersController {
     @Request() req: Request & { user: DecodedToken },
     @Body() updateUserDto: UpdateUserDto,
     @Param('userId', ParseIntPipe) userId: number,
-  ): Promise<{ message: string; status: number }> {
+  ): Promise<ResponseModel> {
     const authenticatedUserId = req.user.sub;
     if (authenticatedUserId === userId || req.user.role === 'ADMIN') {
       return await this.usersService.update(userId, updateUserDto);
@@ -91,7 +124,7 @@ export class UsersController {
   async delete(
     @Request() req: Request & { user: DecodedToken },
     @Param('userId') userId: number,
-  ): Promise<{ message: string; status: number }> {
+  ): Promise<ResponseModel> {
     const authenticatedUserId = req.user.sub;
     if (authenticatedUserId === userId || req.user.role === 'ADMIN') {
       return await this.usersService.delete(userId);
