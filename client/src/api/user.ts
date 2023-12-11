@@ -44,3 +44,6 @@ function transformToVictoryFormat(data: CoinHistory): VictoryDataPoint[] {
     volume: data.volume[index]
   }));
 }
+
+
+
