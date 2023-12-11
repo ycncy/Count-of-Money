@@ -5,18 +5,10 @@ export function AddToFavoritesSwaggerDecorator() {
   return applyDecorators(
     ApiOperation({ summary: 'Add a cryptocurrency to user favorites' }),
     ApiQuery({
-      name: 'userId',
-      description: 'User ID',
-      schema: {
-        type: 'number',
-        example: '1',
-      },
-    }),
-    ApiQuery({
       name: 'coinId',
       description: 'Cryptocurrency ID',
       schema: {
-        type: 'number',
+        type: 'string',
         example: '1',
       },
     }),
@@ -36,14 +28,6 @@ export function AddToFavoritesSwaggerDecorator() {
 export function RemoveFromFavoritesSwaggerDecorator() {
   return applyDecorators(
     ApiOperation({ summary: 'Remove a cryptocurrency from user favorites' }),
-    ApiQuery({
-      name: 'userId',
-      description: 'User ID',
-      schema: {
-        type: 'number',
-        example: '1',
-      },
-    }),
     ApiQuery({
       name: 'coinId',
       description: 'Cryptocurrency ID',
