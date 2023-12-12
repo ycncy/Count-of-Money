@@ -1,5 +1,13 @@
+import {
+  Profile,
+  News,
+  CoinHistory,
+  VictoryDataPoint,
+  Granularity,
+  CoinHistoryWithSymbol
+} from "../types";
+
 import { clientApi } from "./client-api";
-import { Profile, News, CoinHistory, VictoryDataPoint, Granularity, CoinHistoryWithSymbol } from "../types";
 
 export const getMe = async () => {
   return clientApi
@@ -17,11 +25,16 @@ export const editUser = async (data: Profile) => {
   return clientApi
     .put<Profile>(`/users/${data.id}`, data)
     .then((response) => response.data);
-}
+};
 
-export const getOneCoinHistory = async (id: number, granularity: Granularity): Promise<CoinHistoryWithSymbol> => {
+export const getOneCoinHistory = async (
+  id: number,
+  granularity: Granularity
+): Promise<CoinHistoryWithSymbol> => {
   try {
-    const response = await clientApi.get<CoinHistory>(`/coins/${id}/history/${granularity}`);
+    const response = await clientApi.get<CoinHistory>(
+      `/coins/${id}/history/${granularity}`
+    );
     const data = response.data;
     const dataPoints = transformToVictoryFormat(data);
     return {
@@ -29,10 +42,10 @@ export const getOneCoinHistory = async (id: number, granularity: Granularity): P
       dataPoints
     };
   } catch (error) {
-    console.error('Failed to fetch data:', error);
-    return { symbol: '', dataPoints: [] };
+    console.error("Failed to fetch data:", error);
+    return { symbol: "", dataPoints: [] };
   }
-}
+};
 
 function transformToVictoryFormat(data: CoinHistory): VictoryDataPoint[] {
   return data.datetimes.map((datetime, index) => ({
@@ -44,6 +57,3 @@ function transformToVictoryFormat(data: CoinHistory): VictoryDataPoint[] {
     volume: data.volume[index]
   }));
 }
-
-
-
