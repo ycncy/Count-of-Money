@@ -16,7 +16,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CoinEntity } from './entity/coin.entity';
 import { CoinService } from './coin.service';
 import { CreateCoinDto } from './dto/create-coin.dto';
@@ -33,6 +33,7 @@ import {
   GetHistorySwaggerDecorator,
   SaveAllApiCryptosSwaggerDecorator,
 } from '../swagger-decorator/coin-swagger.decorators';
+import { Granularity } from './utils';
 import { ResponseModel } from '../response-model/response.model';
 import { ListCoinInfoModel } from './model/list-coin-info.model';
 
@@ -91,7 +92,7 @@ export class CoinController {
   @Get(':coinId/history/:period')
   async getHistoryByCoinId(
     @Param('coinId', ParseIntPipe) coinID: number,
-    @Param('period') period: string,
+    @Param('period') period: Granularity,
   ) {
     return await this.coinService.getCoinHistory(coinID, period);
   }

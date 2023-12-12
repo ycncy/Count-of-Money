@@ -2,7 +2,6 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import { getMe } from '../api/user';
 import { getAllCoins } from '../api/public';
-import { log } from 'console';
 
 function Admin() {
   const { data: user } = useQuery('me', getMe, {
@@ -121,7 +120,7 @@ function Admin() {
               </tr>
             </thead>
             <tbody>
-              {coins?.map((coin) => (
+              {coins?.items?.map((coin) => (
                 <tr>
                   <td>{coin.id}</td>
                   <td>{coin.name}</td>

@@ -1,5 +1,13 @@
+import {
+  Profile,
+  News,
+  CoinHistory,
+  VictoryDataPoint,
+  Granularity,
+  CoinHistoryWithSymbol
+} from "../types";
+
 import { clientApi } from "./client-api";
-import { Profile, News, Coin, CoinHistory, VictoryDataPoint } from "../types";
 
 export const getMe = async () => {
   return clientApi
@@ -17,18 +25,27 @@ export const editUser = async (data: Profile) => {
   return clientApi
     .put<Profile>(`/users/${data.id}`, data)
     .then((response) => response.data);
-}
+};
 
-export const getOneCoinHistory = async (id: number): Promise<VictoryDataPoint[]> => {
+export const getOneCoinHistory = async (
+  id: number,
+  granularity: Granularity
+): Promise<CoinHistoryWithSymbol> => {
   try {
-    const response = await clientApi.get<CoinHistory>(`/coins/${id}/history/month`);
+    const response = await clientApi.get<CoinHistory>(
+      `/coins/${id}/history/${granularity}`
+    );
     const data = response.data;
-    return transformToVictoryFormat(data);
+    const dataPoints = transformToVictoryFormat(data);
+    return {
+      symbol: data.symbol,
+      dataPoints
+    };
   } catch (error) {
-    console.error('Failed to fetch data:', error);
-    return [];
+    console.error("Failed to fetch data:", error);
+    return { symbol: "", dataPoints: [] };
   }
-}
+};
 
 function transformToVictoryFormat(data: CoinHistory): VictoryDataPoint[] {
   return data.datetimes.map((datetime, index) => ({

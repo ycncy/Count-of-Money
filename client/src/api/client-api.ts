@@ -5,7 +5,6 @@ export const clientApi = axios.create({
 });
 
 clientApi.interceptors.request.use(async (config) => {
-  
   const accessToken = localStorage.getItem("token");
   const requestConfig = config;
   if (accessToken && requestConfig.headers) {
