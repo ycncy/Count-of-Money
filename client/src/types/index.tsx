@@ -34,8 +34,9 @@ export type CoinData = {
   rank: number;
   name: string;
   symbol: string;
-  imageUrl: string;
   apiId: number;
+  addedToLocal: boolean;
+  localCoinId: number;
 };
 
 export type RawCoins = {
@@ -50,15 +51,15 @@ export type RawCoins = {
 
 export type Coin = {
   items: [CoinData];
-  links: CoinLinks;
-  meta: CoinMeta;
+  links?: CoinLinks;
+  meta?: CoinMeta;
 };
 
 export type CoinLinks = {
-  first: string;
-  last: string;
+  first?: string;
+  last?: string;
   next: string;
-  previous: string;
+  previous?: string;
 };
 
 export type CoinMeta = {

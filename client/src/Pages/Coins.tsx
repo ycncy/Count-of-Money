@@ -15,7 +15,7 @@ export const Coins = () => {
   });
 
   const initAllCoins = async () => {
-    fetchAllCoinsFromApi();
+    await fetchAllCoinsFromApi();
   };
 
   return (

@@ -54,7 +54,7 @@ function transformToVictoryFormat(data: CoinHistory): VictoryDataPoint[] {
   }));
 }
 
-export const getDefaultFav = async () => {
+export const getLocalCoins = async () => {
   return clientApi.get<RawCoins[]>(`/coins`).then((response) => response.data);
 };
 
@@ -73,7 +73,10 @@ export const getUserFav = async (userId: number) => {
 export const removeFromFavouritesCoins = async (coinId: number) => {
   return clientApi
     .delete(`/favorites/coins/${coinId}`)
-    .then((response) => response.data);
+    .then((response) => {
+      console.log(response);
+      return response.data;
+    });
 };
 
 export const addToUserKeywords = async (body: any) => {
@@ -81,3 +84,4 @@ export const addToUserKeywords = async (body: any) => {
     .post<any>(`/users/keywords/`, body)
     .then((response) => response.data);
 };
+
