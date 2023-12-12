@@ -96,6 +96,9 @@ export class UserService {
         if (!user) {
             throw new NotFoundException(`User ${id} not found`);
         }
+        if (updateUserDto.password) {
+            updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+        }
         await this.userRepository.update(id, updateUserDto);
 
         return {

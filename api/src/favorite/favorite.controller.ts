@@ -52,15 +52,11 @@ export class FavoriteController {
 
   @GetFavoritesSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Get('users/:userId')
+  @Get('users')
   async getFavorites(
     @Request() req: Request & { user: DecodedToken },
-    @Param('userId') userId: number,
   ): Promise<CoinEntity[] | DefaultFavoriteEntity[]> {
-    if (req.user.sub !== userId && req.user.role !== 'ADMIN') {
-      throw new HttpException('Unauthorized', 401);
-    }
-    return this.favoriteService.getFavorites(userId);
+    return this.favoriteService.getFavorites(req.user.sub);
   }
 
   @GetDefaultFavoritesSwaggerDecorator()

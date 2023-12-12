@@ -22,7 +22,7 @@ export class UpdateUserDto {
 
   @ApiProperty()
   @IsOptional()
-  readonly password: string;
+  password: string;
 
   @ApiProperty()
   @IsOptional()
