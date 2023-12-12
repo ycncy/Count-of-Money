@@ -9,8 +9,8 @@ import {
   Index,
   ManyToMany,
 } from 'typeorm';
-import { UserProvider, UserRole } from './user.constants';
-import { CoinEntity } from 'src/coin/coin.entity';
+import { UserProvider, UserRole } from '../user.constants';
+import { CoinEntity } from 'src/coin/entity/coin.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -56,7 +56,7 @@ export class UserEntity {
   role: UserRole;
 
   @ApiProperty({ enum: UserProvider })
-  @Column()
   @IsEnum(UserProvider)
+  @Column({ type: 'enum', enum: UserProvider, nullable: true })
   provider: UserProvider;
 }

@@ -5,139 +5,89 @@ import {
   Delete,
   Get,
   UseGuards,
-  HttpCode,
   Request,
-  HttpException,
+  HttpException, ParseIntPipe, Query,
 } from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
 import { DecodedToken } from 'src/auth/auth.dto';
+import {
+  AddDefaultFavoriteSwaggerDecorator,
+  AddToFavoritesSwaggerDecorator,
+  DeleteDefaultFavoriteSwaggerDecorator,
+  GetDefaultFavoritesSwaggerDecorator,
+  GetFavoritesSwaggerDecorator,
+  RemoveFromFavoritesSwaggerDecorator,
+} from '../swagger-decorator/favorite-swagger.decorators';
+import { CoinEntity } from '../coin/entity/coin.entity';
+import { DefaultFavoriteEntity } from './favorite.entity';
+import { ResponseModel } from '../response-model/response.model';
 
+@ApiBearerAuth()
 @ApiTags('Favorites')
 @Controller('favorites')
 export class FavoriteController {
   constructor(private readonly favoriteService: FavoriteService) {}
 
-  @ApiOperation({ summary: 'Add a cryptocurrency to favorites' })
-  @ApiQuery({
-    name: 'userId',
-    description: 'User ID',
-    schema: {
-      type: 'number',
-      example: '1',
-    },
-  })
-  @ApiQuery({
-    name: 'coinId',
-    description: 'Cryptocurrency ID',
-    schema: {
-      type: 'number',
-      example: '1',
-    },
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully added cryptocurrency to favorites.',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'User or cryptocurrency not found.',
-  })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @HttpCode(200)
+  @AddToFavoritesSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Post(':userId/fav/:coinId')
+  @Post('coins/:coinId')
   async addToFavorites(
     @Request() req: Request & { user: DecodedToken },
-    @Param('userId') userId: number,
-    @Param('coinId') coinId: number,
-  ) {
-    if (req.user.sub !== userId && req.user.role !== 'ADMIN') {
-      throw new HttpException('Unauthorized', 401);
-    }
-    return await this.favoriteService.addToFavorites(userId, coinId);
+    @Query('coinId', ParseIntPipe) coinId: number,
+  ): Promise<ResponseModel> {
+    return await this.favoriteService.addToFavorites(req.user.sub, coinId);
   }
 
-  @ApiOperation({ summary: 'Remove a cryptocurrency from favorites' })
-  @ApiQuery({
-    name: 'userId',
-    description: 'User ID',
-    schema: {
-      type: 'number',
-      example: '1',
-    },
-  })
-  @ApiQuery({
-    name: 'coinId',
-    description: 'Cryptocurrency ID',
-    schema: {
-      type: 'number',
-      example: '1',
-    },
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully removed cryptocurrency from favorites.',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'User or cryptocurrency not found.',
-  })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @HttpCode(200)
+  @RemoveFromFavoritesSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Delete(':userId/fav/:coinId')
+  @Delete('coins/:coinId')
   async removeFromFavorites(
     @Request() req: Request & { user: DecodedToken },
-    @Param('userId') userId: number,
-    @Param('coinId') coinId: number,
+    @Query('coinId', ParseIntPipe) coinId: number,
   ) {
-    if (req.user.sub !== userId && req.user.role !== 'ADMIN') {
-      throw new HttpException('Unauthorized', 401);
-    }
-    return await this.favoriteService.removeFromFavorites(userId, coinId);
+    return await this.favoriteService.removeFromFavorites(req.user.sub, coinId);
   }
 
-  @ApiOperation({ summary: 'Get user favorites' })
-  @ApiQuery({
-    name: 'userId',
-    description: 'User ID',
-    schema: {
-      type: 'number',
-      example: '1',
-    },
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully get user favorites.',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'User not found.',
-  })
-  @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @HttpCode(200)
+  @GetFavoritesSwaggerDecorator()
   @UseGuards(JwtAuthGuard)
-  @Get(':userId/fav')
+  @Get('users')
   async getFavorites(
     @Request() req: Request & { user: DecodedToken },
-    @Param('userId') userId: number,
-  ) {
-    if (req.user.sub !== userId && req.user.role !== 'ADMIN') {
-      throw new HttpException('Unauthorized', 401);
-    }
-    return this.favoriteService.getFavorites(userId);
+  ): Promise<CoinEntity[] | DefaultFavoriteEntity[]> {
+    return this.favoriteService.getFavorites(req.user.sub);
   }
 
-  @ApiOperation({ summary: 'Get global favorites' })
-  @ApiResponse({
-    status: 200,
-    description: 'Successfully get global favorites.',
-  })
-  @HttpCode(200)
-  @Get('globalfav')
-  getGlobalFavorites() {
-    return this.favoriteService.getGlobalFavorites();
+  @GetDefaultFavoritesSwaggerDecorator()
+  @Get('default')
+  getDefaultFavorites() {
+    return this.favoriteService.getDefaultFavorites();
+  }
+
+  @AddDefaultFavoriteSwaggerDecorator()
+  @UseGuards(JwtAuthGuard)
+  @Post('default/coins/:coinId')
+  async addDefaultFavorite(
+    @Request() req: Request & { user: DecodedToken },
+    @Param('coinId') coinId: number,
+  ) {
+    if (req.user.role !== 'ADMIN') {
+      throw new HttpException('Unauthorized', 401);
+    }
+    return await this.favoriteService.addDefaultFavorite(coinId);
+  }
+
+  @DeleteDefaultFavoriteSwaggerDecorator()
+  @UseGuards(JwtAuthGuard)
+  @Delete('default/coins/:coinId')
+  async deleteDefaultFavorite(
+    @Request() req: Request & { user: DecodedToken },
+    @Param('coinId') coinId: number,
+  ) {
+    if (req.user.role !== 'ADMIN') {
+      throw new HttpException('Unauthorized', 401);
+    }
+    return await this.favoriteService.deleteDefaultFavorite(coinId);
   }
 }

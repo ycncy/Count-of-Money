@@ -1,15 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ApiCoinInfoModel {
-    @ApiProperty()
-    id: number;
+  @ApiProperty()
+  apiId: number;
 
-    @ApiProperty()
-    rank: number;
+  @ApiProperty()
+  rank: number;
 
-    @ApiProperty()
-    name: string;
+  @ApiProperty()
+  name: string;
 
-    @ApiProperty()
-    symbol: string;
+  @ApiProperty()
+  symbol: string;
 }

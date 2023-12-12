@@ -1,9 +1,20 @@
-import {format, parseISO} from 'date-fns';
-import {CoinEntity} from './coin.entity';
+import { format, parseISO } from 'date-fns';
+import { CoinEntity } from './entity/coin.entity';
 import dateProcessUtil from '../date.process.util';
-import {ErrorModel} from './model/error.model';
-import {CoinInfoModel} from './model/coin-info.model';
-import {ApiCoinInfoModel} from "./model/api-coin-info.model";
+import { ErrorModel } from '../response-model/error.model';
+import { CoinInfoModel } from './model/coin-info.model';
+import { ApiCoinInfoModel } from './model/api-coin-info.model';
+import { ResponseModel } from '../response-model/response.model';
+import { ApiCoinEntity } from './entity/api-coin.entity';
+
+export enum Granularity {
+  MONTH = 'MONTH',
+  WEEK = 'WEEK',
+  FIVE_DAYS = 'FIVE_DAYS',
+  DAY = 'DAY',
+  HOUR = 'HOUR',
+  MINUTE = 'MINUTE',
+}
 
 const fetchCoinInfo = async (coinId: number) => {
   try {
@@ -19,7 +30,7 @@ const fetchCoinInfo = async (coinId: number) => {
     const data = await response.json();
     const coinData = data['data'][Object.keys(data['data'])[0]];
 
-    const newCoinEntity = new CoinEntity();
+    const newCoinEntity: CoinEntity = new CoinEntity();
     newCoinEntity.fullName = coinData.name;
     newCoinEntity.imageUrl = coinData.logo;
     newCoinEntity.description = coinData.description;
@@ -42,11 +53,11 @@ const fetchCoinHistory = async (
   currency: string,
   range: string,
   granularity: string,
-) => {
+): Promise<CoinInfoModel | ErrorModel> => {
   try {
     const query_url = `https://query2.finance.yahoo.com/v8/finance/chart/${coinSymbol}-${currency}?range=${range}&interval=${granularity}`;
 
-    const response = await fetch(query_url, {
+    const response: Response = await fetch(query_url, {
       headers: { 'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY },
     });
 
@@ -54,12 +65,12 @@ const fetchCoinHistory = async (
 
     if (jsonResponse.chart.error) {
       if (jsonResponse.chart.error.code === 'Not Found') {
-        const errorDetails = {
-          code: jsonResponse.chart.error.code,
+        const errorDetails: ResponseModel = {
+          status: parseInt(jsonResponse.chart.error.code),
           message: jsonResponse.chart.error.description,
         };
 
-        const errorResponse = new ErrorModel();
+        const errorResponse: ErrorModel = new ErrorModel();
         errorResponse.error = errorDetails;
 
         return errorResponse;
@@ -89,7 +100,7 @@ const fetchCoinHistory = async (
 
 const fetchAllApiCryptos = async () => {
   try {
-    const query_url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/map?limit=100`;
+    const query_url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/map?sort=cmc_rank&limit=100`;
 
     const response = await fetch(query_url, {
       headers: { 'X-CMC_PRO_API_KEY': process.env.CMC_API_KEY },
@@ -97,9 +108,9 @@ const fetchAllApiCryptos = async () => {
 
     const jsonResponse = await response.json();
 
-    return jsonResponse.data.map((coin) => {
-      const formattedCoin = new ApiCoinInfoModel();
-      formattedCoin.id = coin.id;
+    return jsonResponse.data.map((coin: ApiCoinEntity) => {
+      const formattedCoin: ApiCoinInfoModel = new ApiCoinInfoModel();
+      formattedCoin.apiId = coin.id;
       formattedCoin.rank = coin.rank;
       formattedCoin.name = coin.name;
       formattedCoin.symbol = coin.symbol;
@@ -108,10 +119,10 @@ const fetchAllApiCryptos = async () => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 export default {
   fetchCoinInfo,
   fetchCoinHistory,
-  fetchAllApiCryptos
+  fetchAllApiCryptos,
 };
