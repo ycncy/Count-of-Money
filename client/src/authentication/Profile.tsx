@@ -2,9 +2,9 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import ProfileModal from '../composant/ProfileModalProps/ProfileModalProps';
 
-const Profile: React.FC = () => {
+export default  function Profile ()  {
     const [userData, setUserData] = useState({
-        name: '',
+        username: '',
         email: '',
         password: '',
         baseCurrency: '',
@@ -29,15 +29,11 @@ const Profile: React.FC = () => {
     useEffect(() => {
       const fetchUserData = async () => {
         try {
-          console.log(axios.get(
-            'http://localhost:5000/api/users/profile',
-            { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
-            ));
+    
           const response = await axios.get(
             'http://localhost:5000/api/users/profile',
             { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
             );
-            console.log(response.data);
           setUserData(response.data);
         } catch (error) {
           console.error('Error fetching user data:', error);
@@ -45,7 +41,7 @@ const Profile: React.FC = () => {
       }
       // const fetchFavoriteCryptos = async () => {
       //   try {
-      //     const response = await axios.get('/api/favoriteCryptos');
+      //     const response = await axios.get();
       //     setFavoriteCryptos(response.data);
       //   } catch (error) {
       //     console.error('Error fetching favorite cryptocurrencies:', error);
@@ -74,19 +70,32 @@ const Profile: React.FC = () => {
           }
         }
       };
+
       const handleRemoveTag = (index: number) => {
         const updatedTags = [...tags];
         updatedTags.splice(index, 1);
         setTags(updatedTags);
       };
-      const handleUpdateProfile = (formData: { name: string; email: string; password: string }) => {
-        // Handle the profile update logic here
-        console.log('Updating profile with data:', formData);
-        // You might want to make an API call or dispatch an action here
+
+      const handleUpdateProfile = (formData: { username: string; email: string; password: string, baseCurrency: string }) => {
+          console.log(formData);
+          axios.put(
+          'http://localhost:5000/api/users/profile',
+          formData,
+          { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+        )
+          .then((response) => {
+            console.log(response);
+            setUserData(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       };
     
   return (
-    <section><ProfileModal
+    <section>
+      <ProfileModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onSubmit={handleUpdateProfile}
@@ -98,7 +107,7 @@ const Profile: React.FC = () => {
           className="w-10 h-10 rounded-full mr-2 mx-6"
         />
         <div>
-          <p className='mx-2 font-sans font-bold mr-4'>{userData.email}</p>
+          <p className='mx-2 font-sans font-bold mr-4'>{userData.username || ''}</p>
         </div>
         <div className="ml-auto">
         <ul className="flex items-center gap-2 2xsm:gap-4">
@@ -252,4 +261,3 @@ const Profile: React.FC = () => {
   );
 };
 
-export default Profile;

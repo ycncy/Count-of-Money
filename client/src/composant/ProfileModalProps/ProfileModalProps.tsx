@@ -1,38 +1,52 @@
-// ProfileModal.js
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 
 type ProfileModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (formData: { name: string; email: string; password: string, baseCurrency:string }) => void;
+  onSubmit: (formData: { username: string; email: string; password: string, baseCurrency:string }) => void;
 };
 
 const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onSubmit }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [baseCurrency, setBaseCurrency] = useState('');
+  const [userData, setUserData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    baseCurrency: '',
+    }) ;
 
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
-
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
-  const handleBaseCurrencyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(event.target.value);
-    setBaseCurrency(event.target.value);
-  }
-
+    useEffect(() => {
+      const fetchUserData = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/api/users/profile',
+          { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+          );
+          const userData = await response.json();
+          setUserData(userData);
+        } catch (error) {
+          console.error('Error fetching user data', error);
+        }
+      };
+        fetchUserData();
+      }, []);
+  
+    const handleNameChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+      setUserData((prevUser) => ({ ...prevUser, username: event.target.value }));
+    };
+  
+    const handleEmailChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+      setUserData((prevUser) => ({ ...prevUser, email: event.target.value }));
+    };
+  
+    const handlePasswordChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+      setUserData((prevUser) => ({ ...prevUser, password: event.target.value }));
+    };
+     const handleBaseCurrencyChange = (event:React.ChangeEvent<HTMLSelectElement>) => {
+      setUserData((prevUser) => ({ ...prevUser, baseCurrency: event.target.value }));
+    }
+  
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    onSubmit({ name, email, password , baseCurrency});
-    onClose();
+    onSubmit(userData);
   };
 
   return (
@@ -42,10 +56,10 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onSubmit }
       <div className="modal-content bg-white w-96 p-4 rounded-md shadow-md">
           <form onSubmit={handleSubmit}>
             <label className="block text-sm font-medium text-gray-600">
-              Name:
+              Username:
               <input
                 type="text"
-                value={name}
+                value={userData.username || ''}
                 onChange={handleNameChange}
                 className="mt-1 p-2 w-full border rounded-md"
               />
@@ -55,7 +69,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onSubmit }
               Email:
               <input
                 type="email"
-                value={email}
+                value={userData.email || ''}
                 onChange={handleEmailChange}
                 className="mt-1 p-2 w-full border rounded-md"
               />
@@ -65,7 +79,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onSubmit }
               Password:
               <input
                 type="password"
-                value={password}
+                value={userData.password || ''}
                 onChange={handlePasswordChange}
                 className="mt-1 p-2 w-full border rounded-md"
               />
