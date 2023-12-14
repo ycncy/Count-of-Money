@@ -1,5 +1,14 @@
-import { clientApi } from "./client-api";
-import { Profile, News, Coin, CoinHistory, VictoryDataPoint } from "../types";
+import { clientApi } from './client-api';
+import {
+  Profile,
+  News,
+  Coin,
+  CoinHistory,
+  VictoryDataPoint,
+  DefaultFav,
+  CoinData,
+  RawCoins,
+} from '../types';
 
 export const getMe = async () => {
   return clientApi
@@ -17,18 +26,22 @@ export const editUser = async (data: Profile) => {
   return clientApi
     .put<Profile>(`/users/${data.id}`, data)
     .then((response) => response.data);
-}
+};
 
-export const getOneCoinHistory = async (id: number): Promise<VictoryDataPoint[]> => {
+export const getOneCoinHistory = async (
+  id: number
+): Promise<VictoryDataPoint[]> => {
   try {
-    const response = await clientApi.get<CoinHistory>(`/coins/${id}/history/month`);
+    const response = await clientApi.get<CoinHistory>(
+      `/coins/${id}/history/month`
+    );
     const data = response.data;
     return transformToVictoryFormat(data);
   } catch (error) {
     console.error('Failed to fetch data:', error);
     return [];
   }
-}
+};
 
 function transformToVictoryFormat(data: CoinHistory): VictoryDataPoint[] {
   return data.datetimes.map((datetime, index) => ({
@@ -37,6 +50,38 @@ function transformToVictoryFormat(data: CoinHistory): VictoryDataPoint[] {
     close: data.close[index],
     high: data.high[index],
     low: data.low[index],
-    volume: data.volume[index]
+    volume: data.volume[index],
   }));
 }
+
+export const getLocalCoins = async () => {
+  return clientApi.get<RawCoins[]>(`/coins`).then((response) => response.data);
+};
+
+export const addToFavouritesCoins = async (coinId: number) => {
+  return clientApi
+    .post<any>(`/favorites/coins/${coinId}`)
+    .then((response) => response.data);
+};
+
+export const getUserFav = async (userId: number) => {
+  return clientApi
+    .get<DefaultFav[]>(`/favorites/users/${userId}`)
+    .then((response) => response.data);
+};
+
+export const removeFromFavouritesCoins = async (coinId: number) => {
+  return clientApi
+    .delete(`/favorites/coins/${coinId}`)
+    .then((response) => {
+      console.log(response);
+      return response.data;
+    });
+};
+
+export const addToUserKeywords = async (body: any) => {
+  return clientApi
+    .post<any>(`/users/keywords/`, body)
+    .then((response) => response.data);
+};
+

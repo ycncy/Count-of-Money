@@ -1,10 +1,10 @@
 import { applyDecorators, HttpCode } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 export function AddToFavoritesSwaggerDecorator() {
   return applyDecorators(
     ApiOperation({ summary: 'Add a cryptocurrency to user favorites' }),
-    ApiQuery({
+    ApiParam({
       name: 'coinId',
       description: 'Cryptocurrency ID',
       schema: {
@@ -28,7 +28,7 @@ export function AddToFavoritesSwaggerDecorator() {
 export function RemoveFromFavoritesSwaggerDecorator() {
   return applyDecorators(
     ApiOperation({ summary: 'Remove a cryptocurrency from user favorites' }),
-    ApiQuery({
+    ApiParam({
       name: 'coinId',
       description: 'Cryptocurrency ID',
       schema: {

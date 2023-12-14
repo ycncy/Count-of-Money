@@ -6,7 +6,6 @@ import {
   Get,
   UseGuards,
   Request,
-  HttpException, ParseIntPipe, Query,
 } from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
 import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
@@ -33,11 +32,10 @@ export class FavoriteController {
   constructor(private readonly favoriteService: FavoriteService) {}
 
   @AddToFavoritesSwaggerDecorator()
-  @Roles(['ADMIN'])
   @Post('coins/:coinId')
   async addToFavorites(
-    @Query('coinId') coinId: number,
     @Request() req: Request & { user: DecodedToken },
+    @Param('coinId') coinId: number,
   ): Promise<ResponseModel> {
     return await this.favoriteService.addToFavorites(req.user.sub, coinId);
   }
@@ -46,7 +44,7 @@ export class FavoriteController {
   @Delete('coins/:coinId')
   async removeFromFavorites(
     @Request() req: Request & { user: DecodedToken },
-    @Query('coinId') coinId: number,
+    @Param('coinId') coinId: number,
   ) {
     return await this.favoriteService.removeFromFavorites(req.user.sub, coinId);
   }
