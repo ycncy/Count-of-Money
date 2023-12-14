@@ -22,7 +22,7 @@ export function Charts() {
 
   const { data: coinHistory, refetch } = useQuery(
     ["coinHistory", granularity],
-    () => getOneCoinHistory(3, granularity),
+    () => getOneCoinHistory(1, granularity),
     { enabled: !!granularity }
   );
 

@@ -31,17 +31,21 @@ export class AuthService {
         return this.jwtService.sign(payload);
     }
 
-    async login(user: SignInDto) {
-        if (!user.email || !user.password) {
-            throw new UnauthorizedException('Missing email or password');
+    async login(signInDto: SignInDto) {
+        if (!signInDto.password) {
+            throw new UnauthorizedException('Missing password');
         }
 
-        const userEntity: UserEntity =
-            await this.userService.findOneByEmailWithPassword(user.email);
-        if (
-            !userEntity ||
-            !(await bcrypt.compare(user.password, userEntity.password))
-        ) {
+        let userEntity: UserEntity;
+
+        if (signInDto.login) {
+            userEntity = await this.userService.findOneByLoginWithPassword(signInDto.login);
+        }
+        else {
+            throw new UnauthorizedException('Missing email or username');
+        }
+
+        if (!userEntity || !(await bcrypt.compare(signInDto.password, userEntity.password))) {
             throw new BadRequestException('Invalid credentials');
         }
 
@@ -70,7 +74,6 @@ export class AuthService {
                 ...user,
                 password: 'empty',
                 baseCurrency: 'USD',
-                keywords: [],
             });
         }
 
