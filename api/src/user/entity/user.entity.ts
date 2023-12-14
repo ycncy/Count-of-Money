@@ -35,7 +35,7 @@ export class UserEntity {
   password: string;
 
   @ApiProperty()
-  @Column()
+  @Column({ unique: true })
   username: string;
 
   @ApiProperty()

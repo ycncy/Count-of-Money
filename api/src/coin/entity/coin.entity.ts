@@ -51,6 +51,7 @@ export class CoinEntity {
   @ApiProperty()
   @Column({
     nullable: true,
+    unique: true,
   })
   symbol: string;
 

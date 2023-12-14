@@ -121,7 +121,7 @@ function Admin() {
               </tr>
             </thead>
             <tbody>
-              {coins?.map((coin) => (
+              {coins?.items.map((coin) => (
                 <tr>
                   <td>{coin.id}</td>
                   <td>{coin.name}</td>

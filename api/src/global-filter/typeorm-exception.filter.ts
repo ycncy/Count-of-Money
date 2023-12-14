@@ -2,7 +2,7 @@ import {
     ExceptionFilter,
     Catch,
     ArgumentsHost,
-    HttpException,
+    HttpException, HttpStatus,
 } from '@nestjs/common';
 import {TypeORMError} from "typeorm";
 import {json, Response} from "express";
@@ -13,14 +13,13 @@ export class TypeormExceptionFilter implements ExceptionFilter {
     catch(exception: TypeORMError, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
-        const excptionCode: string = ""
-        console.log(exception);
-        const message: string = exception.message;
-
-        response.status(200).json({
-            status: 200,
-            message: message,
-        });
+        if (exception["code"] === "23505") {
+            response.status(HttpStatus.CONFLICT).json({
+                status: HttpStatus.CONFLICT,
+                message: exception["detail"],
+            });
+            return;
+        }
     }
 
 }

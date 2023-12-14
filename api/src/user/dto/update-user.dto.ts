@@ -16,15 +16,7 @@ export class UpdateUserDto {
   @IsOptional()
   readonly baseCurrency: string;
 
-  @ApiProperty({ type: [String] })
-  @IsOptional()
-  readonly keywords: string[];
-
   @ApiProperty()
   @IsOptional()
   password: string;
-
-  @ApiProperty()
-  @IsOptional()
-  readonly favorites: CoinEntity[];
 }
