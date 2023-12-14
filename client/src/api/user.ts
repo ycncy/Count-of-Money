@@ -1,13 +1,14 @@
+import { clientApi } from './client-api';
 import {
-  Profile,
-  News,
-  CoinHistory,
-  VictoryDataPoint,
-  Granularity,
-  CoinHistoryWithSymbol
-} from "../types";
-
-import { clientApi } from "./client-api";
+    Profile,
+    News,
+    Coin,
+    CoinHistory,
+    VictoryDataPoint,
+    DefaultFav,
+    CoinData,
+    RawCoins, CoinHistoryWithSymbol, Granularity,
+} from '../types';
 
 export const getMe = async () => {
   return clientApi
@@ -54,6 +55,38 @@ function transformToVictoryFormat(data: CoinHistory): VictoryDataPoint[] {
     close: data.close[index],
     high: data.high[index],
     low: data.low[index],
-    volume: data.volume[index]
+    volume: data.volume[index],
   }));
 }
+
+export const getLocalCoins = async () => {
+  return clientApi.get<RawCoins[]>(`/coins`).then((response) => response.data);
+};
+
+export const addToFavouritesCoins = async (coinId: number) => {
+  return clientApi
+    .post<any>(`/favorites/coins/${coinId}`)
+    .then((response) => response.data);
+};
+
+export const getUserFav = async (userId: number) => {
+  return clientApi
+    .get<DefaultFav[]>(`/favorites/users/${userId}`)
+    .then((response) => response.data);
+};
+
+export const removeFromFavouritesCoins = async (coinId: number) => {
+  return clientApi
+    .delete(`/favorites/coins/${coinId}`)
+    .then((response) => {
+      console.log(response);
+      return response.data;
+    });
+};
+
+export const addToUserKeywords = async (body: any) => {
+  return clientApi
+    .post<any>(`/users/keywords/`, body)
+    .then((response) => response.data);
+};
+

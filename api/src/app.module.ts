@@ -8,6 +8,8 @@ import { FavoritesModule } from './favorite/favorite.module';
 import { PressReviewModule } from './press-review/press-review.module';
 import { UserSeeder } from './db/seeds/initial-seed';
 import { UserEntity } from './user/entity/user.entity';
+import {APP_GUARD} from "@nestjs/core";
+import {RolesGuard} from "./auth/guard/roles.guard";
 
 @Module({
   imports: [
@@ -32,7 +34,13 @@ import { UserEntity } from './user/entity/user.entity';
     FavoritesModule,
     PressReviewModule,
   ],
-  providers: [UserSeeder],
+  providers: [
+      UserSeeder,
+      {
+        provide: APP_GUARD,
+        useClass: RolesGuard
+      }
+  ],
   controllers: [],
 })
 export class AppModule implements OnModuleInit {

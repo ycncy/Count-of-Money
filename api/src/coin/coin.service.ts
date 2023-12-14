@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {Repository, SelectQueryBuilder} from 'typeorm';
 import { CreateCoinDto } from './dto/create-coin.dto';
 import { CoinEntity } from './entity/coin.entity';
 import utils, { Granularity } from './utils';
@@ -35,7 +35,15 @@ export class CoinService {
   }
 
   getAllApiCryptos(options: IPaginationOptions) {
-    return paginate<ApiCoinEntity>(this.apiCoinEntityRepository, options);
+    return paginate<ApiCoinEntity>(
+        this.apiCoinEntityRepository,
+        options,
+        {
+          order: {
+            id: 'ASC'
+          }
+        }
+    )
   }
 
   async getCoinsInfo(coinIds: number[] = []) {
@@ -268,9 +276,16 @@ export class CoinService {
       throw new ConflictException('Coin already exists');
     }
 
-    const coin: CoinEntity =
-      this.coinEntityRepository.create(coinEntityFromApi);
-    return await this.coinEntityRepository.save(coin);
+    const coin: CoinEntity = this.coinEntityRepository.create(coinEntityFromApi);
+    const localCoin = (await this.coinEntityRepository.save(coin));
+    await this.apiCoinEntityRepository.update(
+        { symbol: coin.symbol },
+        {
+          addedToLocal: true,
+          localCoinId: localCoin.id
+        },
+    )
+    return localCoin;
   }
 
   async editCoin(
@@ -298,7 +313,16 @@ export class CoinService {
       throw new NotFoundException(`Coin with ID ${coinID} not found`);
     }
 
+    const localCoinSymbol = coin.symbol;
+
     await this.coinEntityRepository.delete({ id: coin.id });
+    await this.apiCoinEntityRepository.update(
+        { symbol: localCoinSymbol },
+        {
+          addedToLocal: false,
+          localCoinId: null
+        },
+    )
 
     return {
       status: 200,

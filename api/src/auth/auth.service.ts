@@ -1,149 +1,144 @@
 import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
+    BadRequestException,
+    ConflictException,
+    Injectable,
+    UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../user/user.service';
+import {JwtService} from '@nestjs/jwt';
+import {UserService} from '../user/user.service';
 import * as bcrypt from 'bcrypt';
-import { UserEntity } from 'src/user/entity/user.entity';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { UserProvider, UserRole } from 'src/user/user.constants';
-import { SignInDto, SignInGoogleDto } from './auth.dto';
-import {ResponseModel} from "../response-model/response.model";
+import {UserEntity} from 'src/user/entity/user.entity';
+import {CreateUserDto} from 'src/user/dto/create-user.dto';
+import {UserProvider, UserRole} from 'src/user/user.constants';
+import {SignInDto, SignInGoogleDto} from './auth.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private userService: UserService,
-    private jwtService: JwtService,
-  ) {}
-
-  generateJwt(payload: {
-    sub: number;
-    email: string;
-    role: UserRole;
-    provider: UserProvider;
-    username: string;
-    baseCurrency: string;
-  }) {
-    return this.jwtService.sign(payload);
-  }
-
-  async login(user: SignInDto) {
-    if (!user.email || !user.password) {
-      throw new UnauthorizedException('Missing email or password');
-    }
-
-    const userEntity: UserEntity =
-      await this.userService.findOneByEmailWithPassword(user.email);
-    if (
-      !userEntity ||
-      !(await bcrypt.compare(user.password, userEntity.password))
+    constructor(
+        private userService: UserService,
+        private jwtService: JwtService,
     ) {
-      throw new BadRequestException('Invalid credentials');
     }
 
-    return {
-      token: this.generateJwt({
-        sub: userEntity.id,
-        email: userEntity.email,
-        role: userEntity.role,
-        provider: userEntity.provider,
-        username: userEntity.username,
-        baseCurrency: userEntity.baseCurrency,
-      }),
-    };
-  }
-
-  async loginGoogle(user: SignInGoogleDto) {
-    if (!user) {
-      throw new BadRequestException('Unauthenticated');
-    }
-    let userEntity: UserEntity;
-
-    userEntity = await this.userService.findOneByEmail(user.email);
-    if (!userEntity) {
-      userEntity = await this.registerOAuthUser({
-        ...user,
-        password: 'empty',
-        baseCurrency: 'USD',
-        keywords: [],
-      });
+    generateJwt(payload: {
+        sub: number;
+        email: string;
+        role: UserRole;
+        provider: UserProvider;
+        username: string;
+        baseCurrency: string;
+    }) {
+        return this.jwtService.sign(payload);
     }
 
-    return {
-      token: this.generateJwt({
-        sub: userEntity.id,
-        email: userEntity.email,
-        role: userEntity.role,
-        provider: userEntity.provider,
-        username: userEntity.username,
-        baseCurrency: userEntity.baseCurrency,
-      }),
-    };
-  }
+    async login(user: SignInDto) {
+        if (!user.email || !user.password) {
+            throw new UnauthorizedException('Missing email or password');
+        }
 
-  async registerOAuthUser(user: CreateUserDto) {
-    const newUser = {
-      ...user,
-      password: 'empty',
-      provider: UserProvider.GOOGLE,
-      role: UserRole.USER,
-    };
+        const userEntity: UserEntity =
+            await this.userService.findOneByEmailWithPassword(user.email);
+        if (
+            !userEntity ||
+            !(await bcrypt.compare(user.password, userEntity.password))
+        ) {
+            throw new BadRequestException('Invalid credentials');
+        }
 
-    return this.userService.create(newUser);
-  }
-
-  async registerUser(user: CreateUserDto) {
-    const userExists: UserEntity = await this.userService.findOneByEmail(
-      user.email,
-    );
-
-    if (userExists !== null) {
-      throw new ConflictException('User already exists');
+        return {
+            access_token: this.generateJwt({
+                sub: userEntity.id,
+                email: userEntity.email,
+                role: userEntity.role,
+                provider: userEntity.provider,
+                username: userEntity.username,
+                baseCurrency: userEntity.baseCurrency,
+            }),
+            user: userEntity,
+        };
     }
 
-    const newUser = {
-      ...user,
-      role: UserRole.USER,
-      provider: UserProvider.LOCAL,
-      password: user.password,
-    };
+    async loginGoogle(user: SignInGoogleDto) {
+        if (!user) {
+            throw new BadRequestException('Unauthenticated');
+        }
+        let userEntity: UserEntity;
 
-    const userCreated: UserEntity = await this.userService.create(newUser);
-    await this.userService.save(userCreated);
-    return {
-      token: this.generateJwt({
-        sub: userCreated.id,
-        email: userCreated.email,
-        role: userCreated.role,
-        provider: userCreated.provider,
-        username: userCreated.username,
-        baseCurrency: userCreated.baseCurrency,
-      }),
-    };
-  }
+        userEntity = await this.userService.findOneByEmail(user.email);
+        if (!userEntity) {
+            userEntity = await this.registerOAuthUser({
+                ...user,
+                password: 'empty',
+                baseCurrency: 'USD',
+                keywords: [],
+            });
+        }
 
-  async googleAuth(req) {
-    if (!req.user) {
-      return 'No user from google';
+        return {
+            access_token: this.generateJwt({
+                sub: userEntity.id,
+                email: userEntity.email,
+                role: userEntity.role,
+                provider: userEntity.provider,
+                username: userEntity.username,
+                baseCurrency: userEntity.baseCurrency,
+            }),
+        };
     }
 
-    return {
-      message: 'User information from google',
-      user: req.user,
-    };
-  }
+    async registerOAuthUser(user: CreateUserDto) {
+        const newUser = {
+            ...user,
+            password: 'empty',
+            provider: UserProvider.GOOGLE,
+            role: UserRole.USER,
+        };
 
-  async validateUser(email: string, pass: string): Promise<UserEntity> {
-    const user: UserEntity = await this.userService.findOneByEmail(email);
-
-    if (user && bcrypt.compareSync(pass, user.password)) {
-      return user;
+        return this.userService.create(newUser);
     }
 
-    return null;
-  }
+    async registerUser(user: CreateUserDto) {
+        const userExists: UserEntity = await this.userService.findOneByEmail(
+            user.email,
+        );
+
+        if (userExists !== null) {
+            throw new ConflictException('User already exists');
+        }
+
+        const newUser = {
+            ...user,
+            role: UserRole.USER,
+            provider: UserProvider.LOCAL,
+            password: user.password,
+        };
+
+        const userCreated: UserEntity = await this.userService.create(newUser);
+        await this.userService.save(userCreated);
+        return {
+            status: 201,
+            description: 'User registered successfully',
+        };
+    }
+
+    async googleAuth(req) {
+        if (!req.user) {
+            return 'No user from google';
+        }
+
+        return {
+            message: 'User information from google',
+            user: req.user,
+        };
+    }
+
+    async validateUser(email: string, pass: string): Promise<UserEntity> {
+        const user: UserEntity = await this.userService.findOneByEmail(email);
+
+        if (user && bcrypt.compareSync(pass, user.password)) {
+            return user;
+        }
+
+        return null;
+    }
 }
