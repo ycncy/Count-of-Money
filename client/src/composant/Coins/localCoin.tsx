@@ -1,6 +1,6 @@
 import React from "react";
-
-import { LocalCoin, Profile } from "../../types";
+import {LocalCoin} from "../../services/coins/public/public.coins.interfaces";
+import {Profile} from "../../types";
 
 interface Props {
   coin: LocalCoin;

@@ -2,7 +2,7 @@ import Axios from "../../api.service";
 import {UpdateUserDto, User} from "./admin.users.interfaces";
 
 export const getUserById = async (userId: number): Promise<User> => {
-  const response = await Axios.get(`/users/${userId}`);
+  const response = await Axios.get<User>(`/users/${userId}`);
   return response.data;
 };
 
@@ -20,7 +20,7 @@ export const deleteUser = async (userId: number) => {
 }
 
 export const getAllUsers = async (): Promise<User[]> => {
-    const response = await Axios.get(`/users`);
+    const response = await Axios.get<User[]>(`/users`);
     return response.data;
 }
 

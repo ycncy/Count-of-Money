@@ -25,8 +25,8 @@ export const addCoinsFromApi = async (): Promise<ApiCoin> => {
     return response.data;
 }
 
-export const getCoinsFromApi = async (): Promise<ApiCoinPaginated> => {
-    const response = await Axios.get(`/coins/AllFromApi`);
+export const getCoinsFromApi = async (url: string): Promise<ApiCoinPaginated> => {
+    const response = await Axios.get<ApiCoinPaginated>(url);
     return response.data;
 };
 

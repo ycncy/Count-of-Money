@@ -3,7 +3,7 @@ import {AddKeywordsDto, UpdateProfileDto} from "./public.users.interfaces";
 import {User} from "../admin/admin.users.interfaces";
 
 export const getProfile = async (): Promise<User> => {
-    const response = await Axios.get("/users/profile");
+    const response = await Axios.get<User>("/users/profile");
     return response.data;
 }
 
@@ -12,7 +12,7 @@ export const updateProfile = async (updateProfileDto: UpdateProfileDto): Promise
     return response.data;
 }
 
-export const addKeyword = async (addKeywordsDto: AddKeywordsDto) => {
+export const addKeywords = async (addKeywordsDto: AddKeywordsDto) => {
     const response = await Axios.put("/users/keywords", addKeywordsDto);
     return response.data;
 }
@@ -25,6 +25,6 @@ export const deleteKeyword = async (keyword: string) => {
 export const publicUsersService = {
     getProfile,
     updateProfile,
-    addKeyword,
+    addKeywords,
     deleteKeyword,
 }

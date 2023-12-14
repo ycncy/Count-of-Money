@@ -12,12 +12,12 @@ export const deleteUserFavorite = async (coinId: number) => {
 }
 
 export const getUserFavorites = async (): Promise<LocalCoin[]> => {
-    const response = await Axios.get(`/favorites/users`);
+    const response = await Axios.get<LocalCoin[]>(`/favorites/users`);
     return response.data;
 }
 
 export const getDefaultFavorites = async (): Promise<LocalCoin[]> => {
-    const response = await Axios.get(`/favorites/default`);
+    const response = await Axios.get<LocalCoin[]>(`/favorites/default`);
     return response.data;
 }
 

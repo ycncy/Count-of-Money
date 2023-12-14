@@ -1,5 +1,5 @@
 export type CoinHistory = {
-    coinId: number;
+    id: number;
     symbol: string;
     datetimes: string[];
     high: number[];
@@ -10,7 +10,8 @@ export type CoinHistory = {
 };
 
 export type LocalCoin = {
-    coinId: number;
+    id: number;
+    fullName: string;
     symbol: string;
     imageUrl: string;
     lastDatetime: Date;

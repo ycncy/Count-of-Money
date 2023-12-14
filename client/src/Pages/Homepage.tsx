@@ -1,8 +1,5 @@
 import NavBar from '../composant/Navbar/NavBar';
-import NavBarConnectedUser from '../composant/Navbar/NavBarConnectedUser';
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Card from '../composant/CoinsFavorites/DefaultFav';
 import CardArticle from '../composant/CardArticle/CardArticle';
 import CryptoCourses from '../composant/CoursesCrypto/CryptoCourses';
 import DefaultFav from '../composant/CoinsFavorites/DefaultFav';
