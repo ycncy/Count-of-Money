@@ -7,6 +7,15 @@ import { ApiCoinInfoModel } from './model/api-coin-info.model';
 import { ResponseModel } from '../response-model/response.model';
 import { ApiCoinEntity } from './entity/api-coin.entity';
 
+export enum Granularity {
+  MONTH = 'MONTH',
+  WEEK = 'WEEK',
+  FIVE_DAYS = 'FIVE_DAYS',
+  DAY = 'DAY',
+  HOUR = 'HOUR',
+  MINUTE = 'MINUTE',
+}
+
 const fetchCoinInfo = async (coinId: number) => {
   try {
     const response = await fetch(
@@ -37,6 +46,7 @@ const fetchCoinInfo = async (coinId: number) => {
     return null;
   }
 };
+
 
 const fetchCoinHistory = async (
   coinId: number,

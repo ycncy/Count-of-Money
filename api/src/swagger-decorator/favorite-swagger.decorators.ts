@@ -8,7 +8,7 @@ export function AddToFavoritesSwaggerDecorator() {
       name: 'coinId',
       description: 'Cryptocurrency ID',
       schema: {
-        type: 'string',
+        type: 'number',
         example: '1',
       },
     }),
@@ -52,14 +52,6 @@ export function RemoveFromFavoritesSwaggerDecorator() {
 export function GetFavoritesSwaggerDecorator() {
   return applyDecorators(
     ApiOperation({ summary: 'Get user favorites' }),
-    ApiParam({
-      name: 'userId',
-      description: 'User ID',
-      schema: {
-        type: 'number',
-        example: '1',
-      },
-    }),
     ApiResponse({
       status: 200,
       description: 'Successfully retrieved user favorites.',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { addToFavouritesCoins, getDefaultFav, getMe } from '../../api/user';
+import { addToFavouritesCoins, getLocalCoins, getMe } from '../../api/user';
 import { useQuery } from 'react-query';
 
 const DefaultFav = () => {
@@ -10,7 +10,7 @@ const DefaultFav = () => {
 
   const { data: defaultFav, isFetching } = useQuery(
     ['defaultFav'],
-    () => getDefaultFav(),
+    () => getLocalCoins(),
     {
       enabled: !!user,
     }

@@ -1,13 +1,13 @@
 import { clientApi } from './client-api';
 import {
-  Profile,
-  News,
-  Coin,
-  CoinHistory,
-  VictoryDataPoint,
-  DefaultFav,
-  CoinData,
-  RawCoins,
+    Profile,
+    News,
+    Coin,
+    CoinHistory,
+    VictoryDataPoint,
+    DefaultFav,
+    CoinData,
+    RawCoins, CoinHistoryWithSymbol, Granularity,
 } from '../types';
 
 export const getMe = async () => {
@@ -29,17 +29,22 @@ export const editUser = async (data: Profile) => {
 };
 
 export const getOneCoinHistory = async (
-  id: number
-): Promise<VictoryDataPoint[]> => {
+  id: number,
+  granularity: Granularity
+): Promise<CoinHistoryWithSymbol> => {
   try {
     const response = await clientApi.get<CoinHistory>(
-      `/coins/${id}/history/month`
+      `/coins/${id}/history/${granularity}`
     );
     const data = response.data;
-    return transformToVictoryFormat(data);
+    const dataPoints = transformToVictoryFormat(data);
+    return {
+      symbol: data.symbol,
+      dataPoints
+    };
   } catch (error) {
-    console.error('Failed to fetch data:', error);
-    return [];
+    console.error("Failed to fetch data:", error);
+    return { symbol: "", dataPoints: [] };
   }
 };
 
@@ -54,7 +59,7 @@ function transformToVictoryFormat(data: CoinHistory): VictoryDataPoint[] {
   }));
 }
 
-export const getDefaultFav = async () => {
+export const getLocalCoins = async () => {
   return clientApi.get<RawCoins[]>(`/coins`).then((response) => response.data);
 };
 
@@ -73,7 +78,10 @@ export const getUserFav = async (userId: number) => {
 export const removeFromFavouritesCoins = async (coinId: number) => {
   return clientApi
     .delete(`/favorites/coins/${coinId}`)
-    .then((response) => response.data);
+    .then((response) => {
+      console.log(response);
+      return response.data;
+    });
 };
 
 export const addToUserKeywords = async (body: any) => {

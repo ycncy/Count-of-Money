@@ -15,7 +15,16 @@ export type Providers = 'LOCAL' | 'GOOGLE' | 'FACEBOOK';
 
 export type Roles = 'ADMIN' | 'USER' | 'ANONYMOUS';
 
-export type BaseCurrency = 'EUR' | 'USD' | 'GBP' | 'JPY' | 'CHF';
+export type BaseCurrency = "EUR" | "USD" | "GBP" | "JPY" | "CHF";
+
+export enum Granularity {
+  MONTH = "MONTH",
+  WEEK = "WEEK",
+  FIVE_DAYS = "FIVE_DAYS",
+  DAY = "DAY",
+  HOUR = "HOUR",
+  MINUTE = "MINUTE"
+}
 
 export type News = {
   creator: string;
@@ -34,8 +43,9 @@ export type CoinData = {
   rank: number;
   name: string;
   symbol: string;
-  imageUrl: string;
   apiId: number;
+  addedToLocal: boolean;
+  localCoinId: number;
 };
 
 export type RawCoins = {
@@ -50,15 +60,15 @@ export type RawCoins = {
 
 export type Coin = {
   items: [CoinData];
-  links: CoinLinks;
-  meta: CoinMeta;
+  links?: CoinLinks;
+  meta?: CoinMeta;
 };
 
 export type CoinLinks = {
-  first: string;
-  last: string;
+  first?: string;
+  last?: string;
   next: string;
-  previous: string;
+  previous?: string;
 };
 
 export type CoinMeta = {
@@ -86,6 +96,11 @@ export type VictoryDataPoint = {
   high: number;
   low: number;
   volume: number;
+};
+
+export type CoinHistoryWithSymbol = {
+  symbol: string;
+  dataPoints: VictoryDataPoint[];
 };
 
 export type LocalCoin = {

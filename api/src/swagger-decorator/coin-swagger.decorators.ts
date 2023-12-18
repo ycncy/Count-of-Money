@@ -79,7 +79,7 @@ export function GetHistorySwaggerDecorator() {
     }),
     ApiParam({
       name: 'period',
-      enum: ['month', 'week', '5days', 'day', 'hour', 'minute'],
+      enum: ['MONTH', 'WEEK', 'FIVE_DAYS', 'DAY', 'HOUR', 'MINUTE'],
       description: 'Period of time to get history',
     }),
     ApiResponse({ status: 404, description: 'Cryptocurrency not found.' }),

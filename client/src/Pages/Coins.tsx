@@ -1,21 +1,23 @@
+import React from "react";
 import { useQuery } from 'react-query';
+
 import { getMe } from '../api/user';
 import { fetchAllCoinsFromApi } from '../api/admin';
 import { CoinComponent } from '../composant/Coins/coin';
 import { getAllCoins } from '../api/public';
 
-export const Coins = () => {
+export function Coins() {
   const { data: user } = useQuery('me', getMe, {
     retry: (_, error: any) => !(error.response?.status === 404),
-    enabled: localStorage.getItem('token') !== null,
+    enabled: localStorage.getItem('token') !== null
   });
 
   const { data: coins } = useQuery(['Coins'], () => getAllCoins(), {
-    enabled: !!user,
+    enabled: !!user
   });
 
   const initAllCoins = async () => {
-    fetchAllCoinsFromApi();
+    await fetchAllCoinsFromApi();
   };
 
   return (
@@ -33,4 +35,5 @@ export const Coins = () => {
       </div>
     </div>
   );
-};
+}
+;

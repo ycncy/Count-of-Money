@@ -4,20 +4,19 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserModule } from 'src/user/user.module';
-import { LocalStrategy } from './strategy/local-auth.strategy';
-import { JwtStrategy } from './strategy/jwt-auth.strategy';
+import { JwtStrategy } from './strategy/jwt.strategy';
 import { GoogleStrategy } from './strategy/google-auth.strategy';
 
 @Module({
   imports: [
     forwardRef(() => UserModule),
-    PassportModule.register({ defaultStrategy: 'jwt' }),
+    PassportModule,
     JwtModule.register({
-      secret: 'jwt',
+      secret: 'superSecretCashMoney',
       signOptions: { expiresIn: '24h' },
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy],
+  providers: [AuthService, JwtStrategy, GoogleStrategy],
   controllers: [AuthController],
   exports: [AuthService, JwtModule],
 })
