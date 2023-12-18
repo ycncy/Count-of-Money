@@ -1,15 +1,15 @@
-import { addToLocalApi } from "../../api/admin";
-import { CoinData } from "../../types";
+import { addToLocal } from '../../api/admin';
+import { CoinData } from '../../types';
 
 interface Props {
   coin: CoinData;
   userRole: string | undefined;
 }
 
-export const CoinComponent = ({ coin, userRole }: Props) => {
+export function CoinComponent({ coin, userRole }: Props) {
   const addToApi = async () => {
-    await addToLocalApi(coin.apiId); 
-  }
+    await addToLocal(coin.apiId);
+  };
 
   return (
     <div>
@@ -25,4 +25,4 @@ export const CoinComponent = ({ coin, userRole }: Props) => {
       </div>
     </div>
   );
-};
+}

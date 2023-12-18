@@ -15,7 +15,16 @@ export type Providers = 'LOCAL' | 'GOOGLE' | 'FACEBOOK';
 
 export type Roles = 'ADMIN' | 'USER' | 'ANONYMOUS';
 
-export type BaseCurrency = 'EUR' | 'USD' | 'GBP' | 'JPY' | 'CHF';
+export type BaseCurrency = "EUR" | "USD" | "GBP" | "JPY" | "CHF";
+
+export enum Granularity {
+  MONTH = "MONTH",
+  WEEK = "WEEK",
+  FIVE_DAYS = "FIVE_DAYS",
+  DAY = "DAY",
+  HOUR = "HOUR",
+  MINUTE = "MINUTE"
+}
 
 export type News = {
   creator: string;
@@ -29,34 +38,46 @@ export type News = {
   summary: string;
 };
 
-export type CoinData = { 
-  id: number,
-  rank: number,
-  name: string,
-  symbol: string,
-  apiId: number
-}
+export type CoinData = {
+  id: number;
+  rank: number;
+  name: string;
+  symbol: string;
+  apiId: number;
+  addedToLocal: boolean;
+  localCoinId: number;
+};
+
+export type RawCoins = {
+  coinId: number;
+  fullName: string;
+  rank: number;
+  name: string;
+  symbol: string;
+  imageUrl: string;
+  apiId: number;
+};
 
 export type Coin = {
-  items: [CoinData],
-  links: CoinLinks,
-  meta: CoinMeta
-}
+  items: [CoinData];
+  links?: CoinLinks;
+  meta?: CoinMeta;
+};
 
 export type CoinLinks = {
-  first: string,
-  last: string,
-  next: string,
-  previous: string
-}
+  first?: string;
+  last?: string;
+  next: string;
+  previous?: string;
+};
 
 export type CoinMeta = {
-  totalItems: number,
-  itemCount: number,
-  itemsPerPage: number,
-  totalPages: number, 
-  currentPage: number
-}
+  totalItems: number;
+  itemCount: number;
+  itemsPerPage: number;
+  totalPages: number;
+  currentPage: number;
+};
 export type CoinHistory = {
   coinId: number;
   symbol: string;
@@ -66,7 +87,7 @@ export type CoinHistory = {
   open: number[];
   close: number[];
   volume: number[];
-}
+};
 
 export type VictoryDataPoint = {
   x: Date;
@@ -75,7 +96,12 @@ export type VictoryDataPoint = {
   high: number;
   low: number;
   volume: number;
-}
+};
+
+export type CoinHistoryWithSymbol = {
+  symbol: string;
+  dataPoints: VictoryDataPoint[];
+};
 
 export type LocalCoin = {
   coinId: number;
@@ -87,4 +113,13 @@ export type LocalCoin = {
   open: number;
   close: number;
   volume: number;
+};
+
+export type DefaultFav = {
+  id: number;
+  coinId: number;
+  fullName: string;
+  imageUrl: string;
+  description: string;
+  symbol: string;
 };

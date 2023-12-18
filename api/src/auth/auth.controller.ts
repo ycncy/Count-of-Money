@@ -4,8 +4,9 @@ import {
   Post,
   Request,
   Get,
-  Body,
+  Body, Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
@@ -17,7 +18,6 @@ import {
   LoginSwaggerDecorator,
   RegisterSwaggerDecorator,
 } from '../swagger-decorator/auth-swagger.decorators';
-import {ResponseModel} from "../response-model/response.model";
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -26,8 +26,20 @@ export class AuthController {
 
   @LoginSwaggerDecorator()
   @Post('login')
-  async login(@Body() signInDto: SignInDto) {
-    return await this.authService.login(signInDto);
+  async login(
+      @Body() signInDto: SignInDto,
+      @Res({ passthrough: true }) res: Response,
+  ) {
+    const {access_token, user} = await this.authService.login(signInDto);
+    res.cookie('access_token', access_token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      expires: new Date(Date.now() + 24 * 60 * 1000),
+    }).send({
+      status: 200,
+      description: "User logged in successfully",
+    });
   }
 
   @RegisterSwaggerDecorator()

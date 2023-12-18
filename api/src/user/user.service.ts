@@ -5,7 +5,7 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {Repository} from 'typeorm';
+import {Repository, UpdateResult} from 'typeorm';
 import {CreateUserDto} from './dto/create-user.dto';
 import {UserEntity} from './entity/user.entity';
 import {UserProvider, UserRole} from './user.constants';
@@ -93,9 +93,15 @@ export class UserService {
         updateUserDto: UpdateUserDto,
     ): Promise<ResponseModel> {
         const user: UserEntity = await this.findOne(id);
+
         if (!user) {
             throw new NotFoundException(`User ${id} not found`);
         }
+
+        if (updateUserDto.password) {
+            updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+        }
+
         await this.userRepository.update(id, updateUserDto);
 
         return {
@@ -126,13 +132,23 @@ export class UserService {
             throw new NotFoundException(`User ${userId} not found`);
         }
 
-        user.keywords = [...user.keywords, ...keywords];
+        const newKeywords = keywords.filter(keyword => !user.keywords.includes(keyword));
+
+        if (newKeywords.length === 0) {
+            return {
+                status: 200,
+                message: "Keyword(s) already added",
+            };
+        }
+
+        user.keywords = [...user.keywords, ...newKeywords];
+
         await this.userRepository.save(user);
 
         return {
             status: 200,
             message: "Keyword(s) added successfully",
-        }
+        };
     }
 
     async removeKeyword(userId: number, keyword: string): Promise<ResponseModel> {
