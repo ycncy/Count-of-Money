@@ -6,11 +6,13 @@ import {
   Get,
   UseGuards,
   Request,
-  HttpException, ParseIntPipe, Query,
+  HttpException,
+  ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { DecodedToken } from 'src/auth/auth.dto';
 import {
   AddDefaultFavoriteSwaggerDecorator,
@@ -35,7 +37,7 @@ export class FavoriteController {
   @Post('coins/:coinId')
   async addToFavorites(
     @Request() req: Request & { user: DecodedToken },
-    @Query('coinId', ParseIntPipe) coinId: number,
+    @Param('coinId') coinId: number,
   ): Promise<ResponseModel> {
     return await this.favoriteService.addToFavorites(req.user.sub, coinId);
   }
@@ -45,7 +47,7 @@ export class FavoriteController {
   @Delete('coins/:coinId')
   async removeFromFavorites(
     @Request() req: Request & { user: DecodedToken },
-    @Query('coinId', ParseIntPipe) coinId: number,
+    @Param('coinId') coinId: number,
   ) {
     return await this.favoriteService.removeFromFavorites(req.user.sub, coinId);
   }
