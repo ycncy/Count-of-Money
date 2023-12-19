@@ -1,4 +1,5 @@
-import { Coin, LocalCoin } from '../types';
+import { Coin } from '../types';
+import { LocalCoin } from '../services/coins/public/public.coins.interfaces';
 import { clientApi } from './client-api';
 
 export const getPaginationCoins = async (link: string) => {

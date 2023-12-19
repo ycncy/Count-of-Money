@@ -1,8 +1,8 @@
 import React from 'react';
-import AdminCoins from "../composant/Admin/AdminCoins";
-import AdminUsers from "../composant/Admin/AdminUsers";
+import { AdminCoins } from "../composant/Admin/AdminCoins";
+import { AdminUsers } from "../composant/Admin/AdminUsers";
 
-function Admin() {
+export function Admin() {
     return (
         <div className='bg-[#1F2937] min-h-screen'>
             <nav className='p-4 text-white border-b'>
@@ -49,4 +49,3 @@ function Admin() {
     );
 }
 
-export default Admin;

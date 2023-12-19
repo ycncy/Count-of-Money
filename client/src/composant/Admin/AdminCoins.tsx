@@ -2,9 +2,9 @@ import React, {useEffect} from 'react';
 import {adminCoinsService} from "../../services/coins/admin/admin.coins.service";
 import {ApiCoin, ApiCoinPaginated} from "../../services/coins/admin/admin.coins.interfaces";
 import {publicCoinsService} from "../../services/coins/public/public.coins.service";
-import {LocalCoin} from "../../types";
+import {LocalCoin} from "../../services/coins/public/public.coins.interfaces";
 
-const AdminCoins = () => {
+export function AdminCoins (){
     const [data, setData] = React.useState<ApiCoinPaginated>();
     const [addedCoins, setAddedCoins] = React.useState<LocalCoin[]>([]);
 
@@ -120,5 +120,3 @@ const AdminCoins = () => {
         </div>
     );
 };
-
-export default AdminCoins;

@@ -10,7 +10,7 @@ export type CoinHistory = {
 };
 
 export type LocalCoin = {
-    id: number;
+    coinId: number;
     fullName: string;
     symbol: string;
     imageUrl: string;

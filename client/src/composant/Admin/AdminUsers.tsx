@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {adminUsersService} from "../../services/users/admin/admin.users.service";
 import {User} from "../../services/users/admin/admin.users.interfaces";
 
-const AdminUsers = () => {
+export function AdminUsers() {
     const [users, setUsers] = React.useState<User[]>([]);
 
     useEffect(() => {
@@ -62,4 +62,3 @@ const AdminUsers = () => {
     );
 };
 
-export default AdminUsers;
