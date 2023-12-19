@@ -27,6 +27,17 @@ export function RegisterSwaggerDecorator() {
   );
 }
 
+export function LogoutSwaggerDecorator() {
+  return applyDecorators(
+    ApiOperation({ summary: 'Logout' }),
+    ApiResponse({
+      status: 200,
+      description: 'Successfully logged out.',
+      type: String,
+    }),
+  );
+}
+
 export function GoogleCallbackSwaggerDecorator() {
   return applyDecorators(
     ApiOperation({ summary: 'Login with Google callback' }),

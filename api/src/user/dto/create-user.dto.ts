@@ -1,8 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
-// import { CoinEntity } from '../coin.entity';
-
 export class CreateUserDto {
   @ApiProperty()
   @IsNotEmpty()
@@ -19,16 +17,4 @@ export class CreateUserDto {
   @ApiProperty()
   @IsOptional()
   readonly baseCurrency: string;
-
-  @ApiProperty({ type: [String] })
-  @IsOptional()
-  readonly keywords: string[];
-
-  @ApiProperty()
-  @IsOptional()
-  readonly provider: string;
-
-  // @ApiProperty()
-  // @IsOptional()
-  // readonly coin: CoinEntity[];
 }

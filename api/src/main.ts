@@ -19,10 +19,14 @@ async function bootstrap() {
         .setTitle('Count of Money')
         .setDescription('Keep informed and beat the coins')
         .setVersion('0.1')
-        .addBearerAuth()
         .build();
 
-    app.enableCors();
+    app.enableCors(
+        {
+            credentials: true,
+            origin: 'http://localhost:3000',
+        }
+    );
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api/docs', app, document);
 

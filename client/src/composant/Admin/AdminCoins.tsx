@@ -1,19 +1,19 @@
 import React, {useEffect} from 'react';
-import {Coin, CoinData, RawCoins} from "../../types";
-import {getPaginationCoins} from "../../api/public";
-import {addToLocal, deleteFromLocal} from "../../api/admin";
-import {getLocalCoins} from "../../api/user";
+import {adminCoinsService} from "../../services/coins/admin/admin.coins.service";
+import {ApiCoin, ApiCoinPaginated} from "../../services/coins/admin/admin.coins.interfaces";
+import {publicCoinsService} from "../../services/coins/public/public.coins.service";
+import {LocalCoin} from "../../types";
 
 const AdminCoins = () => {
-    const [data, setData] = React.useState<Coin>();
-    const [addedCoins, setAddedCoins] = React.useState<RawCoins[]>([]);
+    const [data, setData] = React.useState<ApiCoinPaginated>();
+    const [addedCoins, setAddedCoins] = React.useState<LocalCoin[]>([]);
 
     useEffect(() => {
         const fetchAddedCoins = async () => {
-            setAddedCoins(await getLocalCoins())
+            setAddedCoins(await publicCoinsService.getLocalCoins())
         }
         const fetchData = async () => {
-            setData(await getPaginationCoins(data?.links?.previous ?? "http://localhost:5000/api/coins/allFromApi"))
+            setData(await adminCoinsService.getCoinsFromApi(data?.links?.next ?? "http://localhost:5000/api/coins/allFromApi"))
         }
 
         fetchAddedCoins();
@@ -21,20 +21,22 @@ const AdminCoins = () => {
     }, [])
 
     const setPreviousCoins = async () => {
-        const response = await getPaginationCoins(data?.links?.previous ?? "http://localhost:5000/api/coins/allFromApi");
+        const response: ApiCoinPaginated = await adminCoinsService.getCoinsFromApi(data?.links?.previous ?? "http://localhost:5000/api/coins/allFromApi");
 
         setData(response);
     }
 
     const setNextCoins = async () => {
-        const response = await getPaginationCoins(data?.links?.next ?? "http://localhost:5000/api/coins/allFromApi");
+        const response: ApiCoinPaginated = await adminCoinsService.getCoinsFromApi(data?.links?.next ?? "http://localhost:5000/api/coins/allFromApi");
 
         setData(response);
     }
 
     const handleAddToLocal = async (coinId: number) => {
         try {
-            await addToLocal(coinId);
+            await adminCoinsService.addApiCoinToDb({
+                coinApiId: coinId
+            })
         } catch (error) {
             console.error(error);
         }
@@ -43,7 +45,7 @@ const AdminCoins = () => {
     const handleDeleteFromLocal = async (coinId: number) => {
         try {
             if (!coinId) return;
-            await deleteFromLocal(coinId);
+            await adminCoinsService.deleteLocalCoin(coinId);
         } catch (error) {
             console.error(error);
         }
@@ -85,7 +87,7 @@ const AdminCoins = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {data?.items?.map((coin: CoinData) => (
+                {data?.items?.map((coin: ApiCoin) => (
                     <tr>
                         <td>{coin.id}</td>
                         <td>{coin.name}</td>

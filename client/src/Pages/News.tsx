@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import NavBarConnectedUser from '../composant/Navbar/NavBarConnectedUser';
 import { News } from '../types';
-import { addToUserKeywords } from '../api/user';
+import {publicUsersService} from "../services/users/public/public.users.service";
 
 export const NewsPage = (news: News) => {
   const navigate = useNavigate();
@@ -10,19 +9,18 @@ export const NewsPage = (news: News) => {
     navigate('/article', { state: { news } });
   };
   const handleFavouriteClick = (event: any, cat: string) => {
-    console.log('favourite');
     event.stopPropagation();
     addToUserFavorites(cat);
   };
   const addToUserFavorites = async (keyword: string) => {
     try {
-      const response = await addToUserKeywords({ keywords: [keyword] });
-      console.log(response);
+        await publicUsersService.addKeywords({
+            keywords: [keyword]
+        })
     } catch (error) {
       console.error(error);
     }
   };
-  console.log(news.categories);
   return (
     <div>
       <div

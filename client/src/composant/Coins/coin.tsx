@@ -1,14 +1,16 @@
-import { addToLocal } from '../../api/admin';
-import { CoinData } from '../../types';
+import {adminCoinsService} from "../../services/coins/admin/admin.coins.service";
+import {ApiCoin} from "../../services/coins/admin/admin.coins.interfaces";
 
 interface Props {
-  coin: CoinData;
+  coin: ApiCoin;
   userRole: string | undefined;
 }
 
 export function CoinComponent({ coin, userRole }: Props) {
   const addToApi = async () => {
-    await addToLocal(coin.apiId);
+      await adminCoinsService.addApiCoinToDb({
+          coinApiId: coin.id,
+      });
   };
 
   return (

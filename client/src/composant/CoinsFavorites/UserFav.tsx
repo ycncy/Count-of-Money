@@ -1,24 +1,22 @@
-import React from 'react';
-import { getUserFav, getMe, removeFromFavouritesCoins } from '../../api/user';
-import { useQuery } from 'react-query';
+import React, {useEffect} from 'react';
+import {publicFavoritesService} from "../../services/favorites/public/public.favorites.service";
+import {LocalCoin} from "../../services/coins/public/public.coins.interfaces";
 
 const DefaultFav = () => {
-  const { data: user } = useQuery('me', getMe, {
-    retry: (_, error: any) => !(error.response?.status === 404),
-    enabled: localStorage.getItem('token') !== null,
-  });
+  const [userFavorites, setUserFavorites] = React.useState<LocalCoin[]>([]);
 
-  const { data: userFav } = useQuery(
-    ['userFav'],
-    () => (user ? getUserFav(user.id) : Promise.reject('User is undefined')),
-    {
-      enabled: !!user,
-    }
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      const response: LocalCoin[] = await publicFavoritesService.getUserFavorites();
+      console.log(response)
+      setUserFavorites(response);
+    };
+    fetchData();
+  }, []);
+
   const removeFromUserFavorites = async (coinId: number) => {
     try {
-      const response = await removeFromFavouritesCoins(coinId);
-      console.log(response);
+      await publicFavoritesService.deleteUserFavorite(coinId);
     } catch (error) {
       console.error(error);
     }
@@ -26,8 +24,7 @@ const DefaultFav = () => {
 
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-4 gap-4'>
-      {/* First Card */}
-      {userFav?.map((coin) => (
+      {userFavorites?.map((coin: LocalCoin) => (
         <div className='bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group'>
           <div className='flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12'>
             {coin?.imageUrl && (

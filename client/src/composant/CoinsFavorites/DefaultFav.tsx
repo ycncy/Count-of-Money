@@ -1,32 +1,30 @@
-import React from 'react';
-import { addToFavouritesCoins, getLocalCoins, getMe } from '../../api/user';
-import { useQuery } from 'react-query';
+import React, {useEffect, useState} from 'react';
+import {LocalCoin} from "../../services/coins/public/public.coins.interfaces";
+import {publicCoinsService} from "../../services/coins/public/public.coins.service";
+import {publicFavoritesService} from "../../services/favorites/public/public.favorites.service";
 
 const DefaultFav = () => {
-  const { data: user } = useQuery('me', getMe, {
-    retry: (_, error: any) => !(error.response?.status === 404),
-    enabled: localStorage.getItem('token') !== null,
-  });
+  const [localCoins, setLocalCoins] = useState<LocalCoin[]>([]);
 
-  const { data: defaultFav, isFetching } = useQuery(
-    ['defaultFav'],
-    () => getLocalCoins(),
-    {
-      enabled: !!user,
-    }
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await publicCoinsService.getLocalCoins();
+      setLocalCoins(response);
+    };
+    fetchData();
+  }, []);
+
   const addToUserFavorites = async (coinId: number) => {
     try {
-      const response = await addToFavouritesCoins(coinId);
-      console.log(response);
+      await publicFavoritesService.addUserFavorite(coinId);
     } catch (error) {
       console.error(error);
     }
   };
+
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-4 gap-4'>
-      {/* First Card */}
-      {defaultFav?.map((coin) => (
+      {localCoins?.map((coin: LocalCoin) => (
         <div className='bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group'>
           <div className='flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12'>
             <img
@@ -47,7 +45,7 @@ const DefaultFav = () => {
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
             viewBox='0 0 21 19'
-            onClick={() => addToUserFavorites(coin.coinId)}
+            onClick={() => addToUserFavorites(coin.id)}
           >
             <path
               stroke='currentColor'
