@@ -3,16 +3,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-interface NavBarConnectedUserProps {
-  search: string;
-  setSerach: (value: string) => void;
-}
-
-const NavBarConnectedUser: React.FC<NavBarConnectedUserProps> = ({
-  search,
-  setSerach,
-}) => {
-  const [text, setText] = React.useState('');
+export function NavBarConnectedUser() {
   return (
     <nav className='bg-gray-800 p-4'>
       <div className='flex items-center'>
@@ -27,23 +18,7 @@ const NavBarConnectedUser: React.FC<NavBarConnectedUserProps> = ({
         Less reflexion more investment{' '}
       </span>
 
-      <div className='flex-grow text-center'>
-        <input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          type='text'
-          placeholder='Search...'
-          className='bg-gray-700 text-white px-4 py-2 rounded-md focus:outline-none'
-        />
-        <button
-          onClick={() => {
-            setSerach(text);
-          }}
-          className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full'
-        >
-          Chercher
-        </button>
-      </div>
+      <div className='flex-grow text-center'></div>
 
       <div className='flex items-center ml-auto'>
         <Link to='/profile' className='text-white hover:text-gray-300 mx-4'>
@@ -60,6 +35,4 @@ const NavBarConnectedUser: React.FC<NavBarConnectedUserProps> = ({
       </div>
     </nav>
   );
-};
-
-export default NavBarConnectedUser;
+}

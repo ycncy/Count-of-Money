@@ -2,10 +2,13 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import { getMe } from '../../api/user';
 
-const FavKeyword = () => {
+interface FavKeywordProps {
+  isLoggedIn: boolean;
+}
+export function FavKeyword({ isLoggedIn }: FavKeywordProps) {
   const { data: user } = useQuery('me', getMe, {
     retry: (_, error: any) => !(error.response?.status === 404),
-    enabled: localStorage.getItem('token') !== null,
+    enabled: isLoggedIn,
   });
 
   return (
@@ -24,6 +27,4 @@ const FavKeyword = () => {
       ))}
     </div>
   );
-};
-
-export default FavKeyword;
+}

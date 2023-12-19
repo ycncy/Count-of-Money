@@ -1,9 +1,9 @@
 import React from 'react';
-import {Link} from "react-router-dom";
-const NavBar: React.FC = () => {
+import { Link } from 'react-router-dom';
+
+export function NavBar() {
   return (
     <nav className='bg-gray-800 p-4'>
-      {/* Logo Section (Left) */}
       <div className='flex items-center mt-15'>
         <img
           src='../img/logo.png'
@@ -17,21 +17,15 @@ const NavBar: React.FC = () => {
       </span>
 
       <div className='flex-grow text-center'>
-          <Link to='/login'className='text-white hover:text-gray-300 mx-4'>Login</Link>
+        <Link to='/login' className='text-white hover:text-gray-300 mx-4'>
+          Login
+        </Link>
 
         <span className='text-white'>|</span>
-          <Link to='/register'className='text-white hover:text-gray-300 mx-4'>Register</Link>
-      </div>
-
-      <div className='flex-grow text-center'>
-        <input
-          type='text'
-          placeholder='Search...'
-          className='bg-gray-700 text-white px-4 py-2 rounded-md focus:outline-none'
-        />
+        <Link to='/register' className='text-white hover:text-gray-300 mx-4'>
+          Register
+        </Link>
       </div>
     </nav>
   );
-};
-
-export default NavBar;
+}
