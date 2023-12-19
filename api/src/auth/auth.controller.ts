@@ -17,7 +17,6 @@ import {
   GoogleCallbackSwaggerDecorator,
   GoogleLoginSwaggerDecorator,
   LoginSwaggerDecorator,
-  LogoutSwaggerDecorator,
   RegisterSwaggerDecorator,
 } from '../swagger-decorator/auth-swagger.decorators';
 
@@ -37,7 +36,7 @@ export class AuthController {
       .cookie('access_token', access_token, {
         httpOnly: true,
         secure: false,
-        sameSite: 'strict',
+        sameSite: 'lax',
         expires: new Date(Date.now() + 24 * 60 * 1000),
       })
       .send({
@@ -50,15 +49,6 @@ export class AuthController {
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
     return await this.authService.registerUser(createUserDto);
-  }
-
-  @LogoutSwaggerDecorator()
-  @Post('logout')
-  async logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('access_token').send({
-      status: 200,
-      description: 'User logged out successfully',
-    });
   }
 
   @GoogleLoginSwaggerDecorator()
