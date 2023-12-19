@@ -44,7 +44,6 @@ export class AuthService {
     } else {
       throw new UnauthorizedException('Missing email or username');
     }
-
     if (
       !userEntity ||
       !(await bcrypt.compare(signInDto.password, userEntity.password))
