@@ -103,17 +103,7 @@ export type CoinHistoryWithSymbol = {
   dataPoints: VictoryDataPoint[];
 };
 
-export type LocalCoin = {
-  coinId: number;
-  symbol: string;
-  imageUrl: string;
-  lastDatetime: Date;
-  high: number;
-  low: number;
-  open: number;
-  close: number;
-  volume: number;
-};
+
 
 export type DefaultFav = {
   id: number;

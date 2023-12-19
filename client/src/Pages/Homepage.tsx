@@ -1,6 +1,7 @@
-import NavBar from '../composant/Navbar/NavBar';
 import React from 'react';
-import CardArticle from '../composant/CardArticle/CardArticle';
+
+import NavBar from '../composant/Navbar/NavBar';
+import { CardArticle } from '../composant/CardArticle/CardArticle';
 import CryptoCourses from '../composant/CoursesCrypto/CryptoCourses';
 import DefaultFav from '../composant/CoinsFavorites/DefaultFav';
 import UserFav from '../composant/CoinsFavorites/UserFav';

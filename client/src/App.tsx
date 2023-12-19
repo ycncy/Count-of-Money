@@ -10,8 +10,8 @@ import { NewsPages } from './Pages/NewsPages';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Coins } from './Pages/Coins';
 import { LocalCoins } from './Pages/LocalCoins';
-import CardArticle from './composant/CardArticle/CardArticle';
-import Admin from './Pages/Admin';
+import { CardArticle } from './composant/CardArticle/CardArticle';
+import { Admin } from './Pages/Admin';
 import { Charts } from './Pages/Charts';
 
 const queryClient = new QueryClient();

@@ -50,7 +50,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-const CardArticle: React.FC = () => {
+export function CardArticle() {
   const location = useLocation();
   const { news } = location.state || { news: {} };
 
@@ -97,4 +97,3 @@ const CardArticle: React.FC = () => {
   }
 };
 
-export default CardArticle;
