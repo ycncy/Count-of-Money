@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {Repository, SelectQueryBuilder} from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { CreateCoinDto } from './dto/create-coin.dto';
 import { CoinEntity } from './entity/coin.entity';
 import utils, { Granularity } from './utils';
@@ -35,15 +35,11 @@ export class CoinService {
   }
 
   getAllApiCryptos(options: IPaginationOptions) {
-    return paginate<ApiCoinEntity>(
-        this.apiCoinEntityRepository,
-        options,
-        {
-          order: {
-            id: 'ASC'
-          }
-        }
-    )
+    return paginate<ApiCoinEntity>(this.apiCoinEntityRepository, options, {
+      order: {
+        id: 'ASC',
+      },
+    });
   }
 
   async getCoinsInfo(coinIds: number[] = []) {
@@ -260,11 +256,12 @@ export class CoinService {
     if (!coinIdFromDatabase) {
       throw new NotFoundException('Coin not found, invalid coin ID');
     }
+    console.log(createCoinDto, `tdo`);
 
     const coinEntityFromApi: CoinEntity = await utils.fetchCoinInfo(
       coinIdFromDatabase.apiId,
     );
-
+    console.log(coinEntityFromApi, `coinEntitz`);
     const existingCoin: CoinEntity | undefined =
       await this.coinEntityRepository.findOne({
         where: {
@@ -276,15 +273,16 @@ export class CoinService {
       throw new ConflictException('Coin already exists');
     }
 
-    const coin: CoinEntity = this.coinEntityRepository.create(coinEntityFromApi);
-    const localCoin = (await this.coinEntityRepository.save(coin));
+    const coin: CoinEntity =
+      this.coinEntityRepository.create(coinEntityFromApi);
+    const localCoin = await this.coinEntityRepository.save(coin);
     await this.apiCoinEntityRepository.update(
-        { symbol: coin.symbol },
-        {
-          addedToLocal: true,
-          localCoinId: localCoin.id
-        },
-    )
+      { symbol: coin.symbol },
+      {
+        addedToLocal: true,
+        localCoinId: localCoin.id,
+      },
+    );
     return localCoin;
   }
 
@@ -317,12 +315,12 @@ export class CoinService {
 
     await this.coinEntityRepository.delete({ id: coin.id });
     await this.apiCoinEntityRepository.update(
-        { symbol: localCoinSymbol },
-        {
-          addedToLocal: false,
-          localCoinId: null
-        },
-    )
+      { symbol: localCoinSymbol },
+      {
+        addedToLocal: false,
+        localCoinId: null,
+      },
+    );
 
     return {
       status: 200,

@@ -1,7 +1,7 @@
 import { useQuery } from 'react-query';
 import { getMe, getNews } from '../api/user';
 import { NewsPage } from './News';
-import NavBarConnectedUser from '../composant/Navbar/NavBarConnectedUser';
+import { NavBarConnectedUser } from '../composant/Navbar/NavBarConnectedUser';
 import { useState } from 'react';
 import Spinner from '../composant/Spinner';
 
@@ -25,7 +25,7 @@ export const NewsPages = () => {
   return (
     <div>
       <h1>News</h1>
-      <NavBarConnectedUser search={search} setSerach={setSearch} />
+      <NavBarConnectedUser />
       {isFetching && <Spinner />}
       <div
         style={{

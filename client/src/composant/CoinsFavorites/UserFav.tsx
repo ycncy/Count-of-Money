@@ -1,14 +1,20 @@
-import React, {useEffect} from 'react';
-import {publicFavoritesService} from "../../services/favorites/public/public.favorites.service";
-import {LocalCoin} from "../../services/coins/public/public.coins.interfaces";
+import React, { useEffect } from 'react';
+import { publicFavoritesService } from '../../services/favorites/public/public.favorites.service';
+import { LocalCoin } from '../../services/coins/public/public.coins.interfaces';
 
-const DefaultFav = () => {
+interface UserFavProps {
+  isLoggedIn: boolean;
+}
+
+export function UserFav({ isLoggedIn }: UserFavProps) {
   const [userFavorites, setUserFavorites] = React.useState<LocalCoin[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response: LocalCoin[] = await publicFavoritesService.getUserFavorites();
-      console.log(response)
+      let response: LocalCoin[];
+      isLoggedIn
+        ? (response = await publicFavoritesService.getUserFavorites())
+        : (response = await publicFavoritesService.getDefaultFavorites());
       setUserFavorites(response);
     };
     fetchData();
@@ -55,6 +61,4 @@ const DefaultFav = () => {
       ))}
     </div>
   );
-};
-
-export default DefaultFav;
+}
