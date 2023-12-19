@@ -1,9 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {LocalCoin} from "../../services/coins/public/public.coins.interfaces";
-import {publicCoinsService} from "../../services/coins/public/public.coins.service";
-import {publicFavoritesService} from "../../services/favorites/public/public.favorites.service";
+import React, { useEffect, useState } from 'react';
+import { LocalCoin } from '../../services/coins/public/public.coins.interfaces';
+import { publicCoinsService } from '../../services/coins/public/public.coins.service';
+import { publicFavoritesService } from '../../services/favorites/public/public.favorites.service';
 
-const DefaultFav = () => {
+interface UserFavProps {
+  isLoggedIn: boolean;
+}
+export function DefaultFav({ isLoggedIn }: UserFavProps) {
   const [localCoins, setLocalCoins] = useState<LocalCoin[]>([]);
 
   useEffect(() => {
@@ -39,26 +42,26 @@ const DefaultFav = () => {
             <p className='text-2xl'>{coin.fullName}</p>
             <p>{coin.symbol}</p>
           </div>
-          <svg
-            className='w-6 h-6 text-gray-800 dark:text-white'
-            aria-hidden='true'
-            xmlns='http://www.w3.org/2000/svg'
-            fill='none'
-            viewBox='0 0 21 19'
-            onClick={() => addToUserFavorites(coin.id)}
-          >
-            <path
-              stroke='currentColor'
-              stroke-linecap='round'
-              stroke-linejoin='round'
-              stroke-width='2'
-              d='M11 4C5.5-1.5-1.5 5.5 4 11l7 7 7-7c5.458-5.458-1.542-12.458-7-7Z'
-            />
-          </svg>
+          {isLoggedIn && (
+            <svg
+              className='w-6 h-6 text-gray-800 dark:text-white'
+              aria-hidden='true'
+              xmlns='http://www.w3.org/2000/svg'
+              fill='none'
+              viewBox='0 0 21 19'
+              onClick={() => addToUserFavorites(coin.id)}
+            >
+              <path
+                stroke='currentColor'
+                stroke-linecap='round'
+                stroke-linejoin='round'
+                stroke-width='2'
+                d='M11 4C5.5-1.5-1.5 5.5 4 11l7 7 7-7c5.458-5.458-1.542-12.458-7-7Z'
+              />
+            </svg>
+          )}
         </div>
       ))}
     </div>
   );
-};
-
-export default DefaultFav;
+}

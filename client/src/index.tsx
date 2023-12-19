@@ -1,11 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import { App } from './App';
 import reportWebVitals from './reportWebVitals';
-import Register from "./authentication/Register";
-import Login from "./authentication/Login";
-import Profile from "./authentication/Profile";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,9 +10,6 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <App />
-{/*      <Register/>
-      <Login/>
-      <Profile/>*/}
   </React.StrictMode>
 );
 
