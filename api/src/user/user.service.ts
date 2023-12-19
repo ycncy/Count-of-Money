@@ -69,7 +69,6 @@ export class UserService {
             select: [
                 'id',
                 'email',
-                'password',
                 'role',
                 'provider',
                 'username',

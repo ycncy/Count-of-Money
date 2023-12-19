@@ -19,7 +19,6 @@ async function bootstrap() {
         .setTitle('Count of Money')
         .setDescription('Keep informed and beat the coins')
         .setVersion('0.1')
-        .addBearerAuth()
         .build();
 
     app.enableCors(
