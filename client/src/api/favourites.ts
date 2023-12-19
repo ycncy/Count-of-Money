@@ -10,7 +10,6 @@ export const addToFavouritesKeyWords = async (keyWord: string) => {
 };
 
 export const deleteFavoriteKeyWords = async (id: number) => {
-  console.log(id);
   return clientApi
     .delete(`/users/keywords`, { data: { keyWordId: id } })
     .then((response) => response.data);

@@ -45,7 +45,7 @@ const DefaultFav = () => {
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
             viewBox='0 0 21 19'
-            onClick={() => addToUserFavorites(coin.coinId)}
+            onClick={() => addToUserFavorites(coin.id)}
           >
             <path
               stroke='currentColor'
