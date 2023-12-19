@@ -63,11 +63,9 @@ export class UserService {
         return user;
     }
 
-    async findOneByEmailWithPassword(
-        email: string,
-    ): Promise<UserEntity | undefined> {
+    async findOneByLoginWithPassword(login: string): Promise<UserEntity | undefined> {
         return this.userRepository.findOne({
-            where: {email},
+            where: [{ email: login }, { username: login }],
             select: [
                 'id',
                 'email',

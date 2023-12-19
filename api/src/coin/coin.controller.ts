@@ -35,7 +35,6 @@ import {
 import { Granularity } from './utils';
 import { ResponseModel } from '../response-model/response.model';
 import { ListCoinInfoModel } from './model/list-coin-info.model';
-import {RolesGuard} from "../auth/guard/roles.guard";
 import {Roles} from "../auth/decorators/roles.decorator";
 import {AuthGuard} from "@nestjs/passport";
 

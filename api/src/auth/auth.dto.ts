@@ -1,11 +1,11 @@
 import { UserProvider, UserRole } from 'src/user/user.constants';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class SignInDto {
   @ApiProperty()
-  @IsNotEmpty()
-  readonly email: string;
+  @IsOptional()
+  readonly login: string;
 
   @ApiProperty()
   @IsNotEmpty()
