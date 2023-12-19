@@ -6,10 +6,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
   JoinTable,
-  OneToOne,
-  JoinColumn,
 } from 'typeorm';
-import { ApiCoinEntity } from './api-coin.entity';
 
 @Entity('coin')
 export class CoinEntity {

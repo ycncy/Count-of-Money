@@ -4,7 +4,8 @@ import {
   Post,
   Request,
   Get,
-  Body, Res,
+  Body,
+  Res,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
@@ -15,7 +16,8 @@ import { ApiTags } from '@nestjs/swagger';
 import {
   GoogleCallbackSwaggerDecorator,
   GoogleLoginSwaggerDecorator,
-  LoginSwaggerDecorator, LogoutSwaggerDecorator,
+  LoginSwaggerDecorator,
+  LogoutSwaggerDecorator,
   RegisterSwaggerDecorator,
 } from '../swagger-decorator/auth-swagger.decorators';
 
@@ -27,19 +29,21 @@ export class AuthController {
   @LoginSwaggerDecorator()
   @Post('login')
   async login(
-      @Body() signInDto: SignInDto,
-      @Res({ passthrough: true }) res: Response,
+    @Body() signInDto: SignInDto,
+    @Res({ passthrough: true }) res: Response,
   ) {
-    const {access_token, user} = await this.authService.login(signInDto);
-    res.cookie('access_token', access_token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'strict',
-      expires: new Date(Date.now() + 24 * 60 * 1000),
-    }).send({
-      status: 200,
-      description: "User logged in successfully",
-    });
+    const { access_token, user } = await this.authService.login(signInDto);
+    res
+      .cookie('access_token', access_token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict',
+        expires: new Date(Date.now() + 24 * 60 * 1000),
+      })
+      .send({
+        status: 200,
+        description: 'User logged in successfully',
+      });
   }
 
   @RegisterSwaggerDecorator()
@@ -53,7 +57,7 @@ export class AuthController {
   async logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('access_token').send({
       status: 200,
-      description: "User logged out successfully",
+      description: 'User logged out successfully',
     });
   }
 
