@@ -5,7 +5,9 @@ import {
   Request,
   Get,
   Body,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
@@ -15,9 +17,9 @@ import {
   GoogleCallbackSwaggerDecorator,
   GoogleLoginSwaggerDecorator,
   LoginSwaggerDecorator,
+  LogoutSwaggerDecorator,
   RegisterSwaggerDecorator,
 } from '../swagger-decorator/auth-swagger.decorators';
-import {ResponseModel} from "../response-model/response.model";
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -26,14 +28,37 @@ export class AuthController {
 
   @LoginSwaggerDecorator()
   @Post('login')
-  async login(@Body() signInDto: SignInDto) {
-    return await this.authService.login(signInDto);
+  async login(
+    @Body() signInDto: SignInDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { access_token } = await this.authService.login(signInDto);
+    res
+      .cookie('access_token', access_token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict',
+        expires: new Date(Date.now() + 24 * 60 * 1000),
+      })
+      .send({
+        status: 200,
+        description: 'User logged in successfully',
+      });
   }
 
   @RegisterSwaggerDecorator()
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
     return await this.authService.registerUser(createUserDto);
+  }
+
+  @LogoutSwaggerDecorator()
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('access_token').send({
+      status: 200,
+      description: 'User logged out successfully',
+    });
   }
 
   @GoogleLoginSwaggerDecorator()

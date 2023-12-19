@@ -10,7 +10,6 @@ import { PressReviewService } from './press-review.service';
 import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
 import { GetLatestNewsSwaggerDecorator } from '../swagger-decorator/press-review-swagger.decorators';
 import { DecodedToken } from '../auth/auth.dto';
-import { PublicGuard } from '../auth/guard/public.guard';
 
 @ApiBearerAuth()
 @ApiTags('News')
@@ -18,7 +17,6 @@ import { PublicGuard } from '../auth/guard/public.guard';
 export class NewsController {
   constructor(private readonly pressReviewService: PressReviewService) {}
 
-  @UseGuards(PublicGuard)
   @GetLatestNewsSwaggerDecorator()
   @Get()
   async getLatestNews(

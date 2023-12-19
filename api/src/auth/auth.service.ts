@@ -11,7 +11,6 @@ import { UserEntity } from 'src/user/entity/user.entity';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserProvider, UserRole } from 'src/user/user.constants';
 import { SignInDto, SignInGoogleDto } from './auth.dto';
-import {ResponseModel} from "../response-model/response.model";
 
 @Injectable()
 export class AuthService {
@@ -31,22 +30,30 @@ export class AuthService {
     return this.jwtService.sign(payload);
   }
 
-  async login(user: SignInDto) {
-    if (!user.email || !user.password) {
-      throw new UnauthorizedException('Missing email or password');
+  async login(signInDto: SignInDto) {
+    if (!signInDto.password) {
+      throw new UnauthorizedException('Missing password');
     }
 
-    const userEntity: UserEntity =
-      await this.userService.findOneByEmailWithPassword(user.email);
+    let userEntity: UserEntity;
+
+    if (signInDto.login) {
+      userEntity = await this.userService.findOneByLoginWithPassword(
+        signInDto.login,
+      );
+    } else {
+      throw new UnauthorizedException('Missing email or username');
+    }
+
     if (
       !userEntity ||
-      !(await bcrypt.compare(user.password, userEntity.password))
+      !(await bcrypt.compare(signInDto.password, userEntity.password))
     ) {
       throw new BadRequestException('Invalid credentials');
     }
 
     return {
-      token: this.generateJwt({
+      access_token: this.generateJwt({
         sub: userEntity.id,
         email: userEntity.email,
         role: userEntity.role,
@@ -54,6 +61,7 @@ export class AuthService {
         username: userEntity.username,
         baseCurrency: userEntity.baseCurrency,
       }),
+      user: userEntity,
     };
   }
 
@@ -69,12 +77,11 @@ export class AuthService {
         ...user,
         password: 'empty',
         baseCurrency: 'USD',
-        keywords: [],
       });
     }
 
     return {
-      token: this.generateJwt({
+      access_token: this.generateJwt({
         sub: userEntity.id,
         email: userEntity.email,
         role: userEntity.role,
@@ -115,14 +122,8 @@ export class AuthService {
     const userCreated: UserEntity = await this.userService.create(newUser);
     await this.userService.save(userCreated);
     return {
-      token: this.generateJwt({
-        sub: userCreated.id,
-        email: userCreated.email,
-        role: userCreated.role,
-        provider: userCreated.provider,
-        username: userCreated.username,
-        baseCurrency: userCreated.baseCurrency,
-      }),
+      status: 201,
+      description: 'User registered successfully',
     };
   }
 

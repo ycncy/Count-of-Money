@@ -1,14 +1,15 @@
 import axios from "axios";
 
 export const clientApi = axios.create({
-  baseURL: process.env.REACT_APP_API_URL
+  baseURL: process.env.REACT_APP_API_URL,
+  withCredentials: true,
 });
 
-clientApi.interceptors.request.use(async (config) => {
-  const accessToken = localStorage.getItem("token");
-  const requestConfig = config;
-  if (accessToken && requestConfig.headers) {
-    requestConfig.headers["Authorization"] = `Bearer ${accessToken}`;
-  }
-  return requestConfig;
-});
+// clientApi.interceptors.request.use(async (config) => {
+//   const accessToken = localStorage.getItem("token");
+//   const requestConfig = config;
+//   if (accessToken && requestConfig.headers) {
+//     requestConfig.headers["Authorization"] = `Bearer ${accessToken}`;
+//   }
+//   return requestConfig;
+// });

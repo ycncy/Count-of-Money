@@ -1,9 +1,11 @@
-import NavBar from '../composant/Navbar/NavBar';
-import NavBarConnectedUser from '../composant/Navbar/NavBarConnectedUser';
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Card from '../composant/StatiticCard/Card';
-import CardArticle from '../composant/CardArticle/CardArticle';
+
+import NavBar from '../composant/Navbar/NavBar';
+import { CardArticle } from '../composant/CardArticle/CardArticle';
+import CryptoCourses from '../composant/CoursesCrypto/CryptoCourses';
+import DefaultFav from '../composant/CoinsFavorites/DefaultFav';
+import UserFav from '../composant/CoinsFavorites/UserFav';
+import FavKeyword from '../composant/FavoriteKeyord/FavKeyword';
 interface HomePageProps {
   username: string;
 }
@@ -11,21 +13,27 @@ const HomePage: React.FC = () => {
   return (
     <div>
       <NavBar />
-      {/* <NavBarConectedUser username='Lelbi' /> */}
+
       <header>
         <h1>Latest News </h1>
-        <Card />
       </header>
       <main>
+        <CryptoCourses />
+        <div className='container mx-auto'>
+          Choice you Favorite Crypto
+          <DefaultFav />
+        </div>
+        <div className='container mx-auto'>
+          Your Favorite Coins
+          <UserFav />
+        </div>
         <section>
           <h2>Featured Articles</h2>
           <CardArticle />
-          {/* Display featured articles or components here */}
         </section>
         <section>
-          <h2>Latest News</h2>
-
-          {/* Display latest news or components here */}
+          <h2>Fav Keyword</h2>
+          <FavKeyword />
         </section>
       </main>
       <footer>

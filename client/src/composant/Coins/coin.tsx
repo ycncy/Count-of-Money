@@ -1,16 +1,16 @@
-import React from "react";
-
-import { addToLocalApi } from "../../api/admin";
-import { CoinData } from "../../types";
+import {adminCoinsService} from "../../services/coins/admin/admin.coins.service";
+import {ApiCoin} from "../../services/coins/admin/admin.coins.interfaces";
 
 interface Props {
-  coin: CoinData;
+  coin: ApiCoin;
   userRole: string | undefined;
 }
 
 export function CoinComponent({ coin, userRole }: Props) {
   const addToApi = async () => {
-    await addToLocalApi(coin.apiId);
+      await adminCoinsService.addApiCoinToDb({
+          coinApiId: coin.id,
+      });
   };
 
   return (
@@ -21,7 +21,7 @@ export function CoinComponent({ coin, userRole }: Props) {
         <h3>{coin.symbol}</h3>
         <h4>{coin.rank}</h4>
         <h4>{coin.id}</h4>
-        {userRole === "ADMIN" && (
+        {userRole === 'ADMIN' && (
           <button onClick={addToApi}>add to local API</button>
         )}
       </div>

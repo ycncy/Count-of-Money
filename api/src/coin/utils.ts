@@ -47,6 +47,7 @@ const fetchCoinInfo = async (coinId: number) => {
   }
 };
 
+
 const fetchCoinHistory = async (
   coinId: number,
   coinSymbol: string,

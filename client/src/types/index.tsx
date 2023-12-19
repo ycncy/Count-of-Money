@@ -11,9 +11,9 @@ export type Profile = {
   favorites: [string];
 };
 
-export type Providers = "LOCAL" | "GOOGLE" | "FACEBOOK";
+export type Providers = 'LOCAL' | 'GOOGLE' | 'FACEBOOK';
 
-export type Roles = "ADMIN" | "USER" | "ANONYMOUS";
+export type Roles = 'ADMIN' | 'USER' | 'ANONYMOUS';
 
 export type BaseCurrency = "EUR" | "USD" | "GBP" | "JPY" | "CHF";
 
@@ -44,19 +44,31 @@ export type CoinData = {
   name: string;
   symbol: string;
   apiId: number;
+  addedToLocal: boolean;
+  localCoinId: number;
+};
+
+export type RawCoins = {
+  coinId: number;
+  fullName: string;
+  rank: number;
+  name: string;
+  symbol: string;
+  imageUrl: string;
+  apiId: number;
 };
 
 export type Coin = {
   items: [CoinData];
-  links: CoinLinks;
-  meta: CoinMeta;
+  links?: CoinLinks;
+  meta?: CoinMeta;
 };
 
 export type CoinLinks = {
-  first: string;
-  last: string;
+  first?: string;
+  last?: string;
   next: string;
-  previous: string;
+  previous?: string;
 };
 
 export type CoinMeta = {
@@ -91,14 +103,13 @@ export type CoinHistoryWithSymbol = {
   dataPoints: VictoryDataPoint[];
 };
 
-export type LocalCoin = {
+
+
+export type DefaultFav = {
+  id: number;
   coinId: number;
-  symbol: string;
+  fullName: string;
   imageUrl: string;
-  lastDatetime: Date;
-  high: number;
-  low: number;
-  open: number;
-  close: number;
-  volume: number;
+  description: string;
+  symbol: string;
 };

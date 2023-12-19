@@ -1,15 +1,14 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import {authenticationService} from "../services/authentication/authentication.service";
+import {RegisterDto} from "../services/authentication/authentication.interfaces";
 export default function Register() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<RegisterDto>({
     username: "",
     email: "",
     password: "",
     baseCurrency: "",
-    keyWords: [],
-    provider: ""
   });
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -20,17 +19,12 @@ export default function Register() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
 
     try {
-      const response = await axios.post(
-        process.env.REACT_APP_API_URL + "auth/register",
-        formData
-      );
-      console.log(response);
-      localStorage.setItem("token", response.data.token);
+      await authenticationService.register(
+          formData
+      )
       navigate("/");
-      console.log("User registered successfully:", response.data);
     } catch (error) {
       if (error instanceof Error) {
         console.error("Registration failed:", error.message);
@@ -117,24 +111,6 @@ export default function Register() {
                   onChange={handleChange}
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Base Currency"
-                  required
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="provider"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Provider
-                </label>
-                <input
-                  type="text"
-                  name="provider"
-                  id="provider"
-                  value={formData.provider}
-                  onChange={handleChange}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Provider"
                   required
                 />
               </div>
