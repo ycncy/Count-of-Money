@@ -4,7 +4,7 @@ import Article from './Pages/Article';
 import { Homepage } from './Pages/Homepage';
 import { Login } from './authentication/Login';
 import { Register } from './authentication/Register';
-import { Profile } from './authentication/Profile';
+import Profile from "./authentication/Profile";
 // import Chart from './Pages/Chart';
 import { NewsPages } from './Pages/NewsPages';
 import { QueryClient, QueryClientProvider } from 'react-query';
