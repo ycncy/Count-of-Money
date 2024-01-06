@@ -35,11 +35,10 @@ import {
 import { Granularity } from './utils';
 import { ResponseModel } from '../response-model/response.model';
 import { ListCoinInfoModel } from './model/list-coin-info.model';
-import {Roles} from "../auth/decorators/roles.decorator";
-import {AuthGuard} from "@nestjs/passport";
+import { Roles } from '../auth/decorators/roles.decorator';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
 @ApiTags('Crypto-currencies')
 @Controller('coins')
 export class CoinController {
@@ -66,6 +65,7 @@ export class CoinController {
     return await this.coinService.getCoinsInfo(coinIds);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Roles(['ADMIN'])
   @GetAllApiCryptosSwaggerDecorator()
   @Get('/allFromApi')
@@ -80,6 +80,7 @@ export class CoinController {
     });
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @SaveAllApiCryptosSwaggerDecorator()
   @Roles(['ADMIN'])
   @Post('/allFromApi')
@@ -111,15 +112,15 @@ export class CoinController {
     );
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @CreateSwaggerDecorator()
   @Roles(['ADMIN'])
   @Post()
-  createCoin(
-    @Body() createCoinDto: CreateCoinDto,
-  ): Promise<CoinEntity> {
+  createCoin(@Body() createCoinDto: CreateCoinDto): Promise<CoinEntity> {
     return this.coinService.createCoin(createCoinDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @EditSwaggerDecorator()
   @Roles(['ADMIN'])
   @Put(':coinId')
@@ -130,6 +131,7 @@ export class CoinController {
     return await this.coinService.editCoin(coinID, editCoinDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @DeleteSwaggerDecorator()
   @Roles(['ADMIN'])
   @Delete(':coinId')

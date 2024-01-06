@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CryptoCourses: React.FC = () => {
+export function CryptoCourses() {
   return (
     <div className='relative flex flex-col min-w-0 mb-4 lg:mb-0 break-words bg-gray-50 dark:bg-gray-800 w-full shadow-lg rounded'>
       <div className='rounded-t mb-0 px-0 border-0'>
@@ -60,6 +60,4 @@ const CryptoCourses: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default CryptoCourses;
+}

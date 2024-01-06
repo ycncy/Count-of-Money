@@ -1,10 +1,10 @@
 import React, { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import {authenticationService} from "../services/authentication/authentication.service";
-import {LoginDto} from "../services/authentication/authentication.interfaces";
+import { authenticationService } from '../services/authentication/authentication.service';
+import { LoginDto } from '../services/authentication/authentication.interfaces';
 
-export default function Login() {
+export function Login() {
   const [errorMessage, setErrorMessage] = React.useState('');
   let navigate = useNavigate();
 
@@ -13,17 +13,9 @@ export default function Login() {
     const formData: FormData = new FormData(event.currentTarget);
     const form: LoginDto = {
       login: formData.get('login') as string,
-      password: formData.get('password')  as string,
+      password: formData.get('password') as string,
     };
-<<<<<<< HEAD
-  //  console.log(process.env.REACT_APP_API_URL);
-    const { data } = await axios.post(
-      'http://localhost:5000/api/auth/login',
-      form
-    );
-=======
     const data = await authenticationService.login(form);
->>>>>>> feat/frontend-api-services
     if (data.status === parseInt('401')) {
       setErrorMessage(data.response);
     } else {
@@ -31,8 +23,7 @@ export default function Login() {
         console.log('User not found');
       } else {
         localStorage.setItem('token', data.token);
-        console.log(data.token);
-        navigate('/profile');
+        navigate('/homepage');
       }
     }
   };
@@ -47,18 +38,18 @@ export default function Login() {
             <form className='space-y-4 md:space-y-6' onSubmit={handleSubmit}>
               <div>
                 <label
-                    htmlFor='login'
-                    className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+                  htmlFor='login'
+                  className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'
                 >
                   Username or Email
                 </label>
                 <input
-                    type='text'
-                    name='login'
-                    id='login'
-                    className='bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                    placeholder='YourUsername or name@company.com'
-                    required
+                  type='text'
+                  name='login'
+                  id='login'
+                  className='bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                  placeholder='YourUsername or name@company.com'
+                  required
                 />
               </div>
               <div>
@@ -88,12 +79,18 @@ export default function Login() {
                     </label>
                   </div>
                 </div>
-                <a
+                {/* <a
                   href='#'
                   className='text-sm font-medium text-primary-600 hover:underline dark:text-primary-500'
                 >
                   Forgot password?
-                </a>
+                </a> */}
+                <Link
+                  to='/homepage'
+                  className='text-white hover:text-gray-300 mx-4'
+                >
+                  Continue as Guest
+                </Link>
               </div>
               <button
                 type='submit'

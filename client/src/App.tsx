@@ -1,27 +1,28 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Article from './Pages/Article';
-import Homepage from './Pages/Homepage';
-import Login from './authentication/Login';
-import Register from './authentication/Register';
-import Profile from './authentication/Profile';
+import { Homepage } from './Pages/Homepage';
+import { Login } from './authentication/Login';
+import { Register } from './authentication/Register';
+import { Profile } from './authentication/Profile';
 // import Chart from './Pages/Chart';
 import { NewsPages } from './Pages/NewsPages';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Coins } from './Pages/Coins';
 import { LocalCoins } from './Pages/LocalCoins';
-import CardArticle from './composant/CardArticle/CardArticle';
-import Admin from './Pages/Admin';
+import { CardArticle } from './composant/CardArticle/CardArticle';
+import { Admin } from './Pages/Admin';
 import { Charts } from './Pages/Charts';
 
 const queryClient = new QueryClient();
 
-const App: React.FC = () => {
+export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
         <Routes>
-          <Route path='/' element={<Homepage />} />
+          <Route path='/' element={<Register />} />
+          <Route path='/homepage' element={<Homepage />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           {/* <Route path='/article' element={<Article />} /> */}
@@ -32,11 +33,9 @@ const App: React.FC = () => {
           <Route path='/localcoins' element={<LocalCoins />} />
           <Route path='/admin' element={<Admin />} />
           <Route path='/article' element={<CardArticle />} />
-          <Route path= '/chartCoin' element = {<Charts />} />
+          <Route path='/chartCoin' element={<Charts />} />
         </Routes>
       </Router>
     </QueryClientProvider>
   );
-};
-
-export default App;
+}

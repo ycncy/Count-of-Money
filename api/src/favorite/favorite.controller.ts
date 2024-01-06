@@ -8,7 +8,7 @@ import {
   Request,
 } from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
-import {ApiBearerAuth, ApiTags} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { DecodedToken } from 'src/auth/auth.dto';
 import {
   AddDefaultFavoriteSwaggerDecorator,
@@ -21,16 +21,16 @@ import {
 import { CoinEntity } from '../coin/entity/coin.entity';
 import { DefaultFavoriteEntity } from './favorite.entity';
 import { ResponseModel } from '../response-model/response.model';
-import {Roles} from "../auth/decorators/roles.decorator";
-import {AuthGuard} from "@nestjs/passport";
+import { Roles } from '../auth/decorators/roles.decorator';
+import { AuthGuard } from '@nestjs/passport';
 
-@ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
 @ApiTags('Favorites')
 @Controller('favorites')
 export class FavoriteController {
   constructor(private readonly favoriteService: FavoriteService) {}
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @AddToFavoritesSwaggerDecorator()
   @Post('coins/:coinId')
   async addToFavorites(
@@ -40,6 +40,8 @@ export class FavoriteController {
     return await this.favoriteService.addToFavorites(req.user.sub, coinId);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @RemoveFromFavoritesSwaggerDecorator()
   @Delete('coins/:coinId')
   async removeFromFavorites(
@@ -49,6 +51,8 @@ export class FavoriteController {
     return await this.favoriteService.removeFromFavorites(req.user.sub, coinId);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @GetFavoritesSwaggerDecorator()
   @Get('users')
   async getFavorites(
@@ -63,21 +67,21 @@ export class FavoriteController {
     return this.favoriteService.getDefaultFavorites();
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @AddDefaultFavoriteSwaggerDecorator()
   @Roles(['ADMIN'])
   @Post('default/coins/:coinId')
-  async addDefaultFavorite(
-    @Param('coinId') coinId: number,
-  ) {
+  async addDefaultFavorite(@Param('coinId') coinId: number) {
     return await this.favoriteService.addDefaultFavorite(coinId);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @DeleteDefaultFavoriteSwaggerDecorator()
   @Roles(['ADMIN'])
   @Delete('default/coins/:coinId')
-  async deleteDefaultFavorite(
-    @Param('coinId') coinId: number,
-  ) {
+  async deleteDefaultFavorite(@Param('coinId') coinId: number) {
     return await this.favoriteService.deleteDefaultFavorite(coinId);
   }
 }

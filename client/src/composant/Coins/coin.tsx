@@ -1,5 +1,5 @@
-import {adminCoinsService} from "../../services/coins/admin/admin.coins.service";
-import {ApiCoin} from "../../services/coins/admin/admin.coins.interfaces";
+import { adminCoinsService } from '../../services/coins/admin/admin.coins.service';
+import { ApiCoin } from '../../services/coins/admin/admin.coins.interfaces';
 
 interface Props {
   coin: ApiCoin;
@@ -8,9 +8,9 @@ interface Props {
 
 export function CoinComponent({ coin, userRole }: Props) {
   const addToApi = async () => {
-      await adminCoinsService.addApiCoinToDb({
-          coinApiId: coin.id,
-      });
+    await adminCoinsService.addApiCoinToDb({
+      coinApiId: coin.id,
+    });
   };
 
   return (
