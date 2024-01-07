@@ -16,11 +16,11 @@ export const addKeywords = async (addKeywordsDto: AddKeywordsDto) => {
     const response = await Axios.put("/users/keywords", addKeywordsDto);
     return response.data;
 }
-
 export const deleteKeyword = async (keyword: string) => {
     const response = await Axios.delete(`/users/keywords/${keyword}`);
     return response.data;
-}
+  }
+  
 
 export const publicUsersService = {
     getProfile,

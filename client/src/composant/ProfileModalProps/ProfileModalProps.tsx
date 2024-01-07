@@ -1,4 +1,5 @@
 import React, { useState,useEffect } from 'react';
+import { getProfile, updateProfile } from  '../../services/users/public/public.users.service';
 
 type ProfileModalProps = {
   isOpen: boolean;
@@ -17,17 +18,14 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onSubmit }
     useEffect(() => {
       const fetchUserData = async () => {
         try {
-          const response = await fetch('http://localhost:5000/api/users/profile',
-          { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
-          );
-          const userData = await response.json();
-          setUserData(userData);
+          const user = await getProfile();
+          setUserData(user);
         } catch (error) {
           console.error('Error fetching user data', error);
         }
       };
-        fetchUserData();
-      }, []);
+      fetchUserData();
+    }, []);
   
     const handleNameChange = (event:React.ChangeEvent<HTMLInputElement>) => {
       setUserData((prevUser) => ({ ...prevUser, username: event.target.value }));
