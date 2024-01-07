@@ -14,8 +14,12 @@ export function DefaultFav({isLoggedIn}: UserFavProps) {
         () => publicCoinsService.getLocalCoins().catch((err) => console.log(err)),
     )
 
-    let {data: favorites, isLoading: isLoadingFavorites} = useSWR('/favorites',
-        () => publicFavoritesService.getUserFavorites().catch((err) => console.log(err)),
+    let {data: favorites} = useSWR('/favorites',
+        () => {
+            if (isLoggedIn) {
+                return publicFavoritesService.getUserFavorites().catch((err) => console.log(err))
+            }
+        },
     )
 
     const addToUserFavorites = async (coinId: number) => {
