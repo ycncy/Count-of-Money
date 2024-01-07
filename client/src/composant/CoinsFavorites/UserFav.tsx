@@ -23,6 +23,7 @@ export function UserFav({ isLoggedIn }: UserFavProps) {
   const removeFromUserFavorites = async (coinId: number) => {
     try {
       await publicFavoritesService.deleteUserFavorite(coinId);
+        window.location.reload();
     } catch (error) {
       console.error(error);
     }
@@ -48,7 +49,7 @@ export function UserFav({ isLoggedIn }: UserFavProps) {
             <p>{coin.symbol}</p>
           </div>
           <svg
-            className='w-6 h-6 text-gray-800 dark:text-white'
+            className='w-6 h-6 text-white cursor-pointer'
             aria-hidden='true'
             xmlns='http://www.w3.org/2000/svg'
             fill='currentColor'

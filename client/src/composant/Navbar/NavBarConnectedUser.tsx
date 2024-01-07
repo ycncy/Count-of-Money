@@ -1,14 +1,16 @@
 import React, {useEffect} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {authenticationService} from "../../services/authentication/authentication.service";
 import cookies from "js-cookie";
 import { jwtDecode } from 'jwt-decode';
 
 export function NavBarConnectedUser() {
     const [userRole, setUserRole] = React.useState<string>('');
+    const navigate = useNavigate();
 
     const logout = async () => {
         await authenticationService.logout();
+        navigate('/homepage');
         window.location.reload();
     }
 

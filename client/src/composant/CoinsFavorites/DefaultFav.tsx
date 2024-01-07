@@ -14,14 +14,18 @@ export function DefaultFav({isLoggedIn}: UserFavProps) {
         () => publicCoinsService.getLocalCoins().catch((err) => console.log(err)),
     )
 
-    let {data: favorites, isLoading: isLoadingFavorites} = useSWR('/favorites',
-        () => publicFavoritesService.getUserFavorites().catch((err) => console.log(err)),
+    let {data: favorites} = useSWR('/favorites',
+        () => {
+            if (isLoggedIn) {
+                return publicFavoritesService.getUserFavorites().catch((err) => console.log(err))
+            }
+        },
     )
 
     const addToUserFavorites = async (coinId: number) => {
         try {
             await publicFavoritesService.addUserFavorite(coinId);
-            mutate('/coins')
+            window.location.reload();
         } catch (error) {
             console.error(error);
         }
@@ -52,7 +56,7 @@ export function DefaultFav({isLoggedIn}: UserFavProps) {
                     </Link>
                     {isLoggedIn && (
                         <svg
-                            className={`w-8 h-8 text-gray-800 dark:text-white cursor-pointer ${favorites?.some((favorite: LocalCoin) => favorite.id === coin.coinId) ? 'fill-white hover:fill-none' : 'hover:fill-white'}`}
+                            className={`w-8 h-8 text-white cursor-pointer ${favorites?.some((favorite: LocalCoin) => favorite.id === coin.coinId) ? 'fill-white' : 'hover:fill-white'}`}
                             aria-hidden='true'
                             xmlns='http://www.w3.org/2000/svg'
                             fill='none'
