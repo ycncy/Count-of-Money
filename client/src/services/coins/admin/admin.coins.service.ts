@@ -8,14 +8,14 @@ import {
 
 export const addApiCoinToDb = async (createCoinDto: CreateCoinDto) => {
   const response = await Axios.post(`/coins`, {
-    createCoinDto,
+    ...createCoinDto,
   });
   return response.data;
 };
 
 export const updateLocalCoin = async (updateCoinDto: UpdateCoinDto) => {
   const response = await Axios.put(`/coins`, {
-    updateCoinDto,
+    ...updateCoinDto,
   });
   return response.data;
 };

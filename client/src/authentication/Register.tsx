@@ -22,7 +22,7 @@ export function Register() {
 
     try {
       await authenticationService.register(formData);
-      navigate('/');
+      navigate('/homepage');
     } catch (error) {
       if (error instanceof Error) {
         console.error('Registration failed:', error.message);

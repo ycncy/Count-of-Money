@@ -16,7 +16,7 @@ import { ApiTags } from '@nestjs/swagger';
 import {
   GoogleCallbackSwaggerDecorator,
   GoogleLoginSwaggerDecorator,
-  LoginSwaggerDecorator,
+  LoginSwaggerDecorator, LogoutSwaggerDecorator,
   RegisterSwaggerDecorator,
 } from '../swagger-decorator/auth-swagger.decorators';
 
@@ -49,6 +49,15 @@ export class AuthController {
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
     return await this.authService.registerUser(createUserDto);
+  }
+
+  @LogoutSwaggerDecorator()
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('access_token').send({
+      status: 200,
+      description: "User logged out successfully",
+    });
   }
 
   @GoogleLoginSwaggerDecorator()

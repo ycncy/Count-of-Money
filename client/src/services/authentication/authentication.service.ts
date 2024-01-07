@@ -11,7 +11,13 @@ export const register = async (registerDto: RegisterDto) => {
   return response.data;
 };
 
+export const logout = async () => {
+    const response = await Axios.post("/auth/logout");
+    return response.data;
+}
+
 export const authenticationService = {
   login,
   register,
+    logout,
 };

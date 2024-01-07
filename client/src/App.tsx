@@ -21,7 +21,6 @@ export function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <Routes>
-          <Route path='/' element={<Register />} />
           <Route path='/homepage' element={<Homepage />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
@@ -33,7 +32,7 @@ export function App() {
           <Route path='/localcoins' element={<LocalCoins />} />
           <Route path='/admin' element={<Admin />} />
           <Route path='/article' element={<CardArticle />} />
-          <Route path='/chartCoin' element={<Charts />} />
+          <Route path='/chart/:coinId' element={<Charts />} />
         </Routes>
       </Router>
     </QueryClientProvider>

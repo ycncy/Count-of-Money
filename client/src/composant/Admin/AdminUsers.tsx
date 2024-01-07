@@ -27,7 +27,7 @@ export function AdminUsers() {
   };
 
   return (
-    <div className='bg-white bg-opacity-10 text-white rounded-lg shadow-lg mt-4 p-4'>
+    <div className='bg-[#1F2937] bg-opacity-10 text-white rounded-lg shadow-lg mt-4 p-4'>
       <h2 className='text-xl font-semibold'>Users List</h2>
       <table className='w-full text-center mt-4'>
         <thead>
@@ -50,7 +50,7 @@ export function AdminUsers() {
                   className='text-red-500 ml-2 hover:underline'
                   onClick={() => handleDeleteUser(user.id)}
                 >
-                  Supprimer
+                  Delete
                 </button>
               </td>
             </tr>

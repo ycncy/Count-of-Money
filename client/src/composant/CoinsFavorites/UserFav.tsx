@@ -29,10 +29,10 @@ export function UserFav({ isLoggedIn }: UserFavProps) {
   };
 
   return (
-    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 p-4 gap-4'>
+    <div className="w-screen mb-4 p-4 flex overflow-scroll gap-4">
       {userFavorites?.map((coin: LocalCoin) => (
-        <div className='bg-blue-500 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between p-3 border-b-4 border-blue-600 dark:border-gray-600 text-white font-medium group'>
-          <div className='flex justify-center items-center w-14 h-14 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12'>
+        <div className='bg-blue-500 gap-6 dark:bg-gray-800 shadow-lg rounded-md flex items-center justify-between px-3 border-b-4 border-gray-600 text-white font-medium group'>
+          <div className='flex justify-center items-center w-12 h-12 bg-white rounded-full transition-all duration-300 transform group-hover:rotate-12'>
             {coin?.imageUrl && (
               <img
                 width='30'
@@ -43,7 +43,7 @@ export function UserFav({ isLoggedIn }: UserFavProps) {
               />
             )}
           </div>
-          <div className='text-right'>
+          <div className='text-center'>
             <p className='text-2xl'>{coin.fullName}</p>
             <p>{coin.symbol}</p>
           </div>
