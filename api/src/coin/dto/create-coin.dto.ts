@@ -10,8 +10,8 @@ export class CreateCoinDto {
     description: 'Cryptocurrency ID from yahoo finance API',
   })
   @IsNotEmpty()
-  readonly coinApiId: number;
+  coinApiId: number;
 
   @IsOptional()
-  readonly user: UserEntity[];
+  user: UserEntity[];
 }

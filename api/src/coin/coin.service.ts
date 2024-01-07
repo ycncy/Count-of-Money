@@ -256,12 +256,11 @@ export class CoinService {
     if (!coinIdFromDatabase) {
       throw new NotFoundException('Coin not found, invalid coin ID');
     }
-    console.log(createCoinDto, `tdo`);
 
     const coinEntityFromApi: CoinEntity = await utils.fetchCoinInfo(
       coinIdFromDatabase.apiId,
     );
-    console.log(coinEntityFromApi, `coinEntitz`);
+
     const existingCoin: CoinEntity | undefined =
       await this.coinEntityRepository.findOne({
         where: {

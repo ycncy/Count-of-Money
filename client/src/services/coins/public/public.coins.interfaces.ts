@@ -9,8 +9,19 @@ export type CoinHistory = {
     volume: number[];
 };
 
+export type LocalCoinInfo = {
+    id: number;
+    fullName: string;
+    imageUrl: string;
+    description: string;
+    symbol: string;
+    websites: string[];
+    creationDate: Date;
+}
+
 export type LocalCoin = {
     id: number;
+    coinId: number;
     fullName: string;
     symbol: string;
     imageUrl: string;

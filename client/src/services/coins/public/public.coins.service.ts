@@ -1,5 +1,5 @@
 import Axios from "../../api.service";
-import {CoinHistory, LocalCoin} from "./public.coins.interfaces";
+import {CoinHistory, LocalCoin, LocalCoinInfo} from "./public.coins.interfaces";
 import {Coin, Granularity} from "../../../types";
 
 export const getLocalCoinsByListId = async (coinsIds: number): Promise<LocalCoin[]> => {
@@ -10,6 +10,11 @@ export const getLocalCoinsByListId = async (coinsIds: number): Promise<LocalCoin
   });
   return response.data;
 };
+
+export const getLocalCoinById = async (coinId: number): Promise<LocalCoinInfo> => {
+    const response = await Axios.get<LocalCoinInfo>(`/coins/${coinId}`);
+    return response.data;
+}
 
 export const getLocalCoins = async (): Promise<LocalCoin[]> => {
     const response = await Axios.get<LocalCoin[]>(`/coins`);
@@ -24,5 +29,6 @@ export const getHistory = async (coinId: number, granularity: Granularity): Prom
 export const publicCoinsService = {
     getLocalCoinsByListId,
     getLocalCoins,
-    getHistory
+    getHistory,
+    getLocalCoinById
 }
