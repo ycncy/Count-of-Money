@@ -7,6 +7,7 @@ import {
 import { publicCoinsService } from '../../services/coins/public/public.coins.service';
 import { LocalCoin } from '../../services/coins/public/public.coins.interfaces';
 import { fetchAllCoinsFromApi } from '../../api/admin';
+import {logout} from "../../services/authentication/authentication.service";
 
 export function AdminCoins() {
   const [data, setData] = React.useState<ApiCoinPaginated>();
@@ -27,6 +28,7 @@ export function AdminCoins() {
   useEffect(() => {
     fetchAddedCoins();
     fetchData();
+    console.log(data)
   }, []);
 
   const setPreviousCoins = async () => {
@@ -50,11 +52,6 @@ export function AdminCoins() {
       await adminCoinsService.addApiCoinToDb({
         coinApiId: coinId,
       });
-      setData(
-        await adminCoinsService.getCoinsFromApi(
-          data?.links?.next ?? 'http://localhost:5000/api/coins/allFromApi'
-        )
-      );
     } catch (error) {
       console.error(error);
     }
@@ -83,7 +80,7 @@ export function AdminCoins() {
   };
 
   return (
-    <div className='bg-white bg-opacity-10 text-white rounded-lg shadow-lg mt-4 p-4'>
+    <div className='bg-[#1F2937 ] bg-opacity-10 text-white rounded-lg shadow-lg mt-4 p-4'>
       <div className='flex justify-between'>
         <div>
           <h2 className='text-xl font-semibold'>Coins list</h2>
@@ -112,9 +109,10 @@ export function AdminCoins() {
         <thead>
           <tr>
             <th>Id</th>
-            <th>Nom</th>
-            <th>Symbole</th>
-            <th>Niveau</th>
+            <th>Name</th>
+            <th>Symbol</th>
+            <th>Rank</th>
+            <th>ApiId</th>
             <th></th>
           </tr>
         </thead>
@@ -125,6 +123,7 @@ export function AdminCoins() {
               <td>{coin.name}</td>
               <td>{coin.symbol}</td>
               <td>{coin.rank}</td>
+              <td>{coin.apiId}</td>
               <td>
                 {!coin.addedToLocal && (
                   <button

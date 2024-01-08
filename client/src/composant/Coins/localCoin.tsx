@@ -11,7 +11,7 @@ interface Props {
 export function LocalCoinComponent({ coin, user }: Props) {
   return (
     <div>
-      <h1>{coin.id}</h1>
+      <h1>{coin.coinId}</h1>
       <img src={coin.imageUrl} alt={coin.symbol} />
       <h3>{coin.symbol}</h3>
       <h4>Last Updated : {`${coin.lastDatetime}`}</h4>

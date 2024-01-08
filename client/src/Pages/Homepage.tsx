@@ -1,19 +1,20 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 
-import { NavBar } from '../composant/Navbar/NavBar';
-import { CardArticle } from '../composant/CardArticle/CardArticle';
-import { CryptoCourses } from '../composant/CoursesCrypto/CryptoCourses';
-import { DefaultFav } from '../composant/CoinsFavorites/DefaultFav';
-import { UserFav } from '../composant/CoinsFavorites/UserFav';
-import { FavKeyword } from '../composant/FavoriteKeyord/FavKeyword';
-import { useState } from 'react';
+import {NavBar} from '../composant/Navbar/NavBar';
+import {CardArticle} from '../composant/CardArticle/CardArticle';
+import {CryptoCourses} from '../composant/CoursesCrypto/CryptoCourses';
+import {DefaultFav} from '../composant/CoinsFavorites/DefaultFav';
+import {UserFav} from '../composant/CoinsFavorites/UserFav';
+import {FavKeyword} from '../composant/FavoriteKeyord/FavKeyword';
+import {useState} from 'react';
 import cookies from 'js-cookie';
 import { NavBarConnectedUser } from '../composant/Navbar/NavBarConnectedUser';
 import { useQuery } from 'react-query';
 import { getMe } from '../api/user';
 interface HomePageProps {
-  username: string;
+    username: string;
 }
+
 export function Homepage() {
   const [isUserLogged, setIsUserLogged] = useState<boolean>(false);
 
@@ -60,6 +61,6 @@ export function Homepage() {
       <footer>
         <p>&copy; 2023 My Website. All rights reserved.</p>
       </footer>
-    </div>
-  );
+        </div>
+    );
 }

@@ -21,7 +21,6 @@ export const NewsPages = () => {
     enabled: !!search && !!user,
   });
 
-  console.log(isLoading, isError, isSuccess, isFetching);
   return (
     <div>
       <h1>News</h1>

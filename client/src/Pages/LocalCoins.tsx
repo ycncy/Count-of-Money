@@ -31,7 +31,7 @@ export const LocalCoins = () => {
          <LocalCoinComponent
          coin = {coin}
          user = {user}
-         key={coin.id}
+         key={coin.coinId}
           />
         ))}
         </div>

@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 import { getMe } from '../api/user';
 import { NavBarConnectedUser } from '../composant/Navbar/NavBarConnectedUser';
 import { NavBar } from '../composant/Navbar/NavBar';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 export function Admin() {
   
@@ -13,6 +14,11 @@ export function Admin() {
     enabled: localStorage.getItem("token") !== null,
   });
 
+  const navigate = useNavigate();
+  
+  if (user?.role !== 'ADMIN') {
+    navigate('/homepage')
+  }
   return (
     <div className='bg-[#1F2937] min-h-screen'>
       {user ? <NavBarConnectedUser user={user}/> : <NavBar />}
