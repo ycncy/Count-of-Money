@@ -25,6 +25,7 @@ services:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       CMC_API_KEY: ${CMC_API_KEY}
+      FRONTEND_URL: http://timemanager.live
       # SSL_KEY_PATH: ${SSL_KEY_PATH}
       # SSL_CERT_PATH: ${SSL_CERT_PATH}
     ports:

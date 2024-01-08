@@ -24,7 +24,7 @@ export const NewsPages = () => {
   return (
     <div>
       <h1>News</h1>
-      <NavBarConnectedUser />
+      <NavBarConnectedUser user={user} />
       {isFetching && <Spinner />}
       <div
         style={{
