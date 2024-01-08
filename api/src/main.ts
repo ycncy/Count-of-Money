@@ -22,7 +22,7 @@ async function bootstrap() {
 
   app.enableCors({
     credentials: true,
-    origin: "https://timemanager.live",
+    origin: [`${process.env.FRONTEND_URL}`],
   });
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
