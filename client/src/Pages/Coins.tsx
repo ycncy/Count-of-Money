@@ -5,6 +5,8 @@ import { getMe } from '../api/user';
 import { fetchAllCoinsFromApi } from '../api/admin';
 import { CoinComponent } from '../composant/Coins/coin';
 import { getAllCoins } from '../api/public';
+import { NavBarConnectedUser } from "../composant/Navbar/NavBarConnectedUser";
+import { NavBar } from "../composant/Navbar/NavBar";
 
 export function Coins() {
   const { data: user } = useQuery('me', getMe, {
@@ -22,6 +24,7 @@ export function Coins() {
 
   return (
     <div>
+       {user ? <NavBarConnectedUser user={user}/> : <NavBar />}
       <h1>Coins</h1>
       {user?.role === 'ADMIN' && (
         <div>
