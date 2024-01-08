@@ -45,21 +45,9 @@ export function NavBarConnectedUser({user}: NavBarProps)  {
               >
               Admin
               </Link>
-            <Link
-            to='/coins'
-            className='text-white hover:text-gray-300 mx-4'
-            >
-              Coins
-              </Link>
-              <Link
-              to='/localCoins'
-              className='text-white hover:text-gray-300 mx-4'
-              >
-              Local Coins
-              </Link>
             </>
         )}
-         <Link to='/' className='text-white hover:text-gray-300 mx-4'
+         <Link to='/homepage' className='text-white hover:text-gray-300 mx-4'
          onClick={logout}>
           Logout
         </Link>
