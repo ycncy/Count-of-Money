@@ -2,6 +2,8 @@ import { useQuery } from "react-query";
 import { getMe } from "../api/user";
 import { getAllLocalCoins } from "../api/public";
 import { LocalCoinComponent } from "../composant/Coins/localCoin";
+import { NavBarConnectedUser } from "../composant/Navbar/NavBarConnectedUser";
+import { NavBar } from "../composant/Navbar/NavBar";
 
 
 export const LocalCoins = () => {
@@ -12,7 +14,7 @@ export const LocalCoins = () => {
   });
   
   const { data: coins } = useQuery(
-    ["Coins"], 
+    ["LocalCoins"], 
     () => getAllLocalCoins(), 
     {
       enabled: !!user,
@@ -22,6 +24,7 @@ export const LocalCoins = () => {
 
   return (
     <div>
+       {user ? <NavBarConnectedUser user={user}/> : <NavBar />}
       <h1>LocaLCoins</h1>
       <div>
         {coins?.map((coin) => (

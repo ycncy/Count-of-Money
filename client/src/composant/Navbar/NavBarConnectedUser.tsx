@@ -2,8 +2,13 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Profile } from '../../types';
 
-export function NavBarConnectedUser() {
+interface NavBarProps {
+  user?: Profile;
+}
+
+export function NavBarConnectedUser({ user }: NavBarProps) {
   return (
     <nav className='bg-gray-800 p-4'>
       <div className='flex items-center'>
@@ -29,9 +34,32 @@ export function NavBarConnectedUser() {
           Article
         </Link>
 
-        <Link to='/' className='text-white hover:text-gray-300 mx-4'>
+        {user?.role === 'ADMIN' && (
+          <>
+            <Link
+              to='/admin'
+              className='text-white hover:text-gray-300 mx-4'
+              >
+              Admin
+              </Link>
+            <Link
+            to='/coins'
+            className='text-white hover:text-gray-300 mx-4'
+            >
+              Coins
+              </Link>
+              <Link
+              to='/localCoins'
+              className='text-white hover:text-gray-300 mx-4'
+              >
+              Local Coins
+              </Link>
+            </>
+        )}
+         <Link to='/' className='text-white hover:text-gray-300 mx-4'>
           Logout
         </Link>
+
       </div>
     </nav>
   );

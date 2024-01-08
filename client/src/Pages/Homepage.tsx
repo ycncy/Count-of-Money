@@ -9,15 +9,21 @@ import { FavKeyword } from '../composant/FavoriteKeyord/FavKeyword';
 import { useState } from 'react';
 import cookies from 'js-cookie';
 import { NavBarConnectedUser } from '../composant/Navbar/NavBarConnectedUser';
+import { useQuery } from 'react-query';
+import { getMe } from '../api/user';
 interface HomePageProps {
   username: string;
 }
 export function Homepage() {
   const [isUserLogged, setIsUserLogged] = useState<boolean>(false);
 
+  const { data: user } = useQuery("me", getMe, {
+    retry: (_, error: any) => !(error.response?.status === 404),
+    enabled: localStorage.getItem("token") !== null,
+  });
+  
   useEffect(() => {
     const accesToken = cookies.get('access_token');
-    console.log(cookies.get('access_token'));
     if (accesToken) {
       console.log(`connected`);
       setIsUserLogged(true);
@@ -25,7 +31,7 @@ export function Homepage() {
   }, []);
   return (
     <div>
-      {isUserLogged ? <NavBarConnectedUser /> : <NavBar />}
+      {isUserLogged ? <NavBarConnectedUser user={user}/> : <NavBar />}
 
       <header>
         <h1>Latest News </h1>
@@ -33,7 +39,7 @@ export function Homepage() {
       <main>
         {/* <CryptoCourses /> */}
         <div className='container mx-auto'>
-          Choice you Favorite Crypto
+          Choose you Favorite Crypto
           <DefaultFav isLoggedIn={isUserLogged} />
         </div>
         {isUserLogged && (

@@ -1,18 +1,24 @@
 import React from 'react';
 import { AdminCoins } from '../composant/Admin/AdminCoins';
 import { AdminUsers } from '../composant/Admin/AdminUsers';
+import { useQuery } from 'react-query';
+import { getMe } from '../api/user';
+import { NavBarConnectedUser } from '../composant/Navbar/NavBarConnectedUser';
+import { NavBar } from '../composant/Navbar/NavBar';
 
 export function Admin() {
+  
+  const { data: user } = useQuery("me", getMe, {
+    retry: (_, error: any) => !(error.response?.status === 404),
+    enabled: localStorage.getItem("token") !== null,
+  });
+
   return (
     <div className='bg-[#1F2937] min-h-screen'>
+      {user ? <NavBarConnectedUser user={user}/> : <NavBar />}
       <nav className='p-4 text-white border-b'>
         <div className='container mx-auto flex justify-between'>
           <div className='text-2xl font-bold'>Admin Dashboard</div>
-          <div>
-            <button className='ml-4 bg-white text-blue-500 px-4 py-2 rounded hover:bg-blue-500 hover:text-white'>
-              Déconnexion
-            </button>
-          </div>
         </div>
       </nav>
 
