@@ -1,11 +1,13 @@
 import React, {useEffect} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import {authenticationService} from "../../services/authentication/authentication.service";
-import cookies from "js-cookie";
-import { jwtDecode } from 'jwt-decode';
+import { Profile } from '../../types';
 
-export function NavBarConnectedUser() {
-    const [userRole, setUserRole] = React.useState<string>('');
+interface NavBarProps {
+  user?: Profile;
+}
+
+export function NavBarConnectedUser({user}: NavBarProps)  {
     const navigate = useNavigate();
 
     const logout = async () => {
@@ -13,16 +15,6 @@ export function NavBarConnectedUser() {
         navigate('/homepage');
         window.location.reload();
     }
-
-    useEffect(() => {
-        const accessToken = cookies.get('access_token');
-
-        if (accessToken) {
-            const decodedToken = jwtDecode(accessToken) as {role: string};
-            setUserRole(decodedToken.role);
-        }
-    }, []);
-
 
     return (
         <nav className='bg-[#171B26] p-4 flex justify-around items-center border-b'>
@@ -45,16 +37,22 @@ export function NavBarConnectedUser() {
                     Article
                 </Link>
 
-                {userRole === 'ADMIN' && (
-                    <Link to='/admin' className='text-white hover:text-gray-300 mx-4'>
-                        Admin Dashboard
-                    </Link>
-                )}
+        {user?.role === 'ADMIN' && (
+          <>
+            <Link
+              to='/admin'
+              className='text-white hover:text-gray-300 mx-4'
+              >
+              Admin
+              </Link>
+            </>
+        )}
+         <Link to='/homepage' className='text-white hover:text-gray-300 mx-4'
+         onClick={logout}>
+          Logout
+        </Link>
 
-                <button onClick={logout} className='text-white hover:text-gray-300 mx-4'>
-                    Logout
-                </button>
-            </div>
-        </nav>
-    );
+      </div>
+    </nav>
+  );
 }

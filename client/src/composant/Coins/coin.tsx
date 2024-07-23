@@ -16,7 +16,7 @@ export function CoinComponent({ coin, userRole }: Props) {
   return (
     <div>
       <h1>Coins</h1>
-      <div>
+      <div className='border-2 border-slate-800'>
         <h2>{coin.name}</h2>
         <h3>{coin.symbol}</h3>
         <h4>{coin.rank}</h4>
